@@ -23,7 +23,9 @@ export default function ReverseTransformChat() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null)
-  const [targetFormat, setTargetFormat] = useState<"txt" | "docx" | "images">("txt")
+  const [targetFormat, setTargetFormat] = useState<
+    "txt" | "docx" | "images" | "csv" | "xlsx" | "jpg" | "png" | "pptx" | "json" | "xml" | "md" | "rtf"
+  >("txt")
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -108,7 +110,7 @@ export default function ReverseTransformChat() {
       }
 
       let editableContent: string | undefined
-      if (targetFormat === "txt") {
+      if (targetFormat === "txt" || targetFormat === "csv") {
         editableContent = await blob.text()
       }
 
@@ -153,23 +155,32 @@ export default function ReverseTransformChat() {
 
   return (
     <section aria-label="PDF reverse transformer" className="flex h-full flex-col">
-      <div className="mb-4 rounded-lg border bg-card p-3">
-        <label className="mb-2 block text-sm font-medium">Target Format</label>
+      <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(85,_100,_200,_0.3)]">
+        <label className="mb-3 block text-sm font-semibold text-foreground">Target Format</label>
         <Select value={targetFormat} onValueChange={(v) => setTargetFormat(v as any)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border-border/50 bg-background/50 transition-all duration-300 hover:bg-background hover:border-primary/50">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="txt">Text (.txt)</SelectItem>
+            <SelectItem value="csv">Spreadsheet (.csv)</SelectItem>
+            <SelectItem value="xlsx">Excel (.xlsx)</SelectItem>
             <SelectItem value="docx">Word Document (.docx)</SelectItem>
-            <SelectItem value="images">Extract Images (.zip)</SelectItem>
+            <SelectItem value="pptx">PowerPoint (.pptx)</SelectItem>
+            <SelectItem value="json">JSON (.json)</SelectItem>
+            <SelectItem value="xml">XML (.xml)</SelectItem>
+            <SelectItem value="md">Markdown (.md)</SelectItem>
+            <SelectItem value="rtf">Rich Text (.rtf)</SelectItem>
+            <SelectItem value="jpg">Image - JPEG (.jpg)</SelectItem>
+            <SelectItem value="png">Image - PNG (.png)</SelectItem>
+            <SelectItem value="images">Extract All Images (.zip)</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto pb-4">
         {messages.map((m, idx) => (
-          <div key={idx}>
+          <div key={idx} className="transition-all duration-300">
             {editingMessageIndex === idx && m.editableContent ? (
               <FileEditor
                 content={m.editableContent}
@@ -178,18 +189,34 @@ export default function ReverseTransformChat() {
                 onCancel={() => setEditingMessageIndex(null)}
               />
             ) : (
-              <div className={cn("rounded-lg p-3", m.role === "user" ? "bg-muted" : "bg-card border")}>
+              <div
+                className={cn(
+                  "rounded-xl p-4 transition-all duration-300",
+                  m.role === "user"
+                    ? "bg-primary/10 border border-primary/20 ml-8"
+                    : "bg-accent/10 border border-accent/20 mr-8",
+                )}
+              >
                 <div className="text-sm">
-                  <strong className="mr-2">{m.role === "user" ? "You" : "Assistant"}:</strong>
-                  <span className="whitespace-pre-wrap">{m.content}</span>
+                  <strong className="mr-2 text-foreground">{m.role === "user" ? "You" : "Assistant"}:</strong>
+                  <span className="whitespace-pre-wrap text-muted-foreground">{m.content}</span>
                 </div>
                 {m.downloadUrl && (
-                  <div className="mt-2 flex gap-2">
-                    <a href={m.downloadUrl} download={m.filename} className="underline">
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a
+                      href={m.downloadUrl}
+                      download={m.filename}
+                      className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                    >
                       Download {m.filename}
                     </a>
                     {m.editableContent && (
-                      <Button variant="outline" size="sm" onClick={() => setEditingMessageIndex(idx)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingMessageIndex(idx)}
+                        className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                      >
                         Edit Before Download
                       </Button>
                     )}
@@ -201,15 +228,18 @@ export default function ReverseTransformChat() {
         ))}
       </div>
 
-      <div className="sticky bottom-0 border-t bg-background pt-4">
+      <div className="sticky bottom-0 border-t border-border/50 bg-background/95 backdrop-blur pt-4 transition-all duration-300">
         {files.length > 0 && (
-          <div className="mb-2 flex flex-wrap gap-2">
+          <div className="mb-3 flex flex-wrap gap-2">
             {files.map((f, i) => (
-              <div key={`${f.name}-${i}`} className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
-                <span className="max-w-[200px] truncate">{f.name}</span>
+              <div
+                key={`${f.name}-${i}`}
+                className="flex items-center gap-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 px-3 py-1.5 text-sm border border-primary/30 transition-all duration-300 hover:shadow-md"
+              >
+                <span className="max-w-[200px] truncate font-medium">{f.name}</span>
                 <button
                   onClick={() => removeFileAt(i)}
-                  className="rounded-full p-0.5 hover:bg-muted-foreground/20"
+                  className="rounded-full p-0.5 hover:bg-destructive/20 transition-all duration-300"
                   aria-label={`Remove ${f.name}`}
                 >
                   <X className="h-3 w-3" />
@@ -219,7 +249,7 @@ export default function ReverseTransformChat() {
           </div>
         )}
 
-        <div className="flex items-end gap-2 rounded-lg border bg-card p-2">
+        <div className="flex items-end gap-2 rounded-xl border border-border/50 bg-card/50 p-3 backdrop-blur transition-all duration-300 hover:border-primary/30 hover:shadow-md">
           <input
             ref={inputRef}
             type="file"
@@ -233,7 +263,7 @@ export default function ReverseTransformChat() {
             variant="ghost"
             size="icon"
             onClick={() => inputRef.current?.click()}
-            className="shrink-0"
+            className="shrink-0 transition-all duration-300 hover:bg-primary/10 hover:text-primary"
             aria-label="Upload PDF files"
           >
             <Paperclip className="h-5 w-5" />
@@ -245,7 +275,7 @@ export default function ReverseTransformChat() {
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
             placeholder="Type conversion instructions or press Enter to convert..."
-            className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none"
+            className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none text-foreground placeholder:text-muted-foreground"
             rows={1}
           />
 
@@ -258,7 +288,7 @@ export default function ReverseTransformChat() {
             size="icon"
             onClick={() => onSubmit()}
             disabled={isLoading || files.length === 0}
-            className="shrink-0"
+            className="shrink-0 bg-gradient-to-br from-primary to-accent text-primary-foreground transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
             aria-label="Send message"
           >
             <Send className="h-5 w-5" />
