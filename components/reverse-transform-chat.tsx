@@ -7,7 +7,7 @@ import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Paperclip, Send, X } from "lucide-react"
+import { Paperclip, Send, X, Sparkles } from "lucide-react"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -16,6 +16,8 @@ type ChatMessage = {
   filename?: string
   editableContent?: string
 }
+
+type ToneOption = "formal" | "casual" | "legal" | "academic"
 
 export default function ReverseTransformChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -26,8 +28,26 @@ export default function ReverseTransformChat() {
   const [targetFormat, setTargetFormat] = useState<
     "txt" | "docx" | "images" | "csv" | "xlsx" | "jpg" | "png" | "pptx" | "json" | "xml" | "md" | "rtf"
   >("txt")
+  const [selectedTone, setSelectedTone] = useState<ToneOption>("formal")
+  const [showRecommendations, setShowRecommendations] = useState(true)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const recommendations = [
+    "Convert to professional format",
+    "Extract text only",
+    "Preserve formatting",
+    "Optimize for readability",
+    "Remove sensitive data",
+    "Compress file size",
+  ]
+
+  const toneDescriptions: Record<ToneOption, string> = {
+    formal: "Professional and structured",
+    casual: "Friendly and conversational",
+    legal: "Precise and legally compliant",
+    academic: "Scholarly and well-researched",
+  }
 
   function removeFileAt(index: number) {
     setFiles((prev) => prev.filter((_, i) => i !== index))
@@ -68,6 +88,11 @@ export default function ReverseTransformChat() {
     setEditingMessageIndex(null)
   }
 
+  function handleRecommendationClick(recommendation: string) {
+    setPrompt((prev) => (prev ? `${prev} ${recommendation}` : recommendation))
+    setShowRecommendations(false)
+  }
+
   async function onSubmit(e?: React.FormEvent) {
     e?.preventDefault()
     if (files.length === 0) return
@@ -75,6 +100,7 @@ export default function ReverseTransformChat() {
     const userMessage = prompt.trim() || `Convert PDF to ${targetFormat.toUpperCase()}`
     setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setPrompt("")
+    setShowRecommendations(true)
 
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto"
@@ -85,6 +111,7 @@ export default function ReverseTransformChat() {
       const form = new FormData()
       form.set("prompt", userMessage)
       form.set("targetFormat", targetFormat)
+      form.set("tone", selectedTone)
       files.forEach((f) => form.append("files", f, f.name))
 
       const res = await fetch("/api/reverse-transform", {
@@ -120,8 +147,8 @@ export default function ReverseTransformChat() {
           role: "assistant",
           content:
             files.length > 1
-              ? `Your ${targetFormat.toUpperCase()} files are ready. Download the ZIP.`
-              : `Your ${targetFormat.toUpperCase()} file is ready. Download below.`,
+              ? `Your ${targetFormat.toUpperCase()} files are ready (${selectedTone} tone). Download the ZIP.`
+              : `Your ${targetFormat.toUpperCase()} file is ready (${selectedTone} tone). Download below.`,
           downloadUrl: objectUrl,
           filename,
           editableContent,
@@ -148,6 +175,7 @@ export default function ReverseTransformChat() {
 
   function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setPrompt(e.target.value)
+    setShowRecommendations(e.target.value.length === 0)
     const textarea = e.target
     textarea.style.height = "auto"
     textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
@@ -178,6 +206,31 @@ export default function ReverseTransformChat() {
         </Select>
       </div>
 
+      <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300">
+        <label className="mb-3 block text-sm font-semibold text-foreground flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          Translation Tone
+        </label>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+          {(["formal", "casual", "legal", "academic"] as ToneOption[]).map((tone) => (
+            <button
+              key={tone}
+              onClick={() => setSelectedTone(tone)}
+              className={cn(
+                "rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300",
+                selectedTone === tone
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80",
+              )}
+              title={toneDescriptions[tone]}
+            >
+              {tone.charAt(0).toUpperCase() + tone.slice(1)}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">{toneDescriptions[selectedTone]}</p>
+      </div>
+
       <div className="flex-1 space-y-4 overflow-y-auto pb-4">
         {messages.map((m, idx) => (
           <div key={idx} className="transition-all duration-300">
@@ -194,7 +247,7 @@ export default function ReverseTransformChat() {
                   "rounded-xl p-4 transition-all duration-300",
                   m.role === "user"
                     ? "bg-primary/10 border border-primary/20 ml-8"
-                    : "bg-accent/10 border border-accent/20 mr-8",
+                    : "bg-accent/10 border border-accent/20 mr-8 ai-glow",
                 )}
               >
                 <div className="text-sm">
@@ -249,6 +302,23 @@ export default function ReverseTransformChat() {
           </div>
         )}
 
+        {showRecommendations && prompt.length === 0 && (
+          <div className="mb-3 rounded-lg border border-border/50 bg-card/50 p-3 backdrop-blur">
+            <p className="mb-2 text-xs font-medium text-muted-foreground">Suggested actions:</p>
+            <div className="flex flex-wrap gap-2">
+              {recommendations.map((rec, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleRecommendationClick(rec)}
+                  className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-all duration-300 hover:scale-105"
+                >
+                  {rec}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex items-end gap-2 rounded-xl border border-border/50 bg-card/50 p-3 backdrop-blur transition-all duration-300 hover:border-primary/30 hover:shadow-md">
           <input
             ref={inputRef}
@@ -288,7 +358,7 @@ export default function ReverseTransformChat() {
             size="icon"
             onClick={() => onSubmit()}
             disabled={isLoading || files.length === 0}
-            className="shrink-0 bg-gradient-to-br from-primary to-accent text-primary-foreground transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
+            className="shrink-0 bg-gradient-to-br from-primary to-accent text-primary-foreground transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 pulse-cta"
             aria-label="Send message"
           >
             <Send className="h-5 w-5" />

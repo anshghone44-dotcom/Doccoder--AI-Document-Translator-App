@@ -9,10 +9,8 @@ export default function Home() {
       {/* Navigation */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-all duration-300 ease-out">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="w-16" />
-
           <div className="flex items-center gap-2 animate-in fade-in duration-500">
-            <h1 className="font-playfair text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h1 className="font-playfair text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent logo-flip cursor-pointer transition-all duration-300">
               Doccoder
             </h1>
           </div>
@@ -54,7 +52,7 @@ export default function Home() {
           </div>
           <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-playfair text-balance text-5xl font-bold md:text-6xl lg:text-7xl">
             Transform Documents with{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-sans">
               AI Intelligence
             </span>
           </h2>

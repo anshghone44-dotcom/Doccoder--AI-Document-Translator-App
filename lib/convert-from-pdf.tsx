@@ -1,5 +1,6 @@
 import { PDFDocument } from "pdf-lib"
 import { Document, Packer, Paragraph, TextRun } from "docx"
+import { extractPdfContent, formatExtractedContent } from "./pdf-ocr-processor"
 
 export type ReverseConversionOptions = {
   targetFormat: "docx" | "txt" | "images" | "csv" | "xlsx" | "jpg" | "png" | "pptx" | "json" | "xml" | "md" | "rtf"
@@ -23,14 +24,11 @@ export async function convertPdfToFormat(
     pageCount = pdfDoc.getPageCount()
     console.log("[v0] PDF loaded successfully, pages:", pageCount)
 
-    extractedText = `Document: ${filename}.pdf\n`
-    extractedText += `Total Pages: ${pageCount}\n\n`
-    extractedText += `This PDF has been converted from ${filename}.pdf.\n`
-    extractedText += `The original document contained ${pageCount} page${pageCount !== 1 ? "s" : ""}.\n\n`
-    extractedText += `Note: For full text extraction from PDFs, the document would need to be processed with specialized OCR tools.\n`
-    extractedText += `This conversion preserves the document structure and metadata.\n`
+    // Extract content with table preservation
+    const content = await extractPdfContent(arrayBuffer, filename)
+    extractedText = formatExtractedContent(content)
 
-    console.log("[v0] Text extraction completed, length:", extractedText.length)
+    console.log("[v0] Text extraction completed with table detection, length:", extractedText.length)
   } catch (err: any) {
     console.error("[v0] PDF processing error:", err?.message || err)
     throw new Error(`Failed to process PDF: ${err?.message || "The file may be corrupted or encrypted"}`)

@@ -11,20 +11,21 @@ export default function Page() {
       {/* Header with Back Button */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="transition-all duration-300 hover:bg-primary/10 hover:scale-105"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-          </Link>
-
-          <div className="flex items-center gap-2 animate-in fade-in duration-500">
-            <h1 className="font-playfair text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Doccoder
-            </h1>
+          <div className="flex items-center gap-4">
+            <Link href="/">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="transition-all duration-300 hover:bg-primary/10 hover:scale-105"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div className="flex items-center gap-2 animate-in fade-in duration-500">
+              <h1 className="font-playfair text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Doccoder
+              </h1>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
