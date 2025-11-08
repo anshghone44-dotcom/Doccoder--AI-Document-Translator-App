@@ -38,6 +38,12 @@
   --sidebar-accent-foreground: oklch(0.15 0 0);
   --sidebar-border: oklch(0.9 0 0);
   --sidebar-ring: oklch(0.55 0.15 260);
+  
+  /* Animated gradient colors for light mode */
+  --gradient-color-1: #667eea;
+  --gradient-color-2: #764ba2;
+  --gradient-color-3: #f093fb;
+  --gradient-color-4: #4facfe;
 }
 
 .dark {
@@ -73,6 +79,12 @@
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(0.25 0 0);
   --sidebar-ring: oklch(0.7 0.15 260);
+  
+  /* Animated gradient colors for dark mode */
+  --gradient-color-1: #667eea;
+  --gradient-color-2: #764ba2;
+  --gradient-color-3: #f093fb;
+  --gradient-color-4: #00f2fe;
 }
 
 @theme inline {
@@ -128,6 +140,120 @@
 
 /* Added new animations for empty states, alerts, and brand identity */
 @layer utilities {
+  /* Animated gradient backgrounds */
+  .animated-gradient-bg {
+    background: linear-gradient(
+      -45deg,
+      var(--gradient-color-1),
+      var(--gradient-color-2),
+      var(--gradient-color-3),
+      var(--gradient-color-4)
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  .animated-gradient-radial {
+    background: radial-gradient(
+      circle at 20% 50%,
+      var(--gradient-color-1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      var(--gradient-color-2) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 20%,
+      var(--gradient-color-3) 0%,
+      transparent 50%
+    ),
+    var(--background);
+    background-size: 200% 200%;
+    animation: radialGradientShift 20s ease infinite;
+  }
+
+  .animated-mesh-gradient {
+    position: relative;
+    background: var(--background);
+    overflow: hidden;
+  }
+
+  .animated-mesh-gradient::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      var(--gradient-color-1) 0%,
+      transparent 40%,
+      var(--gradient-color-2) 50%,
+      transparent 60%,
+      var(--gradient-color-3) 100%
+    );
+    opacity: 0.3;
+    animation: meshRotate 30s linear infinite;
+  }
+
+  .animated-mesh-gradient::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      -45deg,
+      var(--gradient-color-4) 0%,
+      transparent 40%,
+      var(--gradient-color-1) 50%,
+      transparent 60%,
+      var(--gradient-color-2) 100%
+    );
+    opacity: 0.2;
+    animation: meshRotate 40s linear infinite reverse;
+  }
+
+  /* Floating gradient orbs */
+  .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: floatOrb 20s ease-in-out infinite;
+  }
+
+  .gradient-orb-1 {
+    width: 500px;
+    height: 500px;
+    background: var(--gradient-color-1);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .gradient-orb-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--gradient-color-2);
+    top: 60%;
+    right: 10%;
+    animation-delay: 5s;
+  }
+
+  .gradient-orb-3 {
+    width: 450px;
+    height: 450px;
+    background: var(--gradient-color-3);
+    bottom: 10%;
+    left: 40%;
+    animation-delay: 10s;
+  }
+
   /* Smooth transitions */
   .transition-smooth {
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -514,5 +640,60 @@
   50% {
     opacity: 0.8;
     box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+/* New animated gradient keyframes */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes radialGradientShift {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes meshRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes floatOrb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  75% {
+    transform: translate(20px, 30px) scale(1.05);
   }
 }
