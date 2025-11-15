@@ -2,7 +2,7 @@ import TransformChat from "@/components/transform-chat"
 import ReverseTransformChat from "@/components/reverse-transform-chat"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft } from "lucide-react"
+import { ChevronLeft, Zap } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Page() {
@@ -57,14 +57,17 @@ export default function Page() {
 
       {/* Hero Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 text-center md:py-24">
-        <div className="space-y-4">
-          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-playfair text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
-            Transform Documents with{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              AI Intelligence
-            </span>
+        <div className="relative mx-auto max-w-3xl space-y-4">
+          <div className="ai-pulse-glow" aria-hidden="true" />
+          <div className="animate-in fade-in inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2">
+            <Zap className="h-4 w-4 text-primary animate-pulse" />
+            <span className="text-sm font-medium text-primary">AI-Powered Document Transformation</span>
+          </div>
+          <h2 className="animate-in fade-in font-playfair text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
+            Transform Documents with {" "}
+            <span className="gradient-animated-text font-sans">AI Intelligence</span>
           </h2>
-          <p className="animate-in fade-in slide-in-from-bottom-4 duration-500 mx-auto max-w-2xl text-lg text-muted-foreground">
+          <p className="animate-in fade-in mx-auto max-w-[620px] text-lg text-muted-foreground">
             Convert between PDF and multiple formats instantly. Powered by advanced AI technology.
           </p>
         </div>

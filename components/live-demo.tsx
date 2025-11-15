@@ -1,14 +1,13 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle2, File, FileText, Image, Loader2 } from "lucide-react"
-import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
 
-// Optional Lottie animation (very small JSON to keep bundle minimal)
 import Lottie from "lottie-react"
+import { Document, Page, pdfjs } from "react-pdf"
 
 const simplePulse = {
   v: "5.5.7",
@@ -43,12 +42,7 @@ const simplePulse = {
       },
       ao: 0,
       shapes: [
-        {
-          ty: "el",
-          p: { a: 0, k: [0, 0] },
-          s: { a: 0, k: [16, 16] },
-          nm: "Ellipse Path 1",
-        },
+        { ty: "el", p: { a: 0, k: [0, 0] }, s: { a: 0, k: [16, 16] }, nm: "Ellipse Path 1" },
         { ty: "fl", c: { a: 0, k: [0.01, 0.48, 1, 1] }, o: { a: 0, k: 1 }, nm: "Fill 1" },
       ],
       ip: 0,
@@ -74,6 +68,22 @@ export default function LiveDemo() {
   const [status, setStatus] = useState<"idle" | "uploading" | "converting" | "done">("idle")
   const [progress, setProgress] = useState(0)
   const [format, setFormat] = useState("DOCX")
+
+  useEffect(() => {
+    // Configure PDF.js worker on client only
+    if (typeof window !== "undefined") {
+      try {
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+          "pdfjs-dist/build/pdf.worker.min.mjs",
+          import.meta.url,
+        ).toString()
+      } catch (e) {
+        // Fallback to CDN if needed
+        // @ts-ignore
+        pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+      }
+    }
+  }, [])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles?.length) {
@@ -210,8 +220,11 @@ export default function LiveDemo() {
               )}
               {status === "done" && file && (
                 isPdf ? (
-                  // Use a simple iframe preview to avoid worker setup complexity
-                  <iframe src={blobUrl ?? undefined} className="h-full w-full" title="PDF Preview" />
+                  <div className="h-full w-full overflow-auto p-2">
+                    <Document file={blobUrl ?? undefined} loading={null} renderMode="canvas">
+                      <Page pageNumber={1} width={360} renderAnnotationLayer={false} renderTextLayer={false} />
+                    </Document>
+                  </div>
                 ) : (
                   <div className="text-center">
                     {file.type.startsWith("image/") ? (
