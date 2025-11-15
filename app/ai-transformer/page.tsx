@@ -2,20 +2,13 @@ import TransformChat from "@/components/transform-chat"
 import ReverseTransformChat from "@/components/reverse-transform-chat"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Zap } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Page() {
   return (
-    <main className="min-h-screen relative animated-mesh-gradient">
-      {/* Animated floating gradient orbs */}
-      <div className="gradient-orb gradient-orb-1" aria-hidden="true"></div>
-      <div className="gradient-orb gradient-orb-2" aria-hidden="true"></div>
-      <div className="gradient-orb gradient-orb-3" aria-hidden="true"></div>
-
-      {/* Content wrapper with relative positioning */}
-      <div className="relative z-10">
-        {/* Header with Back Button */}
+    <main className="min-h-screen bg-gradient-to-b from-background via-secondary to-background">
+      {/* Header with Back Button */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
@@ -57,17 +50,14 @@ export default function Page() {
 
       {/* Hero Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 text-center md:py-24">
-        <div className="relative mx-auto max-w-3xl space-y-4">
-          <div className="ai-pulse-glow" aria-hidden="true" />
-          <div className="animate-in fade-in inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2">
-            <Zap className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">AI-Powered Document Transformation</span>
-          </div>
-          <h2 className="animate-in fade-in font-playfair text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
-            Transform Documents with {" "}
-            <span className="gradient-animated-text font-sans">AI Intelligence</span>
+        <div className="space-y-4">
+          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-playfair text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
+            Transform Documents with{" "}
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              AI Intelligence
+            </span>
           </h2>
-          <p className="animate-in fade-in mx-auto max-w-[620px] text-lg text-muted-foreground">
+          <p className="animate-in fade-in slide-in-from-bottom-4 duration-500 mx-auto max-w-2xl text-lg text-muted-foreground">
             Convert between PDF and multiple formats instantly. Powered by advanced AI technology.
           </p>
         </div>
@@ -100,7 +90,6 @@ export default function Page() {
             <ReverseTransformChat />
           </div>
         </section>
-      </div>
       </div>
     </main>
   )
