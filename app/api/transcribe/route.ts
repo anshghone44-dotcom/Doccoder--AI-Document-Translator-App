@@ -22,19 +22,17 @@ export async function POST(req: NextRequest) {
     const audioBuffer = await audioFile.arrayBuffer()
     const audioBlob = new Blob([audioBuffer], { type: audioFile.type })
 
-    // Create form data for ElevenLabs with required model parameter
     const elevenLabsForm = new FormData()
-    elevenLabsForm.append("audio", audioBlob, "audio.webm")
-    elevenLabsForm.append("model_id", "scribe_v1") // Required model parameter
+    elevenLabsForm.append("file", audioBlob, "audio.webm")
+    elevenLabsForm.append("model_id", "scribe_v1")
 
     console.log("[v0] Sending audio to ElevenLabs API...")
 
     // Call ElevenLabs Speech-to-Text API with correct endpoint
-    const response = await fetch("https://api.elevenlabs.io/v1/audio-to-text", {
+    const response = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
       method: "POST",
       headers: {
         "xi-api-key": elevenLabsApiKey,
-        // Note: Don't set Content-Type header - let fetch set it with boundary for multipart/form-data
       },
       body: elevenLabsForm,
     })
