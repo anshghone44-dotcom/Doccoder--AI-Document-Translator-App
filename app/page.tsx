@@ -76,52 +76,31 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="py-20 bg-white">
         <div className="container mx-auto px-6">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-[#1e3a8a]">Enterprise Features</h2>
-            <p className="text-xl text-gray-600">Everything you need for professional document processing</p>
+          <div className="mb-16 text-center">
+            <h2 className="mb-4 text-5xl font-bold text-gray-900">Powerful Features</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Everything you need for professional document conversion</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <Globe className="h-6 w-6 text-white" />
+            <Card className="border-gray-100 p-8 hover:shadow-xl hover:border-blue-100 transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 shadow-lg">
+                <FileType className="h-7 w-7 text-white" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Multi-Language Translation</h3>
-              <p className="text-gray-600">Translate documents to any language with AI-powered accuracy and context preservation.</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">Multiple Formats</h3>
+              <p className="text-gray-600 leading-relaxed">Convert to PDF, Word, Excel, JSON, XML, Markdown, RTF, and more.</p>
             </Card>
-            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <FileSearch className="h-6 w-6 text-white" />
+            <Card className="border-gray-100 p-8 hover:shadow-xl hover:border-blue-100 transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg">
+                <Globe className="h-7 w-7 text-white" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Smart Summarization</h3>
-              <p className="text-gray-600">Get concise summaries that capture key points and important details from lengthy documents.</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">Custom Templates</h3>
+              <p className="text-gray-600 leading-relaxed">Choose from Minimal, Professional, or Photo templates with adjustable margins.</p>
             </Card>
-            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <Zap className="h-6 w-6 text-white" />
+            <Card className="border-gray-100 p-8 hover:shadow-xl hover:border-blue-100 transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 shadow-lg">
+                <Zap className="h-7 w-7 text-white" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Dual AI Models</h3>
-              <p className="text-gray-600">Choose between OpenAI GPT-5 or Claude Sonnet for optimal results based on your needs.</p>
-            </Card>
-            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <FileType className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Multiple Formats</h3>
-              <p className="text-gray-600">Support for PDF, DOCX, and TXT files. Process any document with ease.</p>
-            </Card>
-            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <BarChart3 className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Usage Analytics</h3>
-              <p className="text-gray-600">Track your document processing history and view detailed usage statistics.</p>
-            </Card>
-            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <Shield className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Secure & Private</h3>
-              <p className="text-gray-600">Your documents are processed securely with enterprise-grade encryption.</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">Instant Processing</h3>
+              <p className="text-gray-600 leading-relaxed">Fast AI-powered conversion with real-time preview and editing capabilities.</p>
             </Card>
           </div>
         </div>
