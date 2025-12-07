@@ -9,10 +9,20 @@ export interface AIRequest {
   temperature?: number;
 }
 
-// Initialize OpenAI client with Emergent Universal Key
-const openai = new OpenAI({
+// Initialize two separate clients for GPT and Claude
+const gptClient = new OpenAI({
   apiKey: EMERGENT_API_KEY,
-  baseURL: 'https://api.openai.com/v1', // Standard OpenAI endpoint
+  baseURL: 'https://api.openai.com/v1',
+  dangerouslyAllowBrowser: false,
+});
+
+const claudeClient = new OpenAI({
+  apiKey: EMERGENT_API_KEY,
+  baseURL: 'https://api.anthropic.com/v1',
+  defaultHeaders: {
+    'anthropic-version': '2023-06-01',
+  },
+  dangerouslyAllowBrowser: false,
 });
 
 export async function callAI(request: AIRequest): Promise<string> {
@@ -20,32 +30,41 @@ export async function callAI(request: AIRequest): Promise<string> {
     throw new Error('EMERGENT_API_KEY is not configured');
   }
 
-  // Map model names to actual OpenAI model names
-  // Since we're using Emergent Universal Key, we'll use standard OpenAI models
-  const modelMap: Record<string, string> = {
-    'gpt-5': 'gpt-4o', // Using GPT-4o as proxy for GPT-5 (latest available)
-    'claude-sonnet': 'gpt-4o', // Fallback to GPT-4o for Claude requests
-  };
-
-  const modelName = modelMap[request.model] || 'gpt-4o';
-
   try {
-    const completion = await openai.chat.completions.create({
-      model: modelName,
-      messages: [
-        {
-          role: 'user',
-          content: request.prompt,
-        },
-      ],
-      max_tokens: request.maxTokens || 4000,
-      temperature: request.temperature || 0.7,
-    });
+    if (request.model === 'claude-sonnet') {
+      // Use Claude client
+      const completion = await claudeClient.chat.completions.create({
+        model: 'claude-sonnet-4-20250514',
+        messages: [
+          {
+            role: 'user',
+            content: request.prompt,
+          },
+        ],
+        max_tokens: request.maxTokens || 4000,
+        temperature: request.temperature || 0.7,
+      });
 
-    return completion.choices[0].message.content || '';
+      return completion.choices[0].message.content || '';
+    } else {
+      // Use GPT client  
+      const completion = await gptClient.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'user',
+            content: request.prompt,
+          },
+        ],
+        max_tokens: request.maxTokens || 4000,
+        temperature: request.temperature || 0.7,
+      });
+
+      return completion.choices[0].message.content || '';
+    }
   } catch (error: any) {
     console.error('AI Service Error:', error);
-    throw new Error(`AI processing failed: ${error.message}`);
+    throw new Error(`AI processing failed: ${error.message || 'Unknown error'}`);
   }
 }
 
