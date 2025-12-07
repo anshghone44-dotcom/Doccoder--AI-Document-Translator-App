@@ -59,6 +59,7 @@
     "jszip": "latest",
     "lucide-react": "^0.454.0",
     "mammoth": "latest",
+    "mongoose": "^9.0.1",
     "multer": "^2.0.2",
     "next": "14.2.25",
     "next-themes": "latest",
