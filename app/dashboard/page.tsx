@@ -201,7 +201,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FileText className="h-8 w-8 text-[#1e3a8a]" />
+              <img src="/logo.png" alt="DocTranslate Logo" className="h-10 w-auto" />
               <span className="text-2xl font-bold text-[#1e3a8a]">DocTranslate</span>
             </div>
             <div className="flex items-center space-x-4">
