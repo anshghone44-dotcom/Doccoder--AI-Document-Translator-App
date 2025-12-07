@@ -7,29 +7,24 @@ import { Globe, FileSearch, BarChart3, Shield, Zap, FileType } from 'lucide-reac
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Navigation */}
-      <nav className="border-b border-gray-200 bg-white">
+      <nav className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <img src="/logo.png" alt="DocTranslate Logo" className="h-10 w-auto" />
-              <span className="text-2xl font-bold text-[#1e3a8a]">DocTranslate</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Doccoder</span>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <Link href="#features">
-                <span className="text-gray-600 hover:text-[#1e3a8a] cursor-pointer font-medium">Features</span>
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer font-medium transition-colors">Features</span>
               </Link>
               <Link href="#how-it-works">
-                <span className="text-gray-600 hover:text-[#1e3a8a] cursor-pointer font-medium">How It Works</span>
-              </Link>
-              <Link href="/login">
-                <Button variant="outline" className="border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white">
-                  Login
-                </Button>
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer font-medium transition-colors">How It Works</span>
               </Link>
               <Link href="/signup">
-                <Button className="bg-[#1e3a8a] text-white hover:bg-[#1e40af]">
+                <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:from-blue-700 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all">
                   Get Started
                 </Button>
               </Link>
@@ -39,24 +34,37 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-20">
-        <div className="container mx-auto px-6 text-center">
-          <div className="mx-auto max-w-3xl">
-            <h1 className="mb-6 text-5xl font-bold text-[#1e3a8a] leading-tight">
-              Translate & Summarize Documents with AI
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-cyan-50 opacity-70"></div>
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-6 inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100 rounded-full">
+              <Zap className="h-4 w-4 text-blue-600" />
+              <span className="text-sm font-medium text-blue-700">AI-Powered Document Transformation</span>
+            </div>
+            
+            <h1 className="mb-6 text-6xl font-bold leading-tight">
+              <span className="text-gray-900">Transform Documents</span>
+              <br />
+              <span className="text-gray-900">with </span>
+              <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">AI Intelligence</span>
             </h1>
-            <p className="mb-8 text-xl text-gray-600 leading-relaxed">
-              Professional document translation and summarization powered by OpenAI GPT-5 and Claude Sonnet.
-              Support for PDF, DOCX, and TXT files.
+            
+            <p className="mb-10 text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+              Convert between PDF and 11+ formats instantly. Upload files, customize templates, and download in seconds. Powered by advanced AI technology.
             </p>
+            
             <div className="flex justify-center space-x-4">
               <Link href="/signup">
-                <Button size="lg" className="bg-[#1e3a8a] text-white hover:bg-[#1e40af] px-8 py-6 text-lg">
-                  Start Free Trial
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:from-blue-700 hover:to-cyan-600 px-10 py-7 text-lg shadow-xl hover:shadow-2xl transition-all font-semibold">
+                  Start Converting
+                  <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
                 </Button>
               </Link>
               <Link href="#features">
-                <Button size="lg" variant="outline" className="border-[#1e3a8a] text-[#1e3a8a] hover:bg-gray-50 px-8 py-6 text-lg">
+                <Button size="lg" variant="outline" className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-10 py-7 text-lg font-semibold">
                   Learn More
                 </Button>
               </Link>
