@@ -1,5 +1,5 @@
 const EMERGENT_API_KEY = process.env.EMERGENT_API_KEY;
-const EMERGENT_API_URL = 'https://api.emergent.sh/v1';
+const EMERGENT_API_URL = 'https://api.emergent.systems/v1';
 
 export interface AIRequest {
   prompt: string;
@@ -13,6 +13,14 @@ export async function callAI(request: AIRequest): Promise<string> {
     throw new Error('EMERGENT_API_KEY is not configured');
   }
 
+  // Map model names to the correct format
+  const modelMap: Record<string, string> = {
+    'gpt-5': 'gpt-5',
+    'claude-sonnet': 'claude-sonnet-4-20250514',
+  };
+
+  const modelName = modelMap[request.model] || request.model;
+
   try {
     const response = await fetch(`${EMERGENT_API_URL}/chat/completions`, {
       method: 'POST',
@@ -21,7 +29,7 @@ export async function callAI(request: AIRequest): Promise<string> {
         'Authorization': `Bearer ${EMERGENT_API_KEY}`,
       },
       body: JSON.stringify({
-        model: request.model,
+        model: modelName,
         messages: [
           {
             role: 'user',
