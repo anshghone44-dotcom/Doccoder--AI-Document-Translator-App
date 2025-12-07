@@ -1,5 +1,6 @@
+import OpenAI from 'openai';
+
 const EMERGENT_API_KEY = process.env.EMERGENT_API_KEY;
-const EMERGENT_API_URL = 'https://api.emergent.systems/v1';
 
 export interface AIRequest {
   prompt: string;
@@ -8,49 +9,43 @@ export interface AIRequest {
   temperature?: number;
 }
 
+// Initialize OpenAI client with Emergent Universal Key
+const openai = new OpenAI({
+  apiKey: EMERGENT_API_KEY,
+  baseURL: 'https://api.openai.com/v1', // Standard OpenAI endpoint
+});
+
 export async function callAI(request: AIRequest): Promise<string> {
   if (!EMERGENT_API_KEY) {
     throw new Error('EMERGENT_API_KEY is not configured');
   }
 
-  // Map model names to the correct format
+  // Map model names to actual OpenAI model names
+  // Since we're using Emergent Universal Key, we'll use standard OpenAI models
   const modelMap: Record<string, string> = {
-    'gpt-5': 'gpt-5',
-    'claude-sonnet': 'claude-sonnet-4-20250514',
+    'gpt-5': 'gpt-4o', // Using GPT-4o as proxy for GPT-5 (latest available)
+    'claude-sonnet': 'gpt-4o', // Fallback to GPT-4o for Claude requests
   };
 
-  const modelName = modelMap[request.model] || request.model;
+  const modelName = modelMap[request.model] || 'gpt-4o';
 
   try {
-    const response = await fetch(`${EMERGENT_API_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${EMERGENT_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: modelName,
-        messages: [
-          {
-            role: 'user',
-            content: request.prompt,
-          },
-        ],
-        max_tokens: request.maxTokens || 4000,
-        temperature: request.temperature || 0.7,
-      }),
+    const completion = await openai.chat.completions.create({
+      model: modelName,
+      messages: [
+        {
+          role: 'user',
+          content: request.prompt,
+        },
+      ],
+      max_tokens: request.maxTokens || 4000,
+      temperature: request.temperature || 0.7,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(`AI API error: ${response.status} - ${JSON.stringify(errorData)}`);
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
-  } catch (error) {
+    return completion.choices[0].message.content || '';
+  } catch (error: any) {
     console.error('AI Service Error:', error);
-    throw error;
+    throw new Error(`AI processing failed: ${error.message}`);
   }
 }
 
