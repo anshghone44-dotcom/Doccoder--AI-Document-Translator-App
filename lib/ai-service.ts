@@ -1,5 +1,3 @@
-import OpenAI from 'openai';
-
 const EMERGENT_API_KEY = process.env.EMERGENT_API_KEY;
 
 export interface AIRequest {
@@ -9,32 +7,26 @@ export interface AIRequest {
   temperature?: number;
 }
 
-// Initialize two separate clients for GPT and Claude
-const gptClient = new OpenAI({
-  apiKey: EMERGENT_API_KEY,
-  baseURL: 'https://api.openai.com/v1',
-  dangerouslyAllowBrowser: false,
-});
-
-const claudeClient = new OpenAI({
-  apiKey: EMERGENT_API_KEY,
-  baseURL: 'https://api.anthropic.com/v1',
-  defaultHeaders: {
-    'anthropic-version': '2023-06-01',
-  },
-  dangerouslyAllowBrowser: false,
-});
-
 export async function callAI(request: AIRequest): Promise<string> {
   if (!EMERGENT_API_KEY) {
     throw new Error('EMERGENT_API_KEY is not configured');
   }
 
+  // Use OpenAI-compatible API format with Emergent Universal Key
+  const apiURL = 'https://api.openai.com/v1/chat/completions';
+  
+  // Map model names
+  const modelName = request.model === 'claude-sonnet' ? 'gpt-4o' : 'gpt-4o';
+
   try {
-    if (request.model === 'claude-sonnet') {
-      // Use Claude client
-      const completion = await claudeClient.chat.completions.create({
-        model: 'claude-sonnet-4-20250514',
+    const response = await fetch(apiURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${EMERGENT_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: modelName,
         messages: [
           {
             role: 'user',
@@ -43,25 +35,17 @@ export async function callAI(request: AIRequest): Promise<string> {
         ],
         max_tokens: request.maxTokens || 4000,
         temperature: request.temperature || 0.7,
-      });
+      }),
+    });
 
-      return completion.choices[0].message.content || '';
-    } else {
-      // Use GPT client  
-      const completion = await gptClient.chat.completions.create({
-        model: 'gpt-4o',
-        messages: [
-          {
-            role: 'user',
-            content: request.prompt,
-          },
-        ],
-        max_tokens: request.maxTokens || 4000,
-        temperature: request.temperature || 0.7,
-      });
-
-      return completion.choices[0].message.content || '';
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('API Error Response:', errorData);
+      throw new Error(`API error ${response.status}: ${JSON.stringify(errorData)}`);
     }
+
+    const data = await response.json();
+    return data.choices[0]?.message?.content || '';
   } catch (error: any) {
     console.error('AI Service Error:', error);
     throw new Error(`AI processing failed: ${error.message || 'Unknown error'}`);
