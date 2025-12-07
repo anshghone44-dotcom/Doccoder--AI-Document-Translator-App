@@ -1,180 +1,176 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Zap, FileText, Palette } from "lucide-react"
-import { ThemeToggle } from "@/components/theme-toggle"
+'use client';
 
-export default function Home() {
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { FileText, Globe, FileSearch, BarChart3, Shield, Zap } from 'lucide-react';
+
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-secondary to-background">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-all duration-300 ease-out">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2 animate-in fade-in duration-500">
-            <h1 className="font-playfair text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent logo-flip cursor-pointer transition-all duration-300">
-              Doccoder
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <nav className="hidden gap-8 md:flex">
-              <a
-                href="#features"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                Features
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                How It Works
-              </a>
-              <Link href="/ai-transformer">
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-br from-primary to-accent text-primary-foreground hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-                >
+      <nav className="border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <FileText className="h-8 w-8 text-[#1e3a8a]" />
+              <span className="text-2xl font-bold text-[#1e3a8a]">DocTranslate</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link href="#features">
+                <span className="text-gray-600 hover:text-[#1e3a8a] cursor-pointer font-medium">Features</span>
+              </Link>
+              <Link href="#how-it-works">
+                <span className="text-gray-600 hover:text-[#1e3a8a] cursor-pointer font-medium">How It Works</span>
+              </Link>
+              <Link href="/login">
+                <Button variant="outline" className="border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button className="bg-[#1e3a8a] text-white hover:bg-[#1e40af]">
                   Get Started
                 </Button>
               </Link>
-            </nav>
-            <ThemeToggle />
+            </div>
           </div>
         </div>
-      </header>
+      </nav>
 
       {/* Hero Section */}
-      <section className="mx-auto max-w-7xl px-6 py-20 text-center md:py-32">
-        <div className="space-y-6">
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 hover:scale-105 transition-all duration-300">
-            <Zap className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">AI-Powered Document Transformation</span>
-          </div>
-          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-playfair text-balance text-5xl font-bold md:text-6xl lg:text-7xl">
-            Transform Documents with{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-sans">
-              AI Intelligence
-            </span>
-          </h2>
-          <p className="animate-in fade-in slide-in-from-bottom-4 duration-500 mx-auto max-w-2xl text-lg text-muted-foreground">
-            Convert between PDF and 11+ formats instantly. Upload files, customize templates, and download in seconds.
-            Powered by advanced AI technology.
-          </p>
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Link href="/ai-transformer">
-              <Button
-                size="lg"
-                className="bg-gradient-to-br from-primary to-accent text-primary-foreground w-full sm:w-auto hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-              >
-                Start Converting{" "}
-                <ArrowRight className="ml-2 h-4 w-4 transition-all duration-300 group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto bg-transparent hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-            >
-              Learn More
-            </Button>
+      <section className="bg-gradient-to-b from-gray-50 to-white py-20">
+        <div className="container mx-auto px-6 text-center">
+          <div className="mx-auto max-w-3xl">
+            <h1 className="mb-6 text-5xl font-bold text-[#1e3a8a] leading-tight">
+              Translate & Summarize Documents with AI
+            </h1>
+            <p className="mb-8 text-xl text-gray-600 leading-relaxed">
+              Professional document translation and summarization powered by OpenAI GPT-5 and Claude Sonnet.
+              Support for PDF, DOCX, and TXT files.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Link href="/signup">
+                <Button size="lg" className="bg-[#1e3a8a] text-white hover:bg-[#1e40af] px-8 py-6 text-lg">
+                  Start Free Trial
+                </Button>
+              </Link>
+              <Link href="#features">
+                <Button size="lg" variant="outline" className="border-[#1e3a8a] text-[#1e3a8a] hover:bg-gray-50 px-8 py-6 text-lg">
+                  Learn More
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-12 text-center animate-in fade-in duration-500">
-          <h3 className="font-playfair text-3xl font-bold md:text-4xl">Powerful Features</h3>
-          <p className="mt-2 text-muted-foreground">Everything you need for professional document conversion</p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              icon: FileText,
-              title: "Multiple Formats",
-              description: "Convert to PDF, Word, Excel, JSON, XML, Markdown, RTF, and more.",
-            },
-            {
-              icon: Palette,
-              title: "Custom Templates",
-              description: "Choose from Minimal, Professional, or Photo templates with adjustable margins.",
-            },
-            {
-              icon: Zap,
-              title: "Instant Processing",
-              description: "Fast AI-powered conversion with real-time preview and editing capabilities.",
-            },
-          ].map((feature, idx) => {
-            const Icon = feature.icon
-            return (
-              <div
-                key={idx}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-500 rounded-xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 hover:scale-105 transition-all duration-300">
-                  <Icon className="h-6 w-6 text-primary transition-all duration-300" />
-                </div>
-                <h4 className="mb-2 text-lg font-semibold">{feature.title}</h4>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
+      <section id="features" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-4xl font-bold text-[#1e3a8a]">Enterprise Features</h2>
+            <p className="text-xl text-gray-600">Everything you need for professional document processing</p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
+                <Globe className="h-6 w-6 text-white" />
               </div>
-            )
-          })}
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Multi-Language Translation</h3>
+              <p className="text-gray-600">Translate documents to any language with AI-powered accuracy and context preservation.</p>
+            </Card>
+            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
+                <FileSearch className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Smart Summarization</h3>
+              <p className="text-gray-600">Get concise summaries that capture key points and important details from lengthy documents.</p>
+            </Card>
+            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
+                <Zap className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Dual AI Models</h3>
+              <p className="text-gray-600">Choose between OpenAI GPT-5 or Claude Sonnet for optimal results based on your needs.</p>
+            </Card>
+            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
+                <FileText className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Multiple Formats</h3>
+              <p className="text-gray-600">Support for PDF, DOCX, and TXT files. Process any document with ease.</p>
+            </Card>
+            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
+                <BarChart3 className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Usage Analytics</h3>
+              <p className="text-gray-600">Track your document processing history and view detailed usage statistics.</p>
+            </Card>
+            <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
+                <Shield className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Secure & Private</h3>
+              <p className="text-gray-600">Your documents are processed securely with enterprise-grade encryption.</p>
+            </Card>
+          </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-12 text-center animate-in fade-in duration-500">
-          <h3 className="font-playfair text-3xl font-bold md:text-4xl">How It Works</h3>
-          <p className="mt-2 text-muted-foreground">Three simple steps to transform your documents</p>
-        </div>
-        <div className="grid gap-8 md:grid-cols-3">
-          {[
-            { step: "1", title: "Upload", description: "Select files or drag and drop to upload" },
-            { step: "2", title: "Customize", description: "Choose format, template, and settings" },
-            { step: "3", title: "Download", description: "Get your converted file instantly" },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative"
-              style={{ animationDelay: `${idx * 100}ms` }}
-            >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-lg font-bold text-primary-foreground hover:scale-105 transition-all duration-300">
-                {item.step}
+      <section id="how-it-works" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-4xl font-bold text-[#1e3a8a]">How It Works</h2>
+            <p className="text-xl text-gray-600">Simple process, powerful results</p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="text-center">
+              <div className="mb-4 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1e3a8a] text-2xl font-bold text-white">
+                1
               </div>
-              <h4 className="mb-2 text-lg font-semibold">{item.title}</h4>
-              <p className="text-sm text-muted-foreground">{item.description}</p>
-              {idx < 2 && (
-                <div className="absolute -right-4 top-6 hidden h-0.5 w-8 bg-gradient-to-r from-primary to-transparent md:block" />
-              )}
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Upload Document</h3>
+              <p className="text-gray-600">Upload your PDF, DOCX, or TXT file to our secure platform.</p>
             </div>
-          ))}
+            <div className="text-center">
+              <div className="mb-4 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1e3a8a] text-2xl font-bold text-white">
+                2
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Choose Operation</h3>
+              <p className="text-gray-600">Select translation or summarization and pick your preferred AI model.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1e3a8a] text-2xl font-bold text-white">
+                3
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-gray-900">Get Results</h3>
+              <p className="text-gray-600">Receive your processed document instantly with AI-powered accuracy.</p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="animate-in fade-in duration-500 rounded-2xl border border-border/50 bg-gradient-to-br from-primary/10 to-accent/10 p-12 text-center backdrop-blur transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
-          <h3 className="font-playfair text-3xl font-bold md:text-4xl">Ready to Transform Your Documents?</h3>
-          <p className="mt-4 text-muted-foreground">Start converting files with AI intelligence today</p>
-          <Link href="/ai-transformer" className="mt-6 inline-block">
-            <Button
-              size="lg"
-              className="bg-gradient-to-br from-primary to-accent text-primary-foreground hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-            >
-              Get Started Now <ArrowRight className="ml-2 h-4 w-4" />
+      <section className="py-20 bg-[#1e3a8a]">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="mb-4 text-4xl font-bold text-white">Ready to Transform Your Documents?</h2>
+          <p className="mb-8 text-xl text-gray-200">Join thousands of professionals using DocTranslate</p>
+          <Link href="/signup">
+            <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-gray-100 px-8 py-6 text-lg font-semibold">
+              Start Free Trial
             </Button>
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/40 bg-background/50 py-8">
-        <div className="mx-auto max-w-7xl px-6 text-center text-sm text-muted-foreground">
-          <p>© 2025 Doccoder. All rights reserved. Powered by AI.</p>
+      <footer className="border-t border-gray-200 bg-white py-8">
+        <div className="container mx-auto px-6 text-center text-gray-600">
+          <p>&copy; 2025 DocTranslate. All rights reserved.</p>
         </div>
       </footer>
-    </main>
-  )
+    </div>
+  );
 }
