@@ -107,55 +107,66 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
+      <section id="how-it-works" className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-6">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-[#1e3a8a]">How It Works</h2>
-            <p className="text-xl text-gray-600">Simple process, powerful results</p>
+          <div className="mb-16 text-center">
+            <h2 className="mb-4 text-5xl font-bold text-gray-900">How It Works</h2>
+            <p className="text-xl text-gray-600">Three simple steps to transform your documents</p>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="text-center">
-              <div className="mb-4 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1e3a8a] text-2xl font-bold text-white">
+          <div className="grid gap-12 md:grid-cols-3 relative">
+            {/* Connection line */}
+            <div className="hidden md:block absolute top-8 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-blue-200 via-cyan-200 to-blue-200"></div>
+            
+            <div className="text-center relative">
+              <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 text-2xl font-bold text-white shadow-xl relative z-10">
                 1
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Upload Document</h3>
-              <p className="text-gray-600">Upload your PDF, DOCX, or TXT file to our secure platform.</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">Upload</h3>
+              <p className="text-gray-600 leading-relaxed">Select files or drag and drop to upload</p>
             </div>
-            <div className="text-center">
-              <div className="mb-4 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1e3a8a] text-2xl font-bold text-white">
+            
+            <div className="text-center relative">
+              <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-pink-500 text-2xl font-bold text-white shadow-xl relative z-10">
                 2
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Choose Operation</h3>
-              <p className="text-gray-600">Select translation or summarization and pick your preferred AI model.</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">Customize</h3>
+              <p className="text-gray-600 leading-relaxed">Choose format, template, and settings</p>
             </div>
-            <div className="text-center">
-              <div className="mb-4 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1e3a8a] text-2xl font-bold text-white">
+            
+            <div className="text-center relative">
+              <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 text-2xl font-bold text-white shadow-xl relative z-10">
                 3
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Get Results</h3>
-              <p className="text-gray-600">Receive your processed document instantly with AI-powered accuracy.</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">Download</h3>
+              <p className="text-gray-600 leading-relaxed">Get your converted file instantly</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-[#1e3a8a]">
+      <section className="py-20 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="mb-4 text-4xl font-bold text-white">Ready to Transform Your Documents?</h2>
-          <p className="mb-8 text-xl text-gray-200">Join thousands of professionals using DocTranslate</p>
+          <h2 className="mb-4 text-5xl font-bold text-white">Ready to Transform Your Documents?</h2>
+          <p className="mb-8 text-xl text-blue-50">Start converting files with AI intelligence today</p>
           <Link href="/signup">
-            <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-gray-100 px-8 py-6 text-lg font-semibold">
-              Start Free Trial
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-50 px-10 py-7 text-lg font-semibold shadow-2xl hover:shadow-3xl transition-all">
+              Get Started Now
+              <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </Button>
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-8">
-        <div className="container mx-auto px-6 text-center text-gray-600">
-          <p>&copy; 2025 DocTranslate. All rights reserved.</p>
+      <footer className="border-t border-gray-100 bg-white py-12">
+        <div className="container mx-auto px-6 text-center">
+          <div className="mb-4 flex justify-center">
+            <img src="/logo.png" alt="DocTranslate Logo" className="h-8 w-auto opacity-60" />
+          </div>
+          <p className="text-gray-500">&copy; 2025 Doccoder. All rights reserved. Powered by AI.</p>
         </div>
       </footer>
     </div>
