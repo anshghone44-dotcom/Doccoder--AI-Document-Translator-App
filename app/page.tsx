@@ -96,7 +96,7 @@ export default function HomePage() {
             </Card>
             <Card className="border-gray-200 p-8 hover:shadow-lg transition-shadow">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <FileText className="h-6 w-6 text-white" />
+                <FileType className="h-6 w-6 text-white" />
               </div>
               <h3 className="mb-2 text-xl font-bold text-gray-900">Multiple Formats</h3>
               <p className="text-gray-600">Support for PDF, DOCX, and TXT files. Process any document with ease.</p>
