@@ -167,9 +167,6 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-gray-100 bg-white py-12">
         <div className="container mx-auto px-6 text-center">
-          <div className="mb-4 flex justify-center">
-            <img src="/logo.png" alt="DocTranslate Logo" className="h-8 w-auto opacity-60" />
-          </div>
           <p className="text-gray-500">&copy; 2025 Doccoder. All rights reserved. Powered by AI.</p>
         </div>
       </footer>
