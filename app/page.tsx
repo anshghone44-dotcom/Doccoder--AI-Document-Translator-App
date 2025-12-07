@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileText, Globe, FileSearch, BarChart3, Shield, Zap } from 'lucide-react';
+import { Globe, FileSearch, BarChart3, Shield, Zap } from 'lucide-react';
 
 export default function HomePage() {
   return (
