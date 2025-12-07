@@ -53,10 +53,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <Card className="w-full max-w-md p-8 bg-white border-gray-200">
         <div className="mb-8 text-center">
-          <div className="flex justify-center mb-4">
-            <img src="/logo.png" alt="DocTranslate Logo" className="h-16 w-auto" />
-          </div>
-          <h1 className="text-3xl font-bold text-[#1e3a8a]">DocTranslate</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Doccoder</h1>
           <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>
 
