@@ -22,7 +22,10 @@ export default function Page() {
               </Button>
             </Link>
             <div className="flex items-center gap-2 animate-in fade-in duration-500">
-              <h1 className="font-playfair text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <h1
+                className="text-3xl font-black tracking-tight bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent logo-flip cursor-pointer transition-all duration-300"
+                style={{ fontFamily: "var(--font-bodoni)" }}
+              >
                 Doccoder
               </h1>
             </div>

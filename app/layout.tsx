@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display, Open_Sans } from "next/font/google"
+import { Playfair_Display, Open_Sans, Bodoni_Moda } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Suspense } from "react"
@@ -18,6 +18,13 @@ const openSans = Open_Sans({
   display: "swap",
 })
 
+const bodoniModa = Bodoni_Moda({
+  subsets: ["latin"],
+  variable: "--font-bodoni",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+})
+
 export const metadata: Metadata = {
   title: "Doccoder",
   description: "Doccoder — AI File Transformer",
@@ -31,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans ${playfair.variable} ${openSans.variable}`}>
+      <body className={`font-sans ${playfair.variable} ${openSans.variable} ${bodoniModa.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Suspense>
             {children}
