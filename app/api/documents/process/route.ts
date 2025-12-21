@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import dbConnect from '@/lib/mongodb';
-import DocumentModel from '@/lib/models/Document';
+// import dbConnect from '@/lib/mongodb';
+// import DocumentModel from '@/lib/models/Document';
 import { parseDocument } from '@/lib/document-parser';
 import { translateDocument, summarizeDocument, editDocument, analyzeImage, TranslationResult } from '@/lib/ai-service';
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await dbConnect();
+    // await dbConnect();
 
     // Parse form data
     const formData = await request.formData();
@@ -128,19 +128,22 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create document record
-    const document = await DocumentModel.create({
-      userId: user.userId,
+    // Create document record (MOCKED for now as DB is missing)
+    const document = {
+      documentId: 'mock-id-' + Date.now(),
       fileName: file.name,
       fileType: file.type,
       fileSize: file.size,
-      content, // For OCR, this is extracted text; for docs, it's parsed text
+      content: content.substring(0, 100) + '...', // Truncate for preview
       operation,
       model,
       language: operation === 'translate' ? language : undefined,
       status: 'completed',
-      result: typeof result === 'string' ? result : JSON.stringify(result), // Store JSON string for structured
-    });
+      result: typeof result === 'string' ? result : JSON.stringify(result),
+      createdAt: new Date(),
+    };
+
+    // const document = await DocumentModel.create({ ... });
 
     return NextResponse.json({
       success: true,

@@ -5,9 +5,9 @@ import OpenAI from "openai"
 
 export const maxDuration = 60
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+// const client = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// })
 
 export async function POST(req: NextRequest) {
   console.log("[v0] Transform API called")
@@ -54,6 +54,9 @@ export async function POST(req: NextRequest) {
 
     try {
       console.log("[v0] Generating AI title for:", filename)
+      const client = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      })
       const response = await client.chat.completions.create({
         model: "gpt-4-turbo",
         messages: [
