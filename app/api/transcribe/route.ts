@@ -11,10 +11,14 @@ export async function POST(req: NextRequest) {
 
     const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY
 
+    // Enhanced debugging for API Key issues
     if (!elevenLabsApiKey) {
-      console.error("[v0] ELEVENLABS_API_KEY not set")
+      console.error("[ElevenLabs] Error: ELEVENLABS_API_KEY is missing in environment variables.")
       return NextResponse.json(
-        { error: "ElevenLabs API key not configured. Please add ELEVENLABS_API_KEY to environment variables." },
+        { 
+          error: "Server configuration error: ElevenLabs API key is missing.", 
+          details: "Please add ELEVENLABS_API_KEY to your .env.local or Vercel environment variables." 
+        },
         { status: 500 },
       )
     }
@@ -26,30 +30,39 @@ export async function POST(req: NextRequest) {
     elevenLabsForm.append("file", audioBlob, "audio.webm")
     elevenLabsForm.append("model_id", "scribe_v1")
 
-    console.log("[v0] Sending audio to ElevenLabs API...")
+    console.log("[ElevenLabs] Sending audio to Speech-to-Text API...")
 
-    // Call ElevenLabs Speech-to-Text API with correct endpoint
     const response = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
       method: "POST",
       headers: {
         "xi-api-key": elevenLabsApiKey,
+        // boundary is automatically set by fetch when body is FormData
       },
       body: elevenLabsForm,
     })
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error("[v0] ElevenLabs API error:", response.status, errorText)
-      return NextResponse.json({ error: `Speech-to-text conversion failed: ${errorText}` }, { status: response.status })
+      console.error(`[ElevenLabs] API Error (${response.status}):`, errorText)
+      return NextResponse.json(
+        { 
+          error: "Speech-to-text conversion failed", 
+          details: errorText,
+          statusCode: response.status
+        }, 
+        { status: response.status }
+      )
     }
 
     const result = await response.json()
-    console.log("[v0] Transcription successful")
+    console.log("[ElevenLabs] Transcription successful")
 
-    // ElevenLabs returns { text: "transcribed text" }
     return NextResponse.json({ text: result.text || "" })
   } catch (error: any) {
-    console.error("[v0] Transcription error:", error)
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
+    console.error("[ElevenLabs] Internal Error:", error)
+    return NextResponse.json(
+      { error: "Internal server error during transcription", details: error.message }, 
+      { status: 500 }
+    )
   }
 }
