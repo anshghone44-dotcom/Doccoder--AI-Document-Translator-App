@@ -36,24 +36,18 @@ export default function Home() {
               >
                 Security
               </a>
-              <a
-                href="#pricing"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Pricing
-              </a>
             </nav>
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="ghost" size="sm" className="hidden md:inline-flex">
                 Sign In
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/auth/sign-up">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
-                Try Now
+                Get Started
               </Button>
             </Link>
             <ThemeToggle />
@@ -80,7 +74,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link href="/ai-transformer">
+              <Link href="/auth/sign-up">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   Start Free Trial
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -89,17 +83,6 @@ export default function Home() {
               <Button size="lg" variant="outline">
                 Schedule Demo
               </Button>
-            </div>
-
-            <div className="pt-12 border-t border-border/50">
-              <p className="text-sm text-muted-foreground mb-6">Trusted by leading enterprises</p>
-              <div className="flex flex-wrap items-center justify-center gap-8 opacity-50">
-                {["Microsoft", "Salesforce", "IBM", "SAP", "Oracle", "Adobe"].map((company) => (
-                  <div key={company} className="text-lg font-semibold text-muted-foreground">
-                    {company}
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
@@ -173,11 +156,11 @@ export default function Home() {
               </p>
               <ul className="space-y-4">
                 {[
-                  "Multi-model validation (GPT-4, Claude, Grok)",
+                  "Multi-model validation (GPT-5, Claude, Grok)",
+                  "OCR and AI scanning for document analysis",
+                  "Real-time document editing capabilities",
+                  "Advanced image analysis and extraction",
                   "Domain-specific glossaries and terminology",
-                  "Line-by-line translation justification",
-                  "Confidence scoring and quality metrics",
-                  "Real-time collaboration and review",
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
@@ -185,7 +168,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/ai-transformer">
+              <Link href="/auth/sign-up">
                 <Button size="lg" className="bg-primary hover:bg-primary/90">
                   Try Platform
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -263,7 +246,7 @@ export default function Home() {
             Join leading enterprises using Doccoder for mission-critical document translation
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/ai-transformer">
+            <Link href="/auth/sign-up">
               <Button size="lg" className="bg-primary hover:bg-primary/90">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -289,7 +272,7 @@ export default function Home() {
             {[
               {
                 title: "Product",
-                links: ["Platform", "Solutions", "Pricing", "Security"],
+                links: ["Platform", "Solutions", "Security"],
               },
               {
                 title: "Company",
