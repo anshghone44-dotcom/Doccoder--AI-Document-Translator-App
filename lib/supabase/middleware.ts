@@ -1,6 +1,11 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
+// Supabase - Edge Runtime workaround for process.version
+if (typeof process !== "undefined" && !process.version) {
+  Object.defineProperty(process, "version", { value: "" })
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
