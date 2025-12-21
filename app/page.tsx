@@ -12,7 +12,7 @@ export default function Home() {
             <Link href="/" className="flex items-center gap-2">
               <h1
                 className="text-2xl font-bold tracking-tight text-foreground hover:text-primary transition-colors"
-                style={{ fontFamily: "'Erstoria Bold Serif Display Font', serif" }}
+                style={{ fontFamily: "var(--font-bodoni)" }}
               >
                 Doccoder
               </h1>
@@ -30,25 +30,28 @@ export default function Home() {
               >
                 Solutions
               </a>
-
+              <a
+                href="#security"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Security
+              </a>
               <a
                 href="#pricing"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Premium
+                Pricing
               </a>
             </nav>
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="hidden md:inline-flex">
-                Sign In
-              </Button>
-            </Link>
+            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
+              Sign In
+            </Button>
             <Link href="/ai-transformer">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
-                Use with AI
+                Get Started
               </Button>
             </Link>
             <ThemeToggle />
@@ -62,27 +65,40 @@ export default function Home() {
           <div className="mx-auto max-w-3xl text-center space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm">
               <Shield className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium">Enterprise-Grade Security & Compliance</span>
             </div>
 
             <h1 className="font-serif text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance">
-              Get Translation of Compliance Documents and Agreements  <span className="text-primary">with AI assistance.</span>
+              AI-Powered Document Translation for <span className="text-primary">Global Enterprises</span>
             </h1>
 
             <p className="text-xl text-muted-foreground text-balance leading-relaxed">
-              Translation of legal contracts, compliance documents, and enterprise content with guaranteed and AI assistance.
+              Translate legal contracts, compliance documents, and enterprise content with guaranteed accuracy. Trusted
+              by Fortune 500 companies worldwide.
             </p>
 
-            <Link href="/ai-transformer">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-4 w-4" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Link href="/ai-transformer">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline">
+                Schedule Demo
               </Button>
-            </Link>
-            <Button size="lg" variant="outline">
-              Schedule Demo
-            </Button>
+            </div>
 
-
+            <div className="pt-12 border-t border-border/50">
+              <p className="text-sm text-muted-foreground mb-6">Trusted by leading enterprises</p>
+              <div className="flex flex-wrap items-center justify-center gap-8 opacity-50">
+                {["Microsoft", "Salesforce", "IBM", "SAP", "Oracle", "Adobe"].map((company) => (
+                  <div key={company} className="text-lg font-semibold text-muted-foreground">
+                    {company}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -155,12 +171,11 @@ export default function Home() {
               </p>
               <ul className="space-y-4">
                 {[
-                  "Get Flexible Document Translation using AI assistance",
+                  "Multi-model validation (GPT-4, Claude, Grok)",
                   "Domain-specific glossaries and terminology",
                   "Line-by-line translation justification",
                   "Confidence scoring and quality metrics",
                   "Real-time collaboration and review",
-                  "Edit documents with AI models",
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
@@ -170,7 +185,7 @@ export default function Home() {
               </ul>
               <Link href="/ai-transformer">
                 <Button size="lg" className="bg-primary hover:bg-primary/90">
-                  Start Using Now
+                  Try Platform
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -208,7 +223,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">Enterprise-Grade Security & Compliance</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Built for Enterprises and organizations for getting flexible document quality.
+              Built for organizations that can't afford translation errors
             </p>
           </div>
 
@@ -263,11 +278,10 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 py-12">
           <div className="grid gap-8 md:grid-cols-4">
             <div className="space-y-4">
-              <h3 className="text-xl font-bold"
-                style={{ fontFamily: "'Erstoria Bold Serif Display Font', serif" }}>
+              <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
                 Doccoder
               </h3>
-              <p className="text-sm text-muted-foreground">AI Powered Translation Feature for Organizations and Businesses.</p>
+              <p className="text-sm text-muted-foreground">Enterprise-grade AI translation with guaranteed accuracy</p>
             </div>
 
             {[
@@ -300,10 +314,10 @@ export default function Home() {
           </div>
 
           <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">© 2026 Doccoder. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">© 2025 Doccoder. All rights reserved.</p>
             <div className="flex gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Privacy Policy
+                Privacy
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Terms
