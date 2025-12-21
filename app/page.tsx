@@ -46,9 +46,11 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
-              Sign In
-            </Button>
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="hidden md:inline-flex">
+                Sign In
+              </Button>
+            </Link>
             <Link href="/ai-transformer">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
                 Get Started
@@ -69,7 +71,7 @@ export default function Home() {
             </div>
 
             <h1 className="font-serif text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance">
-              AI-Powered Document Translation for <span className="text-primary">Global Enterprises</span>
+              AI-Powered Document Translator App for <span className="text-primary">people and business.</span>
             </h1>
 
             <p className="text-xl text-muted-foreground text-balance leading-relaxed">
@@ -89,16 +91,7 @@ export default function Home() {
               </Button>
             </div>
 
-            <div className="pt-12 border-t border-border/50">
-              <p className="text-sm text-muted-foreground mb-6">Trusted by leading enterprises</p>
-              <div className="flex flex-wrap items-center justify-center gap-8 opacity-50">
-                {["Microsoft", "Salesforce", "IBM", "SAP", "Oracle", "Adobe"].map((company) => (
-                  <div key={company} className="text-lg font-semibold text-muted-foreground">
-                    {company}
-                  </div>
-                ))}
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
