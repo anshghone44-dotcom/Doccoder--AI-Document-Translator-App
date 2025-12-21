@@ -4,6 +4,7 @@ import type React from "react"
 import TemplatePicker, { type TemplateSelection } from "@/components/template-picker"
 import FileEditor from "@/components/file-editor"
 import VoiceRecorder from "@/components/voice-recorder"
+import ModelSelector, { type AIModel } from "@/components/model-selector"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -23,6 +24,7 @@ export default function TransformChat() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null)
+  const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-5")
   const [template, setTemplate] = useState<TemplateSelection>({
     id: "minimal",
     orientation: "portrait",
@@ -117,6 +119,7 @@ export default function TransformChat() {
       const form = new FormData()
       form.set("prompt", userMessage)
       form.set("template", JSON.stringify(template))
+      form.set("aiModel", selectedModel)
       files.forEach((f) => form.append("files", f, f.name))
 
       const res = await fetch("/api/transform", {
@@ -178,6 +181,10 @@ export default function TransformChat() {
 
   return (
     <section aria-label="AI transformer chat" className="flex h-full flex-col">
+      <div className="mb-4">
+        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+      </div>
+
       <div className="mb-4 rounded-lg border bg-card p-3">
         <details className="cursor-pointer">
           <summary className="text-sm font-medium">Template Settings</summary>

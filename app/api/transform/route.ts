@@ -1,20 +1,16 @@
 import type { NextRequest } from "next/server"
 import JSZip from "jszip"
 import { convertAnyToPdf } from "@/lib/convert-to-pdf"
-import OpenAI from "openai"
+import { generateText } from "ai"
 
 export const maxDuration = 60
-
-// const client = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// })
 
 export async function POST(req: NextRequest) {
   console.log("[v0] Transform API called")
 
-  // Parse multipart form-data
   const form = await req.formData()
   const prompt = (form.get("prompt") || "").toString()
+  const aiModel = (form.get("aiModel") || "openai/gpt-5").toString()
 
   // Parse template selection
   let template: {
@@ -47,26 +43,11 @@ export async function POST(req: NextRequest) {
   async function getCoverLineFor(filename: string) {
     if (!prompt.trim()) return undefined
 
-    if (!process.env.OPENAI_API_KEY) {
-      console.log("[v0] OpenAI API key not configured, skipping AI title generation")
-      return undefined
-    }
-
     try {
-      console.log("[v0] Generating AI title for:", filename)
-      const client = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      })
-      const response = await client.chat.completions.create({
-        model: "gpt-4-turbo",
-        messages: [
-          {
-            role: "system",
-            content: "You are a helpful assistant and expert document analyzer.",
-          },
-          {
-            role: "user",
-            content: `Create a professional, concise one-line title for converting the file "${filename}" into a PDF.
+      console.log("[v0] Generating AI title for:", filename, "using model:", aiModel)
+      const { text } = await generateText({
+        model: aiModel,
+        prompt: `Create a professional, concise one-line title for converting the file "${filename}" into a PDF.
 
 User's transformation goal: ${prompt}
 
@@ -78,12 +59,9 @@ Instructions:
 - Return ONLY the title, no quotes or extra text
 
 Title:`,
-          },
-        ],
-        max_tokens: 150,
+        maxTokens: 150,
         temperature: 0.7,
       })
-      const text = response.choices[0]?.message?.content || ""
       const single = text.split("\n").filter(Boolean)[0]?.trim()
       console.log("[v0] AI title generated:", single)
       return single || undefined

@@ -3,6 +3,7 @@
 import type React from "react"
 import FileEditor from "@/components/file-editor"
 import VoiceRecorder from "@/components/voice-recorder"
+import ModelSelector, { type AIModel } from "@/components/model-selector"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -25,6 +26,7 @@ export default function ReverseTransformChat() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null)
+  const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-5")
   const [targetFormat, setTargetFormat] = useState<
     "txt" | "docx" | "images" | "csv" | "xlsx" | "jpg" | "png" | "pptx" | "json" | "xml" | "md" | "rtf"
   >("txt")
@@ -112,6 +114,7 @@ export default function ReverseTransformChat() {
       form.set("prompt", userMessage)
       form.set("targetFormat", targetFormat)
       form.set("tone", selectedTone)
+      form.set("aiModel", selectedModel)
       files.forEach((f) => form.append("files", f, f.name))
 
       const res = await fetch("/api/reverse-transform", {
@@ -183,6 +186,10 @@ export default function ReverseTransformChat() {
 
   return (
     <section aria-label="PDF reverse transformer" className="flex h-full flex-col">
+      <div className="mb-4">
+        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+      </div>
+
       <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(85,_100,_200,_0.3)]">
         <label className="mb-3 block text-sm font-semibold text-foreground">Target Format</label>
         <Select value={targetFormat} onValueChange={(v) => setTargetFormat(v as any)}>

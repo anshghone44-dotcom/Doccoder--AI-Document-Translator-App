@@ -1,20 +1,9 @@
 import type { NextRequest } from "next/server"
 import { convertPdfToFormat } from "@/lib/convert-from-pdf"
 import JSZip from "jszip"
-import OpenAI from "openai"
+import { generateText } from "ai"
 
 export const maxDuration = 60
-
-let client: OpenAI | null = null
-try {
-  if (process.env.OPENAI_API_KEY) {
-    client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-  }
-} catch (err) {
-  console.error("[v0] OpenAI client initialization failed:", err)
-}
 
 export async function POST(req: NextRequest) {
   console.log("[v0] Reverse transform API called")
@@ -23,6 +12,7 @@ export async function POST(req: NextRequest) {
     const form = await req.formData()
     const prompt = (form.get("prompt") || "").toString()
     const targetFormat = (form.get("targetFormat") || "txt").toString() as "docx" | "txt" | "images"
+    const aiModel = (form.get("aiModel") || "openai/gpt-5").toString()
 
     const files: File[] = []
     for (const [key, value] of form.entries()) {
@@ -48,35 +38,25 @@ export async function POST(req: NextRequest) {
 
     // Optional: Use AI to enhance the conversion based on prompt
     let conversionInstructions = ""
-    if (prompt.trim() && client) {
+    if (prompt.trim()) {
       try {
-        console.log("[v0] Generating AI conversion instructions")
-        const response = await client.chat.completions.create({
-          model: "gpt-4-turbo",
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant and document conversion expert.",
-            },
-            {
-              role: "user",
-              content: `The user wants to convert PDF files to ${targetFormat} format.
+        console.log("[v0] Generating AI conversion instructions using model:", aiModel)
+        const { text } = await generateText({
+          model: aiModel,
+          prompt: `The user wants to convert PDF files to ${targetFormat} format.
 
 User's goal: ${prompt}
 
 Provide a brief one-line instruction for optimal conversion (e.g., "Preserve formatting and structure" or "Extract main text content only").
 
 Instruction:`,
-            },
-          ],
-          max_tokens: 150,
+          maxTokens: 150,
           temperature: 0.7,
         })
-        conversionInstructions = response.choices[0]?.message?.content?.trim() || ""
+        conversionInstructions = text.trim()
         console.log("[v0] AI instructions generated:", conversionInstructions)
       } catch (err: any) {
         console.error("[v0] AI instruction generation failed:", err?.message || err)
-        // Continue without AI instructions
       }
     }
 

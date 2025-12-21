@@ -1,228 +1,332 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Zap, FileText, Palette, Upload, Settings, Download } from "lucide-react"
+import { ArrowRight, Shield, Zap, Building2, CheckCircle2, Globe } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl transition-all duration-300 ease-out">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2 animate-in fade-in duration-500">
-            <h1
-              className="text-3xl font-black tracking-tight bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent logo-flip cursor-pointer transition-all duration-300"
-              style={{ fontFamily: "var(--font-bodoni)" }}
-            >
-              Doccoder
-            </h1>
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2">
+              <h1
+                className="text-2xl font-bold tracking-tight text-foreground hover:text-primary transition-colors"
+                style={{ fontFamily: "var(--font-bodoni)" }}
+              >
+                Doccoder
+              </h1>
+            </Link>
+            <nav className="hidden gap-6 md:flex items-center">
+              <a
+                href="#features"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Platform
+              </a>
+              <a
+                href="#solutions"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Solutions
+              </a>
+              <a
+                href="#security"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Security
+              </a>
+              <a
+                href="#pricing"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Pricing
+              </a>
+            </nav>
           </div>
 
           <div className="flex items-center gap-4">
-            <nav className="hidden gap-8 md:flex items-center">
-              <a
-                href="#features"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                Features
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                How It Works
-              </a>
-              <Link href="/ai-transformer">
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-300"
-                >
-                  Get Started
-                </Button>
-              </Link>
-            </nav>
+            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
+              Sign In
+            </Button>
+            <Link href="/ai-transformer">
+              <Button size="sm" className="bg-primary hover:bg-primary/90">
+                Get Started
+              </Button>
+            </Link>
             <ThemeToggle />
           </div>
         </div>
       </header>
 
-      <section className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20">
-        <div className="mx-auto max-w-7xl px-6 py-20 text-center md:py-32">
-          <div className="space-y-6">
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-900/30 px-4 py-2 hover:scale-105 transition-all duration-300 shadow-sm">
-              <Zap className="h-4 w-4 text-blue-500 fill-blue-500" />
-              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                AI-Powered Document Transformation
-              </span>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+        <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
+          <div className="mx-auto max-w-3xl text-center space-y-8">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm">
+              <Shield className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium">Enterprise-Grade Security & Compliance</span>
             </div>
-            <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-serif text-balance text-5xl font-bold md:text-6xl lg:text-7xl text-gray-900 dark:text-white">
-              Transform Documents with{" "}
-              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                AI Intelligence
-              </span>
-            </h2>
-            <p className="animate-in fade-in slide-in-from-bottom-4 duration-500 mx-auto max-w-2xl text-lg text-muted-foreground">
-              Convert between PDF and 11+ formats instantly. Upload files, customize templates, and download in seconds.
-              Powered by advanced AI technology.
+
+            <h1 className="font-serif text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance">
+              AI-Powered Document Translation for <span className="text-primary">Global Enterprises</span>
+            </h1>
+
+            <p className="text-xl text-muted-foreground text-balance leading-relaxed">
+              Translate legal contracts, compliance documents, and enterprise content with guaranteed accuracy. Trusted
+              by Fortune 500 companies worldwide.
             </p>
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-4 sm:flex-row sm:justify-center">
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link href="/ai-transformer">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white w-full sm:w-auto hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-300 group"
-                >
-                  Start Converting
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto bg-white dark:bg-transparent border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300"
-              >
-                Learn More
+              <Button size="lg" variant="outline">
+                Schedule Demo
               </Button>
+            </div>
+
+            <div className="pt-12 border-t border-border/50">
+              <p className="text-sm text-muted-foreground mb-6">Trusted by leading enterprises</p>
+              <div className="flex flex-wrap items-center justify-center gap-8 opacity-50">
+                {["Microsoft", "Salesforce", "IBM", "SAP", "Oracle", "Adobe"].map((company) => (
+                  <div key={company} className="text-lg font-semibold text-muted-foreground">
+                    {company}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="mb-12 text-center animate-in fade-in duration-500">
-          <h3 className="font-serif text-3xl font-bold md:text-4xl">Powerful Features</h3>
-          <p className="mt-2 text-muted-foreground">Everything you need for professional document conversion</p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              icon: FileText,
-              title: "Multiple Formats",
-              description: "Convert to PDF, Word, Excel, JSON, XML, Markdown, RTF, and more.",
-              gradient: "from-blue-500 to-cyan-400",
-              bgGradient: "from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30",
-            },
-            {
-              icon: Palette,
-              title: "Custom Templates",
-              description: "Choose from Minimal, Professional, or Photo templates with adjustable margins.",
-              gradient: "from-purple-500 to-pink-400",
-              bgGradient: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30",
-            },
-            {
-              icon: Zap,
-              title: "Instant Processing",
-              description: "Fast AI-powered conversion with real-time preview and editing capabilities.",
-              gradient: "from-orange-500 to-yellow-400",
-              bgGradient: "from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30",
-            },
-          ].map((feature, idx) => {
-            const Icon = feature.icon
-            return (
+      <section id="solutions" className="py-24 bg-muted/30">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">Purpose-Built for Enterprise Needs</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Industry-specific solutions with guaranteed accuracy for mission-critical documents
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3">
+            {[
+              {
+                icon: Shield,
+                title: "Legal & Compliance",
+                description: "Multi-model validation for contracts and regulatory documents with audit trails.",
+                features: ["99.9% accuracy guarantee", "Legal terminology database", "Compliance tracking"],
+              },
+              {
+                icon: Building2,
+                title: "Financial Services",
+                description: "Secure translation for financial statements, reports, and sensitive documents.",
+                features: ["SOC 2 Type II certified", "Real-time validation", "Multi-currency support"],
+              },
+              {
+                icon: Globe,
+                title: "Healthcare & Life Sciences",
+                description: "HIPAA-compliant translation for medical records and clinical documentation.",
+                features: ["Medical terminology AI", "HIPAA compliance", "Clinical accuracy"],
+              },
+            ].map((solution, idx) => (
               <div
                 key={idx}
-                className={`animate-in fade-in slide-in-from-bottom-4 duration-500 rounded-2xl border border-border/50 bg-gradient-to-br ${feature.bgGradient} p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-${feature.gradient.split("-")[1]}-500/10 hover:-translate-y-1`}
-                style={{ animationDelay: `${idx * 100}ms` }}
+                className="group rounded-xl border border-border bg-card p-8 hover:border-primary/50 hover:shadow-lg transition-all duration-300"
               >
-                <div
-                  className={`mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg hover:scale-110 transition-all duration-300`}
-                >
-                  <Icon className="h-7 w-7 text-white" />
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <solution.icon className="h-6 w-6" />
                 </div>
-                <h4 className="mb-2 text-xl font-semibold">{feature.title}</h4>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
+                <h3 className="text-xl font-semibold mb-3">{solution.title}</h3>
+                <p className="text-muted-foreground mb-6">{solution.description}</p>
+                <ul className="space-y-2">
+                  {solution.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
       </section>
 
-      <section
-        id="how-it-works"
-        className="bg-gradient-to-br from-gray-50 to-blue-50/50 dark:from-gray-900 dark:to-blue-950/20 py-20"
-      >
+      <section id="features" className="py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-12 text-center animate-in fade-in duration-500">
-            <h3 className="font-serif text-3xl font-bold md:text-4xl">How It Works</h3>
-            <p className="mt-2 text-muted-foreground">Three simple steps to transform your documents</p>
+          <div className="grid gap-16 lg:grid-cols-2 items-center">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+                <span className="font-medium">AI-Powered Accuracy</span>
+              </div>
+              <h2 className="font-serif text-4xl font-bold">Translation with Legal Accuracy Guarantee</h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Our multi-model AI system cross-validates every translation, providing line-by-line justification and
+                confidence scores. Perfect for contracts, compliance documents, and regulatory filings.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  "Multi-model validation (GPT-4, Claude, Grok)",
+                  "Domain-specific glossaries and terminology",
+                  "Line-by-line translation justification",
+                  "Confidence scoring and quality metrics",
+                  "Real-time collaboration and review",
+                ].map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/ai-transformer">
+                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                  Try Platform
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-2xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Translation Accuracy</span>
+                  <span className="text-sm font-bold text-primary">99.2%</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-primary w-[99.2%]" />
+                </div>
+                <div className="grid grid-cols-3 gap-4 pt-4">
+                  {[
+                    { label: "Documents", value: "500K+" },
+                    { label: "Languages", value: "150+" },
+                    { label: "Uptime", value: "99.99%" },
+                  ].map((stat) => (
+                    <div key={stat.label} className="text-center">
+                      <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                      <div className="text-xs text-muted-foreground">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="grid gap-8 md:grid-cols-3 relative">
-            <div className="hidden md:block absolute top-10 left-[calc(16.67%+28px)] right-[calc(16.67%+28px)] h-0.5 bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400" />
+        </div>
+      </section>
+
+      <section id="security" className="py-24 bg-muted/30">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">Enterprise-Grade Security & Compliance</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Built for organizations that can't afford translation errors
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: "SOC 2 Type II", icon: Shield },
+              { label: "GDPR Compliant", icon: Shield },
+              { label: "HIPAA Ready", icon: Shield },
+              { label: "ISO 27001", icon: Shield },
+            ].map((cert, idx) => (
+              <div key={idx} className="flex items-center gap-3 rounded-lg border border-border bg-card p-6">
+                <cert.icon className="h-8 w-8 text-primary" />
+                <span className="font-semibold">{cert.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 rounded-2xl border border-border bg-card p-12 text-center">
+            <h3 className="text-2xl font-bold mb-4">99.9% Accuracy Guarantee</h3>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              Our multi-model validation system ensures translation accuracy that meets legal and compliance standards.
+              Backed by comprehensive audit trails and justification reports.
+            </p>
+            <Button size="lg" variant="outline">
+              Read Security Documentation
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h2 className="font-serif text-4xl font-bold mb-6">Ready to Transform Your Enterprise Translation?</h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Join leading enterprises using Doccoder for mission-critical document translation
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/ai-transformer">
+              <Button size="lg" className="bg-primary hover:bg-primary/90">
+                Start Free Trial
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline">
+              Contact Sales
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-border bg-card">
+        <div className="mx-auto max-w-7xl px-6 py-12">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
+                Doccoder
+              </h3>
+              <p className="text-sm text-muted-foreground">Enterprise-grade AI translation with guaranteed accuracy</p>
+            </div>
 
             {[
               {
-                step: "1",
-                title: "Upload",
-                description: "Select files or drag and drop to upload",
-                icon: Upload,
-                gradient: "from-blue-500 to-cyan-400",
+                title: "Product",
+                links: ["Platform", "Solutions", "Pricing", "Security"],
               },
               {
-                step: "2",
-                title: "Customize",
-                description: "Choose format, template, and settings",
-                icon: Settings,
-                gradient: "from-purple-500 to-pink-400",
+                title: "Company",
+                links: ["About", "Careers", "Contact", "Partners"],
               },
               {
-                step: "3",
-                title: "Download",
-                description: "Get your converted file instantly",
-                icon: Download,
-                gradient: "from-orange-500 to-yellow-400",
+                title: "Resources",
+                links: ["Documentation", "API", "Support", "Status"],
               },
-            ].map((item, idx) => {
-              const Icon = item.icon
-              return (
-                <div
-                  key={idx}
-                  className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative text-center"
-                  style={{ animationDelay: `${idx * 100}ms` }}
-                >
-                  <div
-                    className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${item.gradient} text-2xl font-bold text-white shadow-lg hover:scale-110 transition-all duration-300 relative z-10`}
-                  >
-                    <Icon className="h-8 w-8" />
-                  </div>
-                  <div
-                    className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${item.gradient} text-sm font-bold text-white -mt-4 relative z-20`}
-                  >
-                    {item.step}
-                  </div>
-                  <h4 className="mb-2 text-xl font-semibold">{item.title}</h4>
-                  <p className="text-sm text-muted-foreground max-w-xs mx-auto">{item.description}</p>
-                </div>
-              )
-            })}
+            ].map((section) => (
+              <div key={section.title}>
+                <h4 className="font-semibold mb-4">{section.title}</h4>
+                <ul className="space-y-2">
+                  {section.links.map((link) => (
+                    <li key={link}>
+                      <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
 
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="animate-in fade-in duration-500 rounded-3xl bg-gradient-to-r from-blue-500 to-cyan-400 p-12 text-center shadow-2xl shadow-blue-500/25">
-            <h3 className="font-serif text-3xl font-bold md:text-4xl text-white">Ready to Transform Your Documents?</h3>
-            <p className="mt-4 text-blue-100">Start converting files with AI intelligence today</p>
-            <Link href="/ai-transformer" className="mt-8 inline-block">
-              <Button
-                size="lg"
-                className="bg-white text-blue-600 hover:bg-blue-50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group"
-              >
-                Get Started Now
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
-            </Link>
+          <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground">© 2025 Doccoder. All rights reserved.</p>
+            <div className="flex gap-6">
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Privacy
+              </a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Terms
+              </a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Cookies
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
-
-      <footer className="border-t border-border/40 bg-background py-8">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col items-center gap-4">
-          <h2
-            className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent"
-            style={{ fontFamily: "var(--font-bodoni)" }}
-          >
-            Doccoder
-          </h2>
-          <p className="text-sm text-muted-foreground">© 2025 Doccoder. All rights reserved. Powered by AI.</p>
         </div>
       </footer>
     </main>
