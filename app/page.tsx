@@ -46,12 +46,14 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
-              Sign In
-            </Button>
-            <Link href="/ai-transformer">
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="hidden md:inline-flex">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/signup">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
-                Get Started
+                Try Now
               </Button>
             </Link>
             <ThemeToggle />
