@@ -11,6 +11,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
+const supabase = createClient()
+
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -23,7 +25,6 @@ export default function SignUpPage() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
