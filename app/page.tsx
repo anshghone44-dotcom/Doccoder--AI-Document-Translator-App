@@ -74,8 +74,8 @@ export default function Home() {
               <span className="font-medium">AI-Powered Translation Technology</span>
             </div>
 
-            <h1 className="font-serif text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance animate-in fade-in slide-in-from-bottom-4 duration-700">
-              Translate Documents Instantly with <span className="text-primary">AI</span>
+            <h1 className="font-sans text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance animate-in fade-in slide-in-from-bottom-4 duration-700">
+              Make your work clear with Doccoder
             </h1>
 
             <p className="text-xl text-muted-foreground text-balance leading-relaxed max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
@@ -106,7 +106,7 @@ export default function Home() {
       <section id="features" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+            <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
               Why Choose Doccoder?
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -156,7 +156,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="rounded-2xl border border-border bg-gradient-to-br from-card via-card to-primary/5 p-12 shadow-2xl">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+              <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
                 Supported Document Formats
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -187,7 +187,7 @@ export default function Home() {
       <section id="languages" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+            <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
               150+ Languages Supported
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -218,7 +218,7 @@ export default function Home() {
       <section id="security" className="py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+            <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
               Enterprise-Grade Security
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -256,7 +256,7 @@ export default function Home() {
 
       <section id="pricing" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="font-serif text-4xl font-bold mb-6">
+          <h2 className="font-sans text-4xl font-bold mb-6">
             Ready to Transform Your Documents?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">

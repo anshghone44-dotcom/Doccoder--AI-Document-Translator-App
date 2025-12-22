@@ -1,21 +1,16 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display, Open_Sans, Bodoni_Moda } from "next/font/google"
+import { Manrope, Bodoni_Moda } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Suspense } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const playfair = Playfair_Display({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-manrope",
   display: "swap",
-})
-
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  variable: "--font-open-sans",
-  display: "swap",
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
 })
 
 const bodoniModa = Bodoni_Moda({
@@ -38,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans ${playfair.variable} ${openSans.variable} ${bodoniModa.variable}`}>
+      <body className={`font-sans ${manrope.variable} ${bodoniModa.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Suspense>
             {children}

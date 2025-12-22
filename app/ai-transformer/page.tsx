@@ -24,7 +24,7 @@ export default function Page() {
             <div className="flex items-center gap-2 animate-in fade-in duration-500">
               <h1
                 className="text-3xl font-black tracking-tight bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent logo-flip cursor-pointer transition-all duration-300"
-                style={{ fontFamily: "Erstoria Bold Serif Display Font" }}
+                style={{ fontFamily: "var(--font-bodoni)" }}
               >
                 Doccoder
               </h1>
@@ -54,7 +54,7 @@ export default function Page() {
       {/* Hero Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 text-center md:py-24">
         <div className="space-y-4">
-          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-playfair text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
+          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-sans text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
             Transform Documents with{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               AI Intelligence
@@ -73,7 +73,7 @@ export default function Page() {
           <div className="space-y-2">
             <h2 className="text-3xl font-bold">Convert to PDF</h2>
             <p className="text-muted-foreground">
-              PDF documents can be easily converted and translated. 
+              PDF documents can be easily converted and translated.
             </p>
           </div>
           <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50">
@@ -86,7 +86,7 @@ export default function Page() {
           <div className="space-y-2">
             <h2 className="text-3xl font-bold">Convert from PDF</h2>
             <p className="text-muted-foreground">
-              All types of files can be converted and translated with AI assistance. 
+              All types of files can be converted and translated with AI assistance.
             </p>
           </div>
           <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50">
