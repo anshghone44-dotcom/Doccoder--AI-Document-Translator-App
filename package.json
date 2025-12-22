@@ -54,7 +54,7 @@
     "jszip": "latest",
     "lucide-react": "^0.454.0",
     "mammoth": "latest",
-    "next": "14.2.25",
+    "next": "14.2.35",
     "next-themes": "latest",
     "openai": "latest",
     "pdf-lib": "latest",
