@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, Zap, Building2, CheckCircle2, Globe } from "lucide-react"
+import { ArrowRight, Shield, Zap, FileCheck, Lock, Gauge } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { UploadZone } from "@/components/upload-zone"
 
 export default function Home() {
   return (
@@ -22,13 +23,19 @@ export default function Home() {
                 href="#features"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Platform
+                Features
               </a>
               <a
-                href="#solutions"
+                href="#languages"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Solutions
+                Languages
+              </a>
+              <a
+                href="#pricing"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Pricing
               </a>
               <a
                 href="#security"
@@ -40,14 +47,14 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/auth/login">
+            <Link href="/login">
               <Button variant="ghost" size="sm" className="hidden md:inline-flex">
                 Sign In
               </Button>
             </Link>
-            <Link href="/auth/sign-up">
+            <Link href="/ai-transformer">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
-                Get Started
+                Translate Document
               </Button>
             </Link>
             <ThemeToggle />
@@ -56,181 +63,189 @@ export default function Home() {
       </header>
 
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-        <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
-          <div className="mx-auto max-w-3xl text-center space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm">
-              <Shield className="h-3.5 w-3.5 text-primary" />
-              <span className="font-medium">Enterprise-Grade Security & Compliance</span>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,119,198,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(74,222,128,0.1),transparent_50%)]" />
+
+        <div className="relative mx-auto max-w-7xl px-6 py-16 md:py-24">
+          <div className="mx-auto max-w-4xl text-center space-y-8 mb-16">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 backdrop-blur-sm px-4 py-1.5 text-sm shadow-lg">
+              <Zap className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium">AI-Powered Translation Technology</span>
             </div>
 
-            <h1 className="font-serif text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance">
-              AI-Powered Document Translation for <span className="text-primary">Global Enterprises</span>
+            <h1 className="font-serif text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance animate-in fade-in slide-in-from-bottom-4 duration-700">
+              Translate Documents Instantly with <span className="text-primary">AI</span>
             </h1>
 
-            <p className="text-xl text-muted-foreground text-balance leading-relaxed">
-              Translate legal contracts, compliance documents, and enterprise content with guaranteed accuracy. Trusted
-              by Fortune 500 companies worldwide.
+            <p className="text-xl text-muted-foreground text-balance leading-relaxed max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+              Experience lightning-fast document translation with unmatched accuracy and complete privacy.
+              Your documents, translated perfectly in seconds.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link href="/auth/sign-up">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Start Free Trial
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+                <a href="#upload">
+                  Start Translating
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline">
-                Schedule Demo
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <a href="#formats">View Supported Formats</a>
               </Button>
             </div>
+          </div>
+
+          {/* Upload Section */}
+          <div id="upload" className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+            <UploadZone />
           </div>
         </div>
       </section>
 
-      <section id="solutions" className="py-24 bg-muted/30">
+      <section id="features" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">Purpose-Built for Enterprise Needs</h2>
+            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+              Why Choose Doccoder?
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Industry-specific solutions with guaranteed accuracy for mission-critical documents
+              Professional-grade translation powered by cutting-edge AI technology
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                icon: Shield,
-                title: "Legal & Compliance",
-                description: "Multi-model validation for contracts and regulatory documents with audit trails.",
-                features: ["99.9% accuracy guarantee", "Legal terminology database", "Compliance tracking"],
+                icon: Zap,
+                title: "AI-Powered Translation",
+                description: "Advanced neural networks deliver human-quality translations in seconds.",
               },
               {
-                icon: Building2,
-                title: "Financial Services",
-                description: "Secure translation for financial statements, reports, and sensitive documents.",
-                features: ["SOC 2 Type II certified", "Real-time validation", "Multi-currency support"],
+                icon: FileCheck,
+                title: "Preserves Formatting",
+                description: "Maintains your document's original layout, fonts, and styling perfectly.",
               },
               {
-                icon: Globe,
-                title: "Healthcare & Life Sciences",
-                description: "HIPAA-compliant translation for medical records and clinical documentation.",
-                features: ["Medical terminology AI", "HIPAA compliance", "Clinical accuracy"],
+                icon: Lock,
+                title: "Secure & Private",
+                description: "End-to-end encryption ensures your documents remain completely confidential.",
               },
-            ].map((solution, idx) => (
+              {
+                icon: Gauge,
+                title: "Fast Turnaround",
+                description: "Get professional translations instantly, no waiting required.",
+              },
+            ].map((feature, idx) => (
               <div
                 key={idx}
-                className="group rounded-xl border border-border bg-card p-8 hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+                className="group rounded-xl border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-primary/50 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
               >
-                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <solution.icon className="h-6 w-6" />
+                <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <feature.icon className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{solution.title}</h3>
-                <p className="text-muted-foreground mb-6">{solution.description}</p>
-                <ul className="space-y-2">
-                  {solution.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-primary" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="features" className="py-24">
+      <section id="formats" className="py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-16 lg:grid-cols-2 items-center">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm">
-                <Zap className="h-3.5 w-3.5 text-primary" />
-                <span className="font-medium">AI-Powered Accuracy</span>
-              </div>
-              <h2 className="font-serif text-4xl font-bold">Translation with Legal Accuracy Guarantee</h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Our multi-model AI system cross-validates every translation, providing line-by-line justification and
-                confidence scores. Perfect for contracts, compliance documents, and regulatory filings.
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-card via-card to-primary/5 p-12 shadow-2xl">
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+                Supported Document Formats
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                We support all major document formats for seamless translation
               </p>
-              <ul className="space-y-4">
-                {[
-                  "Multi-model validation (GPT-5, Claude, Grok)",
-                  "OCR and AI scanning for document analysis",
-                  "Real-time document editing capabilities",
-                  "Advanced image analysis and extraction",
-                  "Domain-specific glossaries and terminology",
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/auth/sign-up">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
-                  Try Platform
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-2xl">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Translation Accuracy</span>
-                  <span className="text-sm font-bold text-primary">99.2%</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+              {[
+                { name: "PDF Documents", ext: ".pdf" },
+                { name: "Word Documents", ext: ".docx" },
+                { name: "PowerPoint", ext: ".pptx" },
+                { name: "Text Files", ext: ".txt" },
+              ].map((format, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center gap-3 p-6 rounded-lg bg-background/50 border border-border hover:border-primary/50 transition-colors"
+                >
+                  <div className="text-4xl font-bold text-primary">{format.ext}</div>
+                  <div className="text-sm font-medium text-center">{format.name}</div>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-primary w-[99.2%]" />
-                </div>
-                <div className="grid grid-cols-3 gap-4 pt-4">
-                  {[
-                    { label: "Documents", value: "500K+" },
-                    { label: "Languages", value: "150+" },
-                    { label: "Uptime", value: "99.99%" },
-                  ].map((stat) => (
-                    <div key={stat.label} className="text-center">
-                      <div className="text-2xl font-bold text-primary">{stat.value}</div>
-                      <div className="text-xs text-muted-foreground">{stat.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section id="security" className="py-24 bg-muted/30">
+      <section id="languages" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">Enterprise-Grade Security & Compliance</h2>
+          <div className="text-center mb-12">
+            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+              150+ Languages Supported
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Built for organizations that can't afford translation errors
+              Translate between any language pair with professional accuracy
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
             {[
-              { label: "SOC 2 Type II", icon: Shield },
+              "English", "Spanish", "French", "German", "Chinese", "Japanese",
+              "Arabic", "Hindi", "Portuguese", "Russian", "Italian", "Korean",
+              "Dutch", "Turkish", "Polish", "Vietnamese"
+            ].map((lang, idx) => (
+              <div
+                key={idx}
+                className="px-4 py-2 rounded-full bg-card border border-border text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-colors"
+              >
+                {lang}
+              </div>
+            ))}
+            <div className="px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-medium text-primary">
+              +134 more
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="security" className="py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl font-bold md:text-4xl mb-4">
+              Enterprise-Grade Security
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Your documents are protected with industry-leading security standards
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
+            {[
+              { label: "256-bit Encryption", icon: Shield },
               { label: "GDPR Compliant", icon: Shield },
-              { label: "HIPAA Ready", icon: Shield },
+              { label: "SOC 2 Certified", icon: Shield },
               { label: "ISO 27001", icon: Shield },
             ].map((cert, idx) => (
-              <div key={idx} className="flex items-center gap-3 rounded-lg border border-border bg-card p-6">
-                <cert.icon className="h-8 w-8 text-primary" />
+              <div key={idx} className="flex items-center gap-3 rounded-lg border border-border bg-card p-6 shadow-sm">
+                <cert.icon className="h-8 w-8 text-primary flex-shrink-0" />
                 <span className="font-semibold">{cert.label}</span>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 rounded-2xl border border-border bg-card p-12 text-center">
-            <h3 className="text-2xl font-bold mb-4">99.9% Accuracy Guarantee</h3>
-            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-              Our multi-model validation system ensures translation accuracy that meets legal and compliance standards.
-              Backed by comprehensive audit trails and justification reports.
+          <div className="rounded-2xl border border-border bg-card p-12 text-center shadow-xl">
+            <Shield className="w-16 h-16 text-primary mx-auto mb-6" />
+            <h3 className="text-2xl font-bold mb-4">Your Privacy is Our Priority</h3>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
+              All documents are processed with end-to-end encryption and automatically deleted after translation.
+              We never store or share your data with third parties.
             </p>
             <Button size="lg" variant="outline">
               Read Security Documentation
@@ -239,21 +254,23 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24">
+      <section id="pricing" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="font-serif text-4xl font-bold mb-6">Ready to Transform Your Enterprise Translation?</h2>
+          <h2 className="font-serif text-4xl font-bold mb-6">
+            Ready to Transform Your Documents?
+          </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join leading enterprises using Doccoder for mission-critical document translation
+            Start translating with AI-powered accuracy today
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/sign-up">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
-                Start Free Trial
+            <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
+              <a href="#upload">
+                Start Free Translation
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline">
-              Contact Sales
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/login">Sign In to Continue</Link>
             </Button>
           </div>
         </div>
@@ -266,13 +283,15 @@ export default function Home() {
               <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
                 Doccoder
               </h3>
-              <p className="text-sm text-muted-foreground">Enterprise-grade AI translation with guaranteed accuracy</p>
+              <p className="text-sm text-muted-foreground">
+                AI-powered document translation with guaranteed accuracy and privacy
+              </p>
             </div>
 
             {[
               {
                 title: "Product",
-                links: ["Platform", "Solutions", "Security"],
+                links: ["Features", "Languages", "Pricing", "Security"],
               },
               {
                 title: "Company",
