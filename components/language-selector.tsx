@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Languages, Check } from "lucide-react"
+import { Languages, Check, ChevronDown, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -28,15 +28,26 @@ const languages: { code: LanguageCode; name: string; nativeName: string }[] = [
 
 export function LanguageSelector() {
     const { language, setLanguage } = useTranslation()
+    const [isHovered, setIsHovered] = React.useState(false)
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center gap-2 h-9 px-3 hover:bg-muted font-medium transition-all duration-300">
-                    <Languages className="h-4 w-4" />
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2 h-9 px-3 hover:bg-muted font-medium transition-all duration-300 relative group"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    <div className="relative">
+                        <Languages className={`h-4 w-4 transition-all duration-300 ${isHovered ? "opacity-0 scale-50" : "opacity-100 scale-100"}`} />
+                        <Star className={`h-4 w-4 absolute inset-0 transition-all duration-300 text-yellow-500 fill-yellow-500 ${isHovered ? "opacity-100 scale-110 rotate-[72deg]" : "opacity-0 scale-50 rotate-0"}`} />
+                    </div>
                     <span className="hidden sm:inline-block">
                         {languages.find((l) => l.code === language)?.nativeName}
                     </span>
+                    <ChevronDown className={`h-3 w-3 transition-transform duration-300 opacity-60 ${isHovered ? "translate-y-0.5" : ""}`} />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[180px] max-h-[300px] overflow-y-auto p-1 backdrop-blur-xl bg-background/95 border-border/40 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
