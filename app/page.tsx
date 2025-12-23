@@ -1,6 +1,8 @@
 "use client"
 
-import { Zap, FileCheck, Lock, Gauge } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Zap, FileCheck, Lock, Gauge, Star } from "lucide-react"
 import { useTranslation } from "@/components/language-context"
 import Header from "@/components/header"
 
@@ -57,6 +59,23 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="py-12 bg-muted/30">
+        <div className="mx-auto max-w-7xl px-6 text-center">
+          <Link href="/ai-transformer" target="_blank">
+            <Button
+              size="lg"
+              className="group relative overflow-hidden bg-primary px-10 py-8 text-xl font-bold text-primary-foreground transition-all duration-300 hover:scale-105 hover:bg-primary/90 hover:shadow-2xl active:scale-95 rounded-2xl shadow-lg border border-primary/20"
+            >
+              <span className="relative z-10 flex items-center gap-3">
+                {t.hero.cta}
+                <Star className="h-6 w-6 transition-all duration-500 group-hover:rotate-[360deg] group-hover:scale-125 fill-current" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full -translate-x-full skew-x-12" />
+            </Button>
+          </Link>
         </div>
       </section>
 

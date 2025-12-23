@@ -42,22 +42,20 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                             Doccoder
                         </h1>
                     </Link>
-                    {!showBackButton && (
-                        <nav className="hidden gap-6 md:flex items-center ml-4">
-                            <a
-                                href="/#features"
-                                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                {t.nav.features}
-                            </a>
-                            <a
-                                href="/#pricing"
-                                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                {t.nav.pricing}
-                            </a>
-                        </nav>
-                    )}
+                    <nav className="hidden gap-6 md:flex items-center ml-4">
+                        <a
+                            href="/#features"
+                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            {t.nav.features}
+                        </a>
+                        <a
+                            href="/#pricing"
+                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            {t.nav.pricing}
+                        </a>
+                    </nav>
                 </div>
 
                 <div className="flex items-center gap-4">
