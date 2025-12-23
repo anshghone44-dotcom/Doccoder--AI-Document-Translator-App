@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 transition-all duration-300">
+      <header className="bg-muted transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
@@ -189,18 +189,7 @@ export default function Home() {
           <p className="text-xl text-muted-foreground mb-8">
             Start translating with AI-powered accuracy today
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 relative transition-all duration-300"
-              asChild
-            >
-              <a href="#upload">
-                Start Free Translation
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
-          </div>
+
         </div>
       </section>
 
@@ -216,33 +205,7 @@ export default function Home() {
               </p>
             </div>
 
-            {[
-              {
-                title: "Product",
-                links: ["Features", "Languages", "Pricing", "Security"],
-              },
-              {
-                title: "Company",
-                links: ["About", "Careers", "Contact", "Partners"],
-              },
-              {
-                title: "Resources",
-                links: ["Documentation", "API", "Support", "Status"],
-              },
-            ].map((section) => (
-              <div key={section.title}>
-                <h4 className="font-semibold mb-4">{section.title}</h4>
-                <ul className="space-y-2">
-                  {section.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+
           </div>
 
           <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
@@ -253,9 +216,6 @@ export default function Home() {
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Terms
-              </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Cookies
               </a>
             </div>
           </div>
