@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-secondary to-background">
       {/* Header with Back Button */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-all duration-300">
+      <header className="sticky top-0 z-50 bg-[#F9F9FB] dark:bg-zinc-900/90 border-b border-border/40 backdrop-blur-sm transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Link href="/">

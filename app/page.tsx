@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="bg-muted transition-all duration-300">
+      <header className="sticky top-0 z-50 bg-[#F9F9FB] dark:bg-zinc-900/90 border-b border-border/40 backdrop-blur-sm transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
@@ -181,42 +181,42 @@ export default function Home() {
       </section>
 
 
-      <section id="pricing" className="py-24 bg-muted/30">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="font-sans text-4xl font-bold mb-6">
-            Ready to Transform Your Documents?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Start translating with AI-powered accuracy today
-          </p>
-
-        </div>
-      </section>
-
       <footer className="border-t border-border bg-card">
         <div className="mx-auto max-w-7xl px-6 py-12">
-          <div className="grid gap-8 md:grid-cols-4">
+          <div className="flex flex-col items-center text-center space-y-6">
             <div className="space-y-4">
               <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
                 Doccoder
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground max-w-md">
                 AI-powered document translation with guaranteed accuracy and privacy
               </p>
             </div>
 
+            <div className="pt-4 border-t border-border w-full flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="md:w-1/3" /> {/* Spacer for centering */}
 
-          </div>
+              <p className="text-sm text-muted-foreground order-2 md:order-1">
+                © 2025 Doccoder. All rights reserved.
+              </p>
 
-          <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">© 2025 Doccoder. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Privacy
-              </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Terms
-              </a>
+              <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 order-1 md:order-2 md:w-1/3">
+                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Privacy
+                </a>
+                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Terms
+                </a>
+                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Cookies
+                </a>
+                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Download
+                </a>
+                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Settings
+                </a>
+              </div>
             </div>
           </div>
         </div>
