@@ -10,13 +10,63 @@ export default function Home() {
   const { t } = useTranslation()
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background relative overflow-hidden">
       <Header />
 
-      <section id="features" className="py-24 bg-muted/30">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/2 rounded-full blur-3xl" />
+        </div>
+
+        <div className="mx-auto max-w-7xl px-6 relative z-10">
+          <div className="flex flex-col items-center text-center space-y-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-xs font-semibold tracking-wider uppercase text-primary/70 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <Zap className="h-3 w-3 fill-current" />
+              {t.hero.zapTitle}
+            </div>
+
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+              {t.hero.title.split(" ").slice(0, -1).join(" ")}{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/40 text-glow">
+                {t.hero.title.split(" ").pop()}
+              </span>
+            </h1>
+
+            <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
+              {t.hero.description}
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
+              <Link href="/ai-transformer" target="_blank">
+                <Button
+                  size="lg"
+                  className="h-14 px-8 text-lg font-bold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.24)] hover:scale-105 active:scale-95 group"
+                >
+                  {t.hero.cta}
+                  <Star className="ml-2 h-5 w-5 transition-transform duration-500 group-hover:rotate-[144deg] group-hover:scale-110 fill-current" />
+                </Button>
+              </Link>
+              <Link href="#features">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="h-14 px-8 text-lg font-semibold border-border bg-transparent hover:bg-muted/50 transition-all duration-300 rounded-2xl"
+                >
+                  {t.nav.features}
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="py-24 relative">
+        <div className="absolute inset-0 bg-muted/20 -skew-y-3 origin-right" />
+        <div className="mx-auto max-w-7xl px-6 relative">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
               {t.features.title}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -49,41 +99,55 @@ export default function Home() {
             ].map((feature, idx) => (
               <div
                 key={idx}
-                className="group rounded-xl border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-primary/50 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                className="group relative rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-8 hover:border-foreground/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 overflow-hidden"
               >
-                <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <feature.icon className="h-7 w-7" />
+                <div className="absolute top-0 right-0 p-4 opacity-5 transition-opacity group-hover:opacity-10">
+                  <feature.icon className="h-24 w-24" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground/5 text-foreground group-hover:bg-foreground group-hover:text-background transition-all duration-500">
+                  <feature.icon className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-12 bg-muted/30">
-        <div className="mx-auto max-w-7xl px-6 text-center">
-          <Link href="/ai-transformer" target="_blank">
-            <Button
-              size="lg"
-              className="group relative overflow-hidden bg-primary px-10 py-8 text-xl font-bold text-primary-foreground transition-all duration-300 hover:scale-105 hover:bg-primary/90 hover:shadow-2xl active:scale-95 rounded-2xl shadow-lg border border-primary/20"
-            >
-              <span className="relative z-10 flex items-center gap-3">
-                {t.hero.cta}
-                <Star className="h-6 w-6 transition-all duration-500 group-hover:rotate-[360deg] group-hover:scale-125 fill-current" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full -translate-x-full skew-x-12" />
-            </Button>
-          </Link>
+      {/* Middle CTA Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-foreground/[0.02]" />
+        <div className="mx-auto max-w-7xl px-6 relative text-center">
+          <div className="max-w-3xl mx-auto space-y-10">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground/90">
+              Ready to experience lightning-fast translations?
+            </h2>
+            <Link href="/ai-transformer" target="_blank">
+              <Button
+                size="lg"
+                className="h-16 px-12 text-xl font-black bg-foreground text-background hover:bg-foreground/90 transition-all duration-500 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 group relative overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-4">
+                  {t.hero.cta}
+                  <Star className="h-6 w-6 transition-transform duration-700 group-hover:rotate-[144deg] group-hover:scale-125 fill-current" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full -translate-x-full skew-x-12" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section id="formats" className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="rounded-2xl border border-border bg-gradient-to-br from-card via-card to-primary/5 p-12 shadow-2xl">
-            <div className="text-center mb-12">
-              <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
+
+      <section id="formats" className="py-24 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/2 rounded-full blur-[120px] pointer-events-none" />
+        <div className="mx-auto max-w-7xl px-6 relative">
+          <div className="rounded-3xl border border-border/50 bg-card/30 backdrop-blur-xl p-12 shadow-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.02] to-transparent" />
+
+            <div className="text-center mb-16 relative z-10">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">
                 {t.formats.title}
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -91,19 +155,24 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto relative z-10">
               {[
-                { name: "PDF Documents", ext: ".pdf" },
-                { name: "Word Documents", ext: ".docx" },
-                { name: "PowerPoint", ext: ".pptx" },
-                { name: "Text Files", ext: ".txt" },
+                { name: "PDF Documents", ext: ".pdf", delay: "0" },
+                { name: "Word Documents", ext: ".docx", delay: "100" },
+                { name: "PowerPoint", ext: ".pptx", delay: "200" },
+                { name: "Text Files", ext: ".txt", delay: "300" },
               ].map((format, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col items-center gap-3 p-6 rounded-lg bg-background/50 border border-border hover:border-primary/50 transition-colors"
+                  className="flex flex-col items-center gap-4 p-8 rounded-2xl bg-background/40 border border-border/50 hover:border-foreground/20 hover:bg-background/60 hover:scale-105 transition-all duration-300 group/item shadow-sm hover:shadow-xl"
+                  style={{ transitionDelay: `${format.delay}ms` }}
                 >
-                  <div className="text-4xl font-bold text-primary">{format.ext}</div>
-                  <div className="text-sm font-medium text-center">{format.name}</div>
+                  <div className="text-5xl font-black text-foreground/20 group-hover/item:text-foreground/80 transition-colors duration-500">
+                    {format.ext}
+                  </div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover/item:text-foreground transition-colors">
+                    {format.name}
+                  </div>
                 </div>
               ))}
             </div>
