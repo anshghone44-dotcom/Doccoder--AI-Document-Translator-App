@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 
 const FILE_TYPES = [
     { icon: FileText, label: "PDF", ext: ".pdf", color: "text-red-500" },
-    { icon: FileText, label: "DOCX", ext: ".docx", color: "text-blue-500" },
+    { icon: FileText, label: "DOCX", ext: ".docx", color: "text-zinc-500" },
     { icon: Presentation, label: "PPTX", ext: ".pptx", color: "text-orange-500" },
     { icon: File, label: "TXT", ext: ".txt", color: "text-gray-500" },
 ]
