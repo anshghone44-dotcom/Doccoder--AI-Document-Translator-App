@@ -66,6 +66,20 @@ export default function Home() {
                 )}
               </Button>
             </Link>
+            <Link href="/auth/sign-up">
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:inline-flex relative transition-all duration-300 hover:bg-primary hover:text-primary-foreground group"
+                onMouseEnter={() => setHoveredButton("signup")}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
+                Sign Up
+                {hoveredButton === "signup" && (
+                  <Star className="absolute right-2 h-3 w-3 fill-current" />
+                )}
+              </Button>
+            </Link>
             <Link href="/ai-transformer">
               <Button
                 size="sm"
