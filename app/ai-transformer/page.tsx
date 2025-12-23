@@ -2,46 +2,15 @@
 
 import TransformChat from "@/components/transform-chat"
 import ReverseTransformChat from "@/components/reverse-transform-chat"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft } from "lucide-react"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSelector } from "@/components/language-selector"
 import { useTranslation } from "@/components/language-context"
+import Header from "@/components/header"
 
 export default function Page() {
   const { t } = useTranslation()
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-secondary to-background">
       {/* Header with Back Button */}
-      <header className="sticky top-0 z-50 bg-[#F9F9FB] dark:bg-zinc-900/90 border-b border-border/40 backdrop-blur-sm transition-all duration-300">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="transition-all duration-300 hover:bg-primary/10 hover:scale-105"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2 animate-in fade-in duration-500">
-              <h1
-                className="text-3xl font-black tracking-tight bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent logo-flip cursor-pointer transition-all duration-300"
-                style={{ fontFamily: "var(--font-bodoni)" }}
-              >
-                Doccoder
-              </h1>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <LanguageSelector />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <Header showBackButton />
 
       {/* Hero Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 text-center md:py-24">

@@ -1,64 +1,15 @@
 "use client"
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Zap, FileCheck, Lock, Gauge, Star } from "lucide-react"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { useState } from "react"
-import { LanguageSelector } from "@/components/language-selector"
+import { Zap, FileCheck, Lock, Gauge } from "lucide-react"
 import { useTranslation } from "@/components/language-context"
+import Header from "@/components/header"
 
 export default function Home() {
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null)
   const { t } = useTranslation()
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-[#F9F9FB] dark:bg-zinc-900/90 border-b border-border/40 backdrop-blur-sm transition-all duration-300">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2">
-              <h1
-                className="text-2xl font-bold tracking-tight text-foreground hover:text-primary transition-colors"
-                style={{ fontFamily: "var(--font-bodoni)" }}
-              >
-                Doccoder
-              </h1>
-            </Link>
-            <nav className="hidden gap-6 md:flex items-center">
-              <a
-                href="#features"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t.nav.features}
-              </a>
-              <a
-                href="#pricing"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t.nav.pricing}
-              </a>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <LanguageSelector />
-            <Link href="/auth/login">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-foreground hover:text-background group"
-                onMouseEnter={() => setHoveredButton("signin")}
-                onMouseLeave={() => setHoveredButton(null)}
-              >
-                {t.nav.signIn}
-                <Star className={`h-3 w-3 transition-colors ${hoveredButton === "signin" ? "fill-current text-white dark:text-black" : "text-transparent"}`} />
-              </Button>
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <section id="features" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6">
