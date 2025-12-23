@@ -57,20 +57,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-background via-primary/5 to-accent/10 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,0,0,0.02),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(0,0,0,0.01),transparent_50%)]" />
+    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-foreground/[0.02] rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-foreground/[0.03] rounded-full blur-[100px]" />
+      </div>
 
       <div className="w-full max-w-sm relative z-10">
-        <div className="mb-8 text-center">
+        <div className="mb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
           <Link href="/">
-            <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
+            <h1 className="text-4xl font-black tracking-tighter hover:text-primary transition-colors duration-500" style={{ fontFamily: "var(--font-bodoni)" }}>
               Doccoder
             </h1>
           </Link>
         </div>
 
-        <Card className="shadow-2xl border-border/50 backdrop-blur-sm bg-card/95">
+        <Card className="shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-border/50 backdrop-blur-xl bg-card/60 rounded-3xl overflow-hidden animate-in fade-in scale-95 duration-700 delay-200">
           <CardHeader>
             <CardTitle className="text-2xl">{lt.title}</CardTitle>
             <CardDescription>{lt.subtitle}</CardDescription>
