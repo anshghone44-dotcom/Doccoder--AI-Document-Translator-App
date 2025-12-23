@@ -8,6 +8,8 @@ import { UploadZone } from "@/components/upload-zone"
 import { useState } from "react"
 
 export default function Home() {
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null)
+
   return (
     <main className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
@@ -50,14 +52,31 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="hidden md:inline-flex">
+            <Link href="/auth/login">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden md:inline-flex relative transition-all duration-300 hover:bg-primary hover:text-primary-foreground group"
+                onMouseEnter={() => setHoveredButton("signin")}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
                 Sign In
+                {hoveredButton === "signin" && (
+                  <Star className="absolute right-2 h-3 w-3 fill-current" />
+                )}
               </Button>
             </Link>
             <Link href="/ai-transformer">
-              <Button size="sm" className="bg-primary hover:bg-primary/90">
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90 relative transition-all duration-300 group"
+                onMouseEnter={() => setHoveredButton("translate")}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
                 Translate Document
+                {hoveredButton === "translate" && (
+                  <Star className="absolute right-2 h-3 w-3 fill-current" />
+                )}
               </Button>
             </Link>
             <ThemeToggle />
@@ -87,14 +106,35 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground relative transition-all duration-300"
+                asChild
+                onMouseEnter={() => setHoveredButton("hero-start")}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
                 <a href="#upload">
                   Start Translating
                   <ArrowRight className="ml-2 h-4 w-4" />
+                  {hoveredButton === "hero-start" && (
+                    <Star className="absolute right-3 h-4 w-4 fill-current" />
+                  )}
                 </a>
               </Button>
-              <Button size="lg" variant="outline" asChild>
-                <a href="#formats">View Supported Formats</a>
+              <Button
+                size="lg"
+                variant="outline"
+                className="relative transition-all duration-300"
+                asChild
+                onMouseEnter={() => setHoveredButton("hero-formats")}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
+                <a href="#formats">
+                  View Supported Formats
+                  {hoveredButton === "hero-formats" && (
+                    <Star className="absolute right-3 h-4 w-4 fill-current" />
+                  )}
+                </a>
               </Button>
             </div>
           </div>
@@ -266,14 +306,35 @@ export default function Home() {
             Start translating with AI-powered accuracy today
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 relative transition-all duration-300"
+              asChild
+              onMouseEnter={() => setHoveredButton("pricing-start")}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
               <a href="#upload">
                 Start Free Translation
                 <ArrowRight className="ml-2 h-4 w-4" />
+                {hoveredButton === "pricing-start" && (
+                  <Star className="absolute right-3 h-4 w-4 fill-current" />
+                )}
               </a>
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/login">Sign In to Continue</Link>
+            <Button
+              size="lg"
+              variant="outline"
+              className="relative transition-all duration-300"
+              asChild
+              onMouseEnter={() => setHoveredButton("pricing-signin")}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              <Link href="/auth/login">
+                Sign In to Continue
+                {hoveredButton === "pricing-signin" && (
+                  <Star className="absolute right-3 h-4 w-4 fill-current" />
+                )}
+              </Link>
             </Button>
           </div>
         </div>
