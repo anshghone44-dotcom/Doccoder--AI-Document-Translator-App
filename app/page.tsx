@@ -1,8 +1,11 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, Zap, FileCheck, Lock, Gauge } from "lucide-react"
+import { ArrowRight, Shield, Zap, FileCheck, Lock, Gauge, Star } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UploadZone } from "@/components/upload-zone"
+import { useState } from "react"
 
 export default function Home() {
   return (
