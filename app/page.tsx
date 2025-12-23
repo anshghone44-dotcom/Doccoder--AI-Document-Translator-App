@@ -2,9 +2,8 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, Zap, FileCheck, Lock, Gauge, Star } from "lucide-react"
+import { Zap, FileCheck, Lock, Gauge, Star } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { UploadZone } from "@/components/upload-zone"
 import { useState } from "react"
 import { LanguageSelector } from "@/components/language-selector"
 import { useTranslation } from "@/components/language-context"
@@ -60,47 +59,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-background" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,0,0,0.03),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(0,0,0,0.02),transparent_50%)]" />
-
-        <div className="relative mx-auto max-w-7xl px-6 py-16 md:py-24">
-          <div className="mx-auto max-w-4xl text-center space-y-8 mb-16">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 backdrop-blur-sm px-4 py-1.5 text-sm shadow-lg">
-              <Zap className="h-3.5 w-3.5 text-primary" />
-              <span className="font-medium">{t.hero.zapTitle}</span>
-            </div>
-
-            <h1 className="font-sans text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance animate-in fade-in slide-in-from-bottom-4 duration-700">
-              {t.hero.title}
-            </h1>
-
-            <p className="text-xl text-muted-foreground text-balance leading-relaxed max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-              {t.hero.description}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground relative transition-all duration-300"
-                asChild
-              >
-                <a href="#upload">
-                  {t.hero.cta}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
-            </div>
-          </div>
-
-          {/* Upload Section */}
-          <div id="upload" className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
-            <UploadZone />
-          </div>
-        </div>
-      </section>
 
       <section id="features" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6">

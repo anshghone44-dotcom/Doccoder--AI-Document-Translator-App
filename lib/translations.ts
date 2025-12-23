@@ -4,6 +4,7 @@ export const translations = {
             features: "Features",
             pricing: "Pricing",
             signIn: "Sign In",
+            selectLanguage: "Select Language",
         },
         hero: {
             zapTitle: "AI-Powered Translation Technology",
@@ -94,6 +95,7 @@ export const translations = {
             features: "विशेषताएं",
             pricing: "मूल्य निर्धारण",
             signIn: "साइन इन करें",
+            selectLanguage: "भाषा चुनें",
         },
         hero: {
             zapTitle: "एआई-संचालित अनुवाद तकनीक",
@@ -184,6 +186,7 @@ export const translations = {
             features: "वैशिष्ट्ये",
             pricing: "किंमत",
             signIn: "साइन इन करा",
+            selectLanguage: "भाषा निवडा",
         },
         hero: {
             zapTitle: "AI-आधारित भाषांतर तंत्रज्ञान",
@@ -274,6 +277,7 @@ export const translations = {
             features: "বৈশিষ্ট্য",
             pricing: "মূল্য নির্ধারণ",
             signIn: "সাইন ইন করুন",
+            selectLanguage: "ভাষা নির্বাচন করুন",
         },
         hero: {
             zapTitle: "এআই-চালিত অনুবাদ প্রযুক্তি",
@@ -364,6 +368,7 @@ export const translations = {
             features: "વિશેષતાઓ",
             pricing: "કિંમત",
             signIn: "સાઇન ઇન કરો",
+            selectLanguage: "ભાષા પસંદ કરો",
         },
         hero: {
             zapTitle: "AI-સંચાલિત અનુવાદ ટેકનોલોજી",
@@ -454,6 +459,7 @@ export const translations = {
             features: "Fonctionnalités",
             pricing: "Tarification",
             signIn: "Se connecter",
+            selectLanguage: "Choisir la langue",
         },
         hero: {
             zapTitle: "Technologie de traduction alimentée par l'IA",
@@ -544,6 +550,7 @@ export const translations = {
             features: "功能",
             pricing: "价格",
             signIn: "登录",
+            selectLanguage: "选择语言",
         },
         hero: {
             zapTitle: "AI驱动的翻译技术",
@@ -634,6 +641,7 @@ export const translations = {
             features: "機能",
             pricing: "料金",
             signIn: "サインイン",
+            selectLanguage: "言語を選択",
         },
         hero: {
             zapTitle: "AI駆動の翻訳技術",
@@ -724,6 +732,7 @@ export const translations = {
             features: "Funktionen",
             pricing: "Preise",
             signIn: "Anmelden",
+            selectLanguage: "Sprache wählen",
         },
         hero: {
             zapTitle: "KI-gestützte Übersetzungstechnologie",
@@ -814,6 +823,7 @@ export const translations = {
             features: "Características",
             pricing: "Precios",
             signIn: "Iniciar sesión",
+            selectLanguage: "Seleccionar idioma",
         },
         hero: {
             zapTitle: "Tecnología de traducción impulsada por IA",
@@ -904,6 +914,7 @@ export const translations = {
             features: "기능",
             pricing: "가격",
             signIn: "로그인",
+            selectLanguage: "언어 선택",
         },
         hero: {
             zapTitle: "AI 기반 번역 기술",
