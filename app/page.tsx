@@ -31,22 +31,10 @@ export default function Home() {
                 Features
               </a>
               <a
-                href="#languages"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Languages
-              </a>
-              <a
                 href="#pricing"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Pricing
-              </a>
-              <a
-                href="#security"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Security
               </a>
             </nav>
           </div>
@@ -56,41 +44,12 @@ export default function Home() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="hidden md:inline-flex relative transition-all duration-300 hover:bg-primary hover:text-primary-foreground group"
+                className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-primary hover:text-primary-foreground group"
                 onMouseEnter={() => setHoveredButton("signin")}
                 onMouseLeave={() => setHoveredButton(null)}
               >
                 Sign In
-                {hoveredButton === "signin" && (
-                  <Star className="absolute right-2 h-3 w-3 fill-current" />
-                )}
-              </Button>
-            </Link>
-            <Link href="/auth/sign-up">
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden md:inline-flex relative transition-all duration-300 hover:bg-primary hover:text-primary-foreground group"
-                onMouseEnter={() => setHoveredButton("signup")}
-                onMouseLeave={() => setHoveredButton(null)}
-              >
-                Sign Up
-                {hoveredButton === "signup" && (
-                  <Star className="absolute right-2 h-3 w-3 fill-current" />
-                )}
-              </Button>
-            </Link>
-            <Link href="/ai-transformer">
-              <Button
-                size="sm"
-                className="bg-primary hover:bg-primary/90 relative transition-all duration-300 group"
-                onMouseEnter={() => setHoveredButton("translate")}
-                onMouseLeave={() => setHoveredButton(null)}
-              >
-                Translate Document
-                {hoveredButton === "translate" && (
-                  <Star className="absolute right-2 h-3 w-3 fill-current" />
-                )}
+                <Star className={`h-3 w-3 transition-colors ${hoveredButton === "signin" ? "fill-current" : "text-transparent"}`} />
               </Button>
             </Link>
             <ThemeToggle />
@@ -124,30 +83,10 @@ export default function Home() {
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground relative transition-all duration-300"
                 asChild
-                onMouseEnter={() => setHoveredButton("hero-start")}
-                onMouseLeave={() => setHoveredButton(null)}
               >
                 <a href="#upload">
                   Start Translating
                   <ArrowRight className="ml-2 h-4 w-4" />
-                  {hoveredButton === "hero-start" && (
-                    <Star className="absolute right-3 h-4 w-4 fill-current" />
-                  )}
-                </a>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="relative transition-all duration-300"
-                asChild
-                onMouseEnter={() => setHoveredButton("hero-formats")}
-                onMouseLeave={() => setHoveredButton(null)}
-              >
-                <a href="#formats">
-                  View Supported Formats
-                  {hoveredButton === "hero-formats" && (
-                    <Star className="absolute right-3 h-4 w-4 fill-current" />
-                  )}
                 </a>
               </Button>
             </div>
@@ -241,75 +180,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="languages" className="py-24 bg-muted/30">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-12">
-            <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
-              150+ Languages Supported
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Translate between any language pair with professional accuracy
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
-            {[
-              "English", "Spanish", "French", "German", "Chinese", "Japanese",
-              "Arabic", "Hindi", "Portuguese", "Russian", "Italian", "Korean",
-              "Dutch", "Turkish", "Polish", "Vietnamese"
-            ].map((lang, idx) => (
-              <div
-                key={idx}
-                className="px-4 py-2 rounded-full bg-card border border-border text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-colors"
-              >
-                {lang}
-              </div>
-            ))}
-            <div className="px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-medium text-primary">
-              +134 more
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="security" className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
-              Enterprise-Grade Security
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Your documents are protected with industry-leading security standards
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
-            {[
-              { label: "256-bit Encryption", icon: Shield },
-              { label: "GDPR Compliant", icon: Shield },
-              { label: "SOC 2 Certified", icon: Shield },
-              { label: "ISO 27001", icon: Shield },
-            ].map((cert, idx) => (
-              <div key={idx} className="flex items-center gap-3 rounded-lg border border-border bg-card p-6 shadow-sm">
-                <cert.icon className="h-8 w-8 text-primary flex-shrink-0" />
-                <span className="font-semibold">{cert.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="rounded-2xl border border-border bg-card p-12 text-center shadow-xl">
-            <Shield className="w-16 h-16 text-primary mx-auto mb-6" />
-            <h3 className="text-2xl font-bold mb-4">Your Privacy is Our Priority</h3>
-            <p className="text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              All documents are processed with end-to-end encryption and automatically deleted after translation.
-              We never store or share your data with third parties.
-            </p>
-            <Button size="lg" variant="outline">
-              Read Security Documentation
-            </Button>
-          </div>
-        </div>
-      </section>
 
       <section id="pricing" className="py-24 bg-muted/30">
         <div className="mx-auto max-w-4xl px-6 text-center">
@@ -324,31 +194,11 @@ export default function Home() {
               size="lg"
               className="bg-primary hover:bg-primary/90 relative transition-all duration-300"
               asChild
-              onMouseEnter={() => setHoveredButton("pricing-start")}
-              onMouseLeave={() => setHoveredButton(null)}
             >
               <a href="#upload">
                 Start Free Translation
                 <ArrowRight className="ml-2 h-4 w-4" />
-                {hoveredButton === "pricing-start" && (
-                  <Star className="absolute right-3 h-4 w-4 fill-current" />
-                )}
               </a>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="relative transition-all duration-300"
-              asChild
-              onMouseEnter={() => setHoveredButton("pricing-signin")}
-              onMouseLeave={() => setHoveredButton(null)}
-            >
-              <Link href="/auth/login">
-                Sign In to Continue
-                {hoveredButton === "pricing-signin" && (
-                  <Star className="absolute right-3 h-4 w-4 fill-current" />
-                )}
-              </Link>
             </Button>
           </div>
         </div>
