@@ -1,0 +1,995 @@
+export const translations = {
+    en: {
+        nav: {
+            features: "Features",
+            pricing: "Pricing",
+            signIn: "Sign In",
+        },
+        hero: {
+            zapTitle: "AI-Powered Translation Technology",
+            title: "Make your work clear with Doccoder",
+            description: "Experience lightning-fast document translation with unmatched accuracy and complete privacy. Your documents, translated perfectly in seconds.",
+            cta: "Start Translating",
+        },
+        features: {
+            title: "Why Choose Doccoder?",
+            subtitle: "Professional-grade translation powered by cutting-edge AI technology",
+            ai: {
+                title: "AI-Powered Translation",
+                description: "Advanced neural networks deliver human-quality translations in seconds.",
+            },
+            format: {
+                title: "Preserves Formatting",
+                description: "Maintains your document's original layout, fonts, and styling perfectly.",
+            },
+            secure: {
+                title: "Secure & Private",
+                description: "End-to-end encryption ensures your documents remain completely confidential.",
+            },
+            fast: {
+                title: "Fast Turnaround",
+                description: "Get professional translations instantly, no waiting required.",
+            },
+        },
+        formats: {
+            title: "Supported Document Formats",
+            subtitle: "We support all major document formats for seamless translation",
+        },
+        footer: {
+            tagline: "AI-powered document translation with guaranteed accuracy and privacy",
+            rights: "© 2025 Doccoder. All rights reserved.",
+            privacy: "Privacy",
+            terms: "Terms",
+            download: "Download",
+            settings: "Settings",
+        },
+        transformer: {
+            hero: {
+                title: "Transform Documents with",
+                accent: "AI Intelligence",
+                subtitle: "Convert between PDF and multiple formats instantly. Powered by advanced AI technology.",
+            },
+            toPdf: {
+                title: "Convert to PDF",
+                description: "PDF documents can be easily converted and translated.",
+            },
+            fromPdf: {
+                title: "Convert from PDF",
+                description: "All types of files can be converted and translated with AI assistance.",
+            }
+        },
+        auth: {
+            login: {
+                title: "Login Your Account",
+                subtitle: "Welcome back! Sign in to your account",
+                google: "Sign in with Google",
+                github: "Sign in with GitHub",
+                or: "Or Continue with",
+                email: "Email Address",
+                password: "Password",
+                forgot: "Forgot password?",
+                submit: "Sign In",
+                submitting: "Signing in...",
+                noAccount: "Don't have an account?",
+                create: "Create account",
+            },
+            signup: {
+                title: "Sign Up",
+                subtitle: "Create your account to start translating documents",
+                firstName: "First Name",
+                lastName: "Last Name",
+                phone: "Phone Number",
+                country: "Country",
+                dob: "Date of Birth",
+                confirmPassword: "Confirm Password",
+                submit: "Create Account",
+                submitting: "Creating account...",
+                haveAccount: "Already have an account?",
+                signIn: "Sign in",
+            }
+        }
+    },
+    hi: {
+        nav: {
+            features: "विशेषताएं",
+            pricing: "मूल्य निर्धारण",
+            signIn: "साइन इन करें",
+        },
+        hero: {
+            zapTitle: "एआई-संचालित अनुवाद तकनीक",
+            title: "Doccoder के साथ अपने काम को स्पष्ट बनाएं",
+            description: "बेजोड़ सटीकता और पूर्ण गोपनीयता के साथ बिजली की तेजी से दस्तावेज़ अनुवाद का अनुभव करें। आपके दस्तावेज़, सेकंडों में पूरी तरह से अनुवादित।",
+            cta: "अनुवाद शुरू करें",
+        },
+        features: {
+            title: "Doccoder क्यों चुनें?",
+            subtitle: "अत्याधुनिक एआई तकनीक द्वारा संचालित पेशेवर-ग्रेड अनुवाद",
+            ai: {
+                title: "एआई-संचालित अनुवाद",
+                description: "उन्नत तंत्रिका नेटवर्क सेकंडों में मानव-गुणवत्ता वाले अनुवाद प्रदान करते हैं।",
+            },
+            format: {
+                title: "फॉर्मेटिंग सुरक्षित रखता है",
+                description: "आपके दस्तावेज़ के मूल लेआउट, फोंट और स्टाइलिंग को पूरी तरह से बनाए रखता है।",
+            },
+            secure: {
+                title: "सुरक्षित और निजी",
+                description: "एंड-टू-एंड एन्क्रिप्शन सुनिश्चित करता है कि आपके दस्तावेज़ पूरी तरह से गोपनीय रहें।",
+            },
+            fast: {
+                title: "तेज टर्नअराउंड",
+                description: "तुरंत पेशेवर अनुवाद प्राप्त करें, प्रतीक्षा की आवश्यकता नहीं है।",
+            },
+        },
+        formats: {
+            title: "समर्थित दस्तावेज़ प्रारूप",
+            subtitle: "हम निर्बाध अनुवाद के लिए सभी प्रमुख दस्तावेज़ प्रारूपों का समर्थन करते हैं",
+        },
+        footer: {
+            tagline: "गारंटीकृत सटीकता और गोपनीयता के साथ एआई-संचालित दस्तावेज़ अनुवाद",
+            rights: "© 2025 Doccoder. सर्वाधिकार सुरक्षित।",
+            privacy: "गोपनीयता",
+            terms: "शर्तें",
+            download: "डाउनलोड",
+            settings: "सेटिंग्स",
+        },
+        transformer: {
+            hero: {
+                title: "दस्तावेज़ों को इसके साथ बदलें",
+                accent: "एआई इंटेलिजेंस",
+                subtitle: "पीडीएफ और कई प्रारूपों के बीच तुरंत कनवर्ट करें। उन्नत एआई तकनीक द्वारा संचालित।",
+            },
+            toPdf: {
+                title: "पीडीएफ में बदलें",
+                description: "पीडीएफ दस्तावेजों को आसानी से बदला और अनुवादित किया जा सकता है।",
+            },
+            fromPdf: {
+                title: "पीडीएफ से बदलें",
+                description: "एआई की सहायता से सभी प्रकार की फाइलों को परिवर्तित और अनुवादित किया जा सकता है।",
+            }
+        },
+        auth: {
+            login: {
+                title: "अपने खाते में लॉगिन करें",
+                subtitle: "वापसी पर स्वागत है! अपने खाते में साइन इन करें",
+                google: "गूगल के साथ साइन इन करें",
+                github: "गिटहब के साथ साइन इन करें",
+                or: "या इसके साथ जारी रखें",
+                email: "ईमेल पता",
+                password: "पासवर्ड",
+                forgot: "पासवर्ड भूल गए?",
+                submit: "साइन इन करें",
+                submitting: "लॉगिन हो रहा है...",
+                noAccount: "क्या आपके पास खाता नहीं है?",
+                create: "खाता बनाएं",
+            },
+            signup: {
+                title: "साइन अप करें",
+                subtitle: "दस्तावेज़ों का अनुवाद शुरू करने के लिए अपना खाता बनाएं",
+                firstName: "पहला नाम",
+                lastName: "अंतिम नाम",
+                phone: "फ़ोन नंबर",
+                country: "देश",
+                dob: "जन्म तिथि",
+                confirmPassword: "पासवर्ड की पुष्टि करें",
+                submit: "खाता बनाएं",
+                submitting: "खाता बनाया जा रहा है...",
+                haveAccount: "क्या आपके पास पहले से ही एक खाता है?",
+                signIn: "साइन इन करें",
+            }
+        }
+    },
+    mr: {
+        nav: {
+            features: "वैशिष्ट्ये",
+            pricing: "किंमत",
+            signIn: "साइन इन करा",
+        },
+        hero: {
+            zapTitle: "AI-आधारित भाषांतर तंत्रज्ञान",
+            title: "Doccoder सह तुमचे काम स्पष्ट करा",
+            description: "अतुलनीय अचूकता आणि पूर्ण गोपनीयतेसह विजेच्या वेगाने दस्तऐवज भाषांतराचा अनुभव घ्या. तुमचे दस्तऐवज, सेकंदात उत्तम प्रकारे भाषांतरित केले जातात.",
+            cta: "भाषांतर सुरू करा",
+        },
+        features: {
+            title: "Doccoder का निवडावे?",
+            subtitle: "अत्याधुनिक AI तंत्रज्ञानाद्वारे समर्थित व्यावसायिक-दर्जाचे भाषांतर",
+            ai: {
+                title: "AI-आधारित भाषांतर",
+                description: "प्रगत न्यूरल नेटवर्क्स सेकंदात मानवी-गुणवत्तेचे भाषांतर देतात.",
+            },
+            format: {
+                title: "फॉर्मेटिंग जपले जाते",
+                description: "तुमच्या दस्तऐवजाचे मूळ लेआउट, फॉन्ट आणि शैली उत्तम प्रकारे राखते.",
+            },
+            secure: {
+                title: "सुरक्षित आणि खाजगी",
+                description: "एंड-टू-एंड एन्क्रिप्शन हे सुनिश्चित करते की तुमचे दस्तऐवज पूर्णपणे गोपनीय राहतील.",
+            },
+            fast: {
+                title: "जलद परिणाम",
+                description: "त्वरीत व्यावसायिक भाषांतर मिळवा, वाट पाहण्याची गरज नाही.",
+            },
+        },
+        formats: {
+            title: "समर्थित दस्तऐवज स्वरूप",
+            subtitle: "आम्ही अखंड भाषांतरासाठी सर्व प्रमुख दस्तऐवज स्वरूपांना समर्थन देतो",
+        },
+        footer: {
+            tagline: "हमी अचूकता आणि गोपनीयतेसह AI-आधारित दस्तऐवज भाषांतर",
+            rights: "© 2025 Doccoder. सर्व हक्क राखीव.",
+            privacy: "गोपनीयता",
+            terms: "अटी",
+            download: "डाउनलोड",
+            settings: "सेटिंग्ज",
+        },
+        transformer: {
+            hero: {
+                title: "यासह दस्तऐवज रूपांतरित करा",
+                accent: "AI इंटेलिजेंस",
+                subtitle: "पीडीएफ आणि एकाधिक स्वरूपांमध्ये त्वरित रूपांतरित करा. प्रगत AI तंत्रज्ञानाद्वारे समर्थित.",
+            },
+            toPdf: {
+                title: "पीडीएफ मध्ये रूपांतरित करा",
+                description: "पीडीएफ दस्तऐवज सहजपणे रूपांतरित आणि भाषांतरित केले जाऊ शकतात.",
+            },
+            fromPdf: {
+                title: "पीडीएफ मधून रूपांतरित करा",
+                description: "AI च्या सहाय्याने सर्व प्रकारच्या फाईल्स रूपांतरित आणि भाषांतरित केल्या जाऊ शकतात.",
+            }
+        },
+        auth: {
+            login: {
+                title: "तुमच्या खात्यात लॉगिन करा",
+                subtitle: "पुन्हा स्वागत आहे! तुमच्या खात्यात साइन इन करा",
+                google: "Google सह साइन इन करा",
+                github: "GitHub सह साइन इन करा",
+                or: "किंवा यासह पुढे जा",
+                email: "ईमेल पत्ता",
+                password: "पासवर्ड",
+                forgot: "पासवर्ड विसरलात?",
+                submit: "साइन इन करा",
+                submitting: "लॉगिन होत आहे...",
+                noAccount: "खाते नाही?",
+                create: "खाते तयार करा",
+            },
+            signup: {
+                title: "साइन अप करा",
+                subtitle: "दस्तऐवज भाषांतर सुरू करण्यासाठी तुमचे खाते तयार करा",
+                firstName: "पहिले नाव",
+                lastName: "आडनाव",
+                phone: "फोन नंबर",
+                country: "देश",
+                dob: "जन्म तारीख",
+                confirmPassword: "पासवर्डची पुष्टी करा",
+                submit: "खाते तयार करा",
+                submitting: "खाते तयार होत आहे...",
+                haveAccount: "आधीच खाते आहे?",
+                signIn: "साइन इन करा",
+            }
+        }
+    },
+    bn: {
+        nav: {
+            features: "বৈশিষ্ট্য",
+            pricing: "মূল্য নির্ধারণ",
+            signIn: "সাইন ইন করুন",
+        },
+        hero: {
+            zapTitle: "এআই-চালিত অনুবাদ প্রযুক্তি",
+            title: "Doccoder-এর সাথে আপনার কাজকে স্পষ্ট করুন",
+            description: "অতুলনীয় নির্ভুলতা এবং পূর্ণ গোপনীয়তার সাথে বিদ্যুতের গতিতে নথি অনুবাদের অভিজ্ঞতা নিন। আপনার নথিগুলি সেকেন্ডের মধ্যে নিখুঁতভাবে অনূদিত হবে।",
+            cta: "অনুবাদ শুরু করুন",
+        },
+        features: {
+            title: "কেন Doccoder বেছে নেবেন?",
+            subtitle: "অত্যাধুনিক এআই প্রযুক্তি দ্বারা চালিত পেশাদার-গ্রেড অনুবাদ",
+            ai: {
+                title: "এআই-চালিত অনুবাদ",
+                description: "উন্নত নিউরাল নেটওয়ার্কগুলি সেকেন্ডের মধ্যে মানুষের মানসম্পন্ন অনুবাদ প্রদান করে।",
+            },
+            format: {
+                title: "ফরম্যাটিং বজায় রাখে",
+                description: "আপনার নথির আসল বিন্যাস, ফন্ট এবং স্টাইলিং নিখুঁতভাবে বজায় রাখে।",
+            },
+            secure: {
+                title: "সুরক্ষিত এবং ব্যক্তিগত",
+                description: "এন্ড-টু-এন্ড এনক্রিপশন নিশ্চিত করে যে আপনার নথিগুলি সম্পূর্ণ গোপনীয় থাকবে।",
+            },
+            fast: {
+                title: "দ্রুত টার্নঅ্যারাউন্ড",
+                description: "তাত্ক্ষণিকভাবে পেশাদার অনুবাদ পান, অপেক্ষা করার প্রয়োজন নেই।",
+            },
+        },
+        formats: {
+            title: "সমর্থিত নথি ফরম্যাট",
+            subtitle: "আমরা নির্বিঘ্ন অনুবাদের জন্য সমস্ত প্রধান নথি ফরম্যাট সমর্থন করি",
+        },
+        footer: {
+            tagline: "গ্যারান্টিযুক্ত নির্ভুলতা এবং গোপনীয়তার সাথে এআই-চালিত নথি অনুবাদ",
+            rights: "© 2025 Doccoder. সর্বস্বত্ব সংরক্ষিত।",
+            privacy: "গোপনীয়তা",
+            terms: "শর্তাবলী",
+            download: "ডাউনলোড",
+            settings: "সেটিংস",
+        },
+        transformer: {
+            hero: {
+                title: "নথি রূপান্তর করুন",
+                accent: "এআই বুদ্ধিমত্তা দিয়ে",
+                subtitle: "পিডিএফ এবং একাধিক ফরম্যাটের মধ্যে তাৎক্ষণিকভাবে রূপান্তর করুন। উন্নত এআই প্রযুক্তি দ্বারা চালিত।",
+            },
+            toPdf: {
+                title: "পিডিএফ-এ রূপান্তর করুন",
+                description: "পিডিএফ নথিগুলি সহজেই রূপান্তর এবং অনুবাদ করা যেতে পারে।",
+            },
+            fromPdf: {
+                title: "পিডিএফ থেকে রূপান্তর করুন",
+                description: "এআই সহায়তায় সব ধরণের ফাইল রূপান্তর এবং অনুবাদ করা যেতে পারে।",
+            }
+        },
+        auth: {
+            login: {
+                title: "আপনার অ্যাকাউন্টে লগইন করুন",
+                subtitle: "স্বাগতম! আপনার অ্যাকাউন্টে সাইন ইন করুন",
+                google: "Google দিয়ে সাইন ইন করুন",
+                github: "GitHub দিয়ে সাইন ইন করুন",
+                or: "অথবা এটি দিয়ে চালিয়ে যান",
+                email: "ইমেল ঠিকানা",
+                password: "পাসওয়ার্ড",
+                forgot: "পাসওয়ার্ড ভুলে গেছেন?",
+                submit: "সাইন ইন করুন",
+                submitting: "সাইন ইন হচ্ছে...",
+                noAccount: "অ্যাকাউন্ট নেই?",
+                create: "অ্যাকাউন্ট তৈরি করুন",
+            },
+            signup: {
+                title: "সাইন আপ করুন",
+                subtitle: "নথি অনুবাদ শুরু করতে আপনার অ্যাকাউন্ট তৈরি করুন",
+                firstName: "প্রথম নাম",
+                lastName: "পদবী",
+                phone: "ফোন নম্বর",
+                country: "দেশ",
+                dob: "জন্ম তারিখ",
+                confirmPassword: "পাসওয়ার্ড নিশ্চিত করুন",
+                submit: "অ্যাকাউন্ট তৈরি করুন",
+                submitting: "অ্যাকাউন্ট তৈরি হচ্ছে...",
+                haveAccount: "অ্যাকাউন্ট আছে?",
+                signIn: "সাইন ইন করুন",
+            }
+        }
+    },
+    gu: {
+        nav: {
+            features: "વિશેષતાઓ",
+            pricing: "કિંમત",
+            signIn: "સાઇન ઇન કરો",
+        },
+        hero: {
+            zapTitle: "AI-સંચાલિત અનુવાદ ટેકનોલોજી",
+            title: "Doccoder સાથે તમારા કામને સ્પષ્ટ બનાવો",
+            description: "અજોડ ચોકસાઈ અને સંપૂર્ણ ગોપનીયતા સાથે વીજળીની ઝડપે દસ્તાવેજ અનુવાદનો અનુભવ કરો. તમારા દસ્તાવેજો, સેકન્ડોમાં સંપૂર્ણ રીતે અનુવાદિત.",
+            cta: "અનુવાદ શરૂ કરો",
+        },
+        features: {
+            title: "શા માટે Doccoder પસંદ કરવું?",
+            subtitle: "અત્યાધુનિક AI ટેકનોલોજી દ્વારા સંચાલિત વ્યાવસાયિક-ગ્રેડ અનુવાદ",
+            ai: {
+                title: "AI-સંચાલિત અનુવાદ",
+                description: "અદ્યતન ન્યુરલ નેટવર્ક્સ સેકન્ડોમાં માનવ-ગુણવત્તાવાળા અનુવાદો પ્રદાન કરે છે.",
+            },
+            format: {
+                title: "ફોર્મેટિંગ જાળવી રાખે છે",
+                description: "તમારા દસ્તાવેજના મૂળ લેઆઉટ, ફોન્ટ્સ અને સ્ટાઇલિંગને સંપૂર્ણ રીતે જાળવી રાખે છે.",
+            },
+            secure: {
+                title: "સુરક્ષિત અને ખાનગી",
+                description: "એન્ડ-ટુ-એન્ડ એન્ક્રિપ્શન ખાતરી કરે છે કે તમારા દસ્તાવેજો સંપૂર્ણપણે ગોપનીય રહે.",
+            },
+            fast: {
+                title: "ઝડપી પરિણામ",
+                description: "તરત જ વ્યાવસાયિક અનુવાદો મેળવો, રાહ જોવાની જરૂર નથી.",
+            },
+        },
+        formats: {
+            title: "સમર્થિત દસ્તાવેજ ફોર્મેટ્સ",
+            subtitle: "અમે સીમલેસ અનુવાદ માટે તમામ મુખ્ય દસ્તાવેજ ફોર્મેટ્સને સપોર્ટ કરીએ છીએ",
+        },
+        footer: {
+            tagline: "ગેરંટીકૃત ચોકસાઈ અને ગોપનીયતા સાથે AI-સંચાલિત દસ્તાવેજ અનુવાદ",
+            rights: "© 2025 Doccoder. તમામ હકો અબાધિત.",
+            privacy: "ગોપનીયતા",
+            terms: "શરતો",
+            download: "ડાઉનલોડ",
+            settings: "સેટિંગ્સ",
+        },
+        transformer: {
+            hero: {
+                title: "દસ્તાવેજોને આની સાથે બદલો",
+                accent: "AI ઇન્ટેલિજન્સ",
+                subtitle: "પીડીએફ અને બહુવિધ ફોર્મેટ્સ વચ્ચે તરત જ કન્વર્ટ કરો. અદ્યતન AI ટેકનોલોજી દ્વારા સંચાલિત.",
+            },
+            toPdf: {
+                title: "પીડીએફમાં કન્વર્ટ કરો",
+                description: "પીડીએફ દસ્તાવેજો સરળતાથી કન્વર્ટ અને અનુવાદિત કરી શકાય છે.",
+            },
+            fromPdf: {
+                title: "પીડીએફમાંથી કન્વર્ટ કરો",
+                description: "AI ની સહાયથી તમામ પ્રકારની ફાઇલોને કન્વર્ટ અને અનુવાદિત કરી શકાય છે.",
+            }
+        },
+        auth: {
+            login: {
+                title: "તમારા ખાતામાં લોગિન કરો",
+                subtitle: "સ્વાગત છે! તમારા ખાતામાં સાઇન ઇન કરો",
+                google: "Google સાથે સાઇન ઇન કરો",
+                github: "GitHub સાથે સાઇન ઇન કરો",
+                or: "અથવા આની સાથે ચાલુ રાખો",
+                email: "ઈમેલ સરનામું",
+                password: "પાસવર્ડ",
+                forgot: "પાસવર્ડ ભૂલી ગયા છો?",
+                submit: "સાઇન ઇન કરો",
+                submitting: "સાઇન ઇન થઈ રહ્યું છે...",
+                noAccount: "ખાતું નથી?",
+                create: "ખાતું બનાવો",
+            },
+            signup: {
+                title: "સાઇન અપ કરો",
+                subtitle: "દસ્તાવેજો અનુવાદ કરવાનું શરૂ કરવા માટે તમારું ખાતું બનાવો",
+                firstName: "પ્રથમ નામ",
+                lastName: "અંતિમ નામ",
+                phone: "ફોન નંબર",
+                country: "દેશ",
+                dob: "જન્મ તારીખ",
+                confirmPassword: "પાસવર્ડની પુષ્ટિ કરો",
+                submit: "ખાતું બનાવો",
+                submitting: "ખાતું બની રહ્યું છે...",
+                haveAccount: "પહેલેથી ખાતું છે?",
+                signIn: "સાઇન ઇન કરો",
+            }
+        }
+    },
+    fr: {
+        nav: {
+            features: "Fonctionnalités",
+            pricing: "Tarification",
+            signIn: "Se connecter",
+        },
+        hero: {
+            zapTitle: "Technologie de traduction alimentée par l'IA",
+            title: "Rendez votre travail clair avec Doccoder",
+            description: "Découvrez la traduction de documents ultra-rapide avec une précision inégalée et une confidentialité totale. Vos documents, parfaitement traduits en quelques secondes.",
+            cta: "Commencer la traduction",
+        },
+        features: {
+            title: "Pourquoi choisir Doccoder ?",
+            subtitle: "Traduction de qualité professionnelle alimentée par une technologie d'IA de pointe",
+            ai: {
+                title: "Traduction alimentée par l'IA",
+                description: "Les réseaux neuronaux avancés fournissent des traductions de qualité humaine en quelques secondes.",
+            },
+            format: {
+                title: "Préserve la mise en forme",
+                description: "Conserve parfaitement la mise en page, les polices et le style originaux de votre document.",
+            },
+            secure: {
+                title: "Sécurisé et privé",
+                description: "Le cryptage de bout en bout garantit que vos documents restent totalement confidentiels.",
+            },
+            fast: {
+                title: "Exécution rapide",
+                description: "Obtenez instantanément des traductions professionnelles, sans attente.",
+            },
+        },
+        formats: {
+            title: "Formats de documents pris en charge",
+            subtitle: "Nous prenons en charge tous les principaux formats de documents pour une traduction fluide",
+        },
+        footer: {
+            tagline: "Traduction de documents par IA avec précision et confidentialité garanties",
+            rights: "© 2025 Doccoder. Tous droits réservés.",
+            privacy: "Confidentialité",
+            terms: "Conditions",
+            download: "Télécharger",
+            settings: "Paramètres",
+        },
+        transformer: {
+            hero: {
+                title: "Transformez vos documents avec",
+                accent: "l'Intelligence Artificielle",
+                subtitle: "Convertissez instantanément entre PDF et plusieurs formats. Propulsé par une technologie d'IA avancée.",
+            },
+            toPdf: {
+                title: "Convertir en PDF",
+                description: "Les documents PDF peuvent être facilement convertis et traduits.",
+            },
+            fromPdf: {
+                title: "Convertir depuis PDF",
+                description: "Tous les types de fichiers peuvent être convertis et traduits avec l'aide de l'IA.",
+            }
+        },
+        auth: {
+            login: {
+                title: "Connectez-vous à votre compte",
+                subtitle: "Bon retour ! Connectez-vous à votre compte",
+                google: "Se connecter avec Google",
+                github: "Se connecter avec GitHub",
+                or: "Ou continuer avec",
+                email: "Adresse e-mail",
+                password: "Mot de passe",
+                forgot: "Mot de passe oublié ?",
+                submit: "Se connecter",
+                submitting: "Connexion...",
+                noAccount: "Vous n'avez pas de compte ?",
+                create: "Créer un compte",
+            },
+            signup: {
+                title: "S'inscrire",
+                subtitle: "Créez votre compte pour commencer à traduire des documents",
+                firstName: "Prénom",
+                lastName: "Nom",
+                phone: "Numéro de téléphone",
+                country: "Pays",
+                dob: "Date de naissance",
+                confirmPassword: "Confirmer le mot de passe",
+                submit: "Créer un compte",
+                submitting: "Création du compte...",
+                haveAccount: "Vous avez déjà un compte ?",
+                signIn: "Se connecter",
+            }
+        }
+    },
+    zh: {
+        nav: {
+            features: "功能",
+            pricing: "价格",
+            signIn: "登录",
+        },
+        hero: {
+            zapTitle: "AI驱动的翻译技术",
+            title: "使用Doccoder让您的工作更清晰",
+            description: "体验闪电般的文档翻译，具有无与伦比的准确性和完全的隐私。您的文档在几秒钟内完美翻译。",
+            cta: "开始翻译",
+        },
+        features: {
+            title: "为什么选择Doccoder？",
+            subtitle: "由尖端AI技术支持的专业级翻译",
+            ai: {
+                title: "AI驱动的翻译",
+                description: "高级神经网络在几秒钟内提供人类品质的翻译。",
+            },
+            format: {
+                title: "保留格式",
+                description: "完美保持文档的原有布局、字体和样式。",
+            },
+            secure: {
+                title: "安全私密",
+                description: "端到端加密确保您的文档完全机密。",
+            },
+            fast: {
+                title: "快速交付",
+                description: "立即获得专业翻译，无需等待。",
+            },
+        },
+        formats: {
+            title: "支持的文档格式",
+            subtitle: "我们支持所有主要文档格式，实现无缝翻译",
+        },
+        footer: {
+            tagline: "具有保证准确性和隐私性的AI驱动文档翻译",
+            rights: "© 2025 Doccoder。保留所有权利。",
+            privacy: "隐私",
+            terms: "条款",
+            download: "下载",
+            settings: "设置",
+        },
+        transformer: {
+            hero: {
+                title: "转换文档使用",
+                accent: "AI 智能",
+                subtitle: "立即在 PDF 和多种格式之间进行转换。由先进的 AI 技术提供支持。",
+            },
+            toPdf: {
+                title: "转换为 PDF",
+                description: "PDF 文档可以轻松转换和翻译。",
+            },
+            fromPdf: {
+                title: "从 PDF 转换",
+                description: "通过 AI 的帮助，可以转换和翻译所有类型的文件。",
+            }
+        },
+        auth: {
+            login: {
+                title: "登录您的账户",
+                subtitle: "欢迎回来！请登录您的账户",
+                google: "使用 Google 登录",
+                github: "使用 GitHub 登录",
+                or: "或通过以下方式继续",
+                email: "电子邮箱地址",
+                password: "密码",
+                forgot: "忘记密码？",
+                submit: "登录",
+                submitting: "正在登录...",
+                noAccount: "还没有账户？",
+                create: "创建账户",
+            },
+            signup: {
+                title: "注册",
+                subtitle: "创建您的账户开始翻译文档",
+                firstName: "名字",
+                lastName: "姓氏",
+                phone: "电话号码",
+                country: "国家",
+                dob: "出生日期",
+                confirmPassword: "确认密码",
+                submit: "创建账户",
+                submitting: "正在创建账户...",
+                haveAccount: "已有账户？",
+                signIn: "登录",
+            }
+        }
+    },
+    ja: {
+        nav: {
+            features: "機能",
+            pricing: "料金",
+            signIn: "サインイン",
+        },
+        hero: {
+            zapTitle: "AI駆動の翻訳技術",
+            title: "Doccoderで仕事を明確に",
+            description: "比類のない正確さと完全なプライバシーを備えた、超高速のドキュメント翻訳を体験してください。あなたのドキュメントは数秒で完璧に翻訳されます。",
+            cta: "翻訳を開始する",
+        },
+        features: {
+            title: "なぜDoccoderを選ぶのか？",
+            subtitle: "最先端のAI技術によるプロフェッショナルグレードの翻訳",
+            ai: {
+                title: "AI駆動の翻訳",
+                description: "高度なニューラルネットワークが数秒で人間レベルの翻訳を提供します。",
+            },
+            format: {
+                title: "書式を維持",
+                description: "ドキュメントの元のレイアウト、フォント、スタイルを完全に維持します。",
+            },
+            secure: {
+                title: "安全でプライベート",
+                description: "エンドツーエンドの暗号化により、ドキュメントの機密性を完全に確保します。",
+            },
+            fast: {
+                title: "迅速な対応",
+                description: "待ち時間なしで、すぐにプロフェッショナルな翻訳を入手できます。",
+            },
+        },
+        formats: {
+            title: "サポートされているドキュメント形式",
+            subtitle: "シームレスな翻訳のために、すべての主要なドキュメント形式をサポートしています",
+        },
+        footer: {
+            tagline: "正確さとプライバシーが保証されたAIドキュメント翻訳",
+            rights: "© 2025 Doccoder. All rights reserved.",
+            privacy: "プライバシー",
+            terms: "規約",
+            download: "ダウンロード",
+            settings: "設定",
+        },
+        transformer: {
+            hero: {
+                title: "ドキュメントを変換する",
+                accent: "AI インテリジェンス",
+                subtitle: "PDFと複数の形式の間で即座に変換します。高度なAI技術を搭載。",
+            },
+            toPdf: {
+                title: "PDFに変換",
+                description: "PDFドキュメントは簡単に変換および翻訳できます。",
+            },
+            fromPdf: {
+                title: "PDFから変換",
+                description: "AIの支援により、あらゆる種類のファイルを変換および翻訳できます。",
+            }
+        },
+        auth: {
+            login: {
+                title: "アカウントにサインイン",
+                subtitle: "おかえりなさい！アカウントにサインインしてください",
+                google: "Googleでサインイン",
+                github: "GitHubでサインイン",
+                or: "または以下で続行",
+                email: "メールアドレス",
+                password: "パスワード",
+                forgot: "パスワードをお忘れですか？",
+                submit: "サインイン",
+                submitting: "サインイン中...",
+                noAccount: "アカウントをお持ちでないですか？",
+                create: "アカウント作成",
+            },
+            signup: {
+                title: "新規登録",
+                subtitle: "アカウントを作成してドキュメントの翻訳を開始しましょう",
+                firstName: "名",
+                lastName: "姓",
+                phone: "電話番号",
+                country: "国",
+                dob: "生年月日",
+                confirmPassword: "パスワードを再入力",
+                submit: "アカウントを作成",
+                submitting: "アカウント作成中...",
+                haveAccount: "すでにアカウントをお持ちですか？",
+                signIn: "サインイン",
+            }
+        }
+    },
+    de: {
+        nav: {
+            features: "Funktionen",
+            pricing: "Preise",
+            signIn: "Anmelden",
+        },
+        hero: {
+            zapTitle: "KI-gestützte Übersetzungstechnologie",
+            title: "Machen Sie Ihre Arbeit klar mit Doccoder",
+            description: "Erleben Sie blitzschnelle Dokumentenübersetzung mit unübertroffener Genauigkeit und absoluter Privatsphäre. Ihre Dokumente, in Sekundenschnelle perfekt übersetzt.",
+            cta: "Übersetzung starten",
+        },
+        features: {
+            title: "Warum Doccoder wählen?",
+            subtitle: "Professionelle Übersetzung, unterstützt durch modernste KI-Technologie",
+            ai: {
+                title: "KI-gestützte Übersetzung",
+                description: "Fortschrittliche neuronale Netze liefern in Sekundenschnelle Übersetzungen in menschlicher Qualität.",
+            },
+            format: {
+                title: "Bewahrt die Formatierung",
+                description: "Behält das ursprüngliche Layout, die Schriftarten und das Styling Ihres Dokuments perfekt bei.",
+            },
+            secure: {
+                title: "Sicher & Privat",
+                description: "Ende-zu-Ende-Verschlüsselung sorgt dafür, dass Ihre Dokumente absolut vertraulich bleiben.",
+            },
+            fast: {
+                title: "Schnelle Abwicklung",
+                description: "Erhalten Sie sofort professionelle Übersetzungen, ohne Wartezeit.",
+            },
+        },
+        formats: {
+            title: "Unterstützte Dokumentformate",
+            subtitle: "Wir unterstützen alle gängigen Dokumentformate für eine nahtlose Übersetzung",
+        },
+        footer: {
+            tagline: "KI-gestützte Dokumentenübersetzung mit garantierter Genauigkeit und Privatsphäre",
+            rights: "© 2025 Doccoder. Alle Rechte vorbehalten.",
+            privacy: "Datenschutz",
+            terms: "Bedingungen",
+            download: "Herunterladen",
+            settings: "Einstellungen",
+        },
+        transformer: {
+            hero: {
+                title: "Dokumente transformieren mit",
+                accent: "KI-Intelligenz",
+                subtitle: "Sofortiges Konvertieren zwischen PDF and mehreren Formaten. Unterstützt durch fortschrittliche KI-Technologie.",
+            },
+            toPdf: {
+                title: "In PDF konvertieren",
+                description: "PDF-Dokumente können einfach konvertiert und übersetzt werden.",
+            },
+            fromPdf: {
+                title: "Aus PDF konvertieren",
+                description: "Alle Arten von Dateien können mit KI-Unterstützung konvertiert und übersetzt werden.",
+            }
+        },
+        auth: {
+            login: {
+                title: "In Ihr Konto einloggen",
+                subtitle: "Willkommen zurück! Melden Sie sich bei Ihrem Konto an",
+                google: "Mit Google anmelden",
+                github: "Mit GitHub anmelden",
+                or: "Oder fortfahren mit",
+                email: "E-Mail-Adresse",
+                password: "Passwort",
+                forgot: "Passwort vergessen?",
+                submit: "Anmelden",
+                submitting: "Anmeldung...",
+                noAccount: "Haben Sie noch kein Konto?",
+                create: "Konto erstellen",
+            },
+            signup: {
+                title: "Registrieren",
+                subtitle: "Erstellen Sie Ihr Konto, um mit der Übersetzung von Dokumenten zu beginnen",
+                firstName: "Vorname",
+                lastName: "Nachname",
+                phone: "Telefonnummer",
+                country: "Land",
+                dob: "Geburtsdatum",
+                confirmPassword: "Passwort bestätigen",
+                submit: "Konto erstellen",
+                submitting: "Konto wird erstellt...",
+                haveAccount: "Haben Sie bereits ein Konto?",
+                signIn: "Anmelden",
+            }
+        }
+    },
+    es: {
+        nav: {
+            features: "Características",
+            pricing: "Precios",
+            signIn: "Iniciar sesión",
+        },
+        hero: {
+            zapTitle: "Tecnología de traducción impulsada por IA",
+            title: "Haga su trabajo claro con Doccoder",
+            description: "Experimente la traducción de documentos ultrarrápida con una precisión inigualable y total privacidad. Sus documentos, traducidos perfectamente en segundos.",
+            cta: "Empezar a traducir",
+        },
+        features: {
+            title: "¿Por qué elegir Doccoder?",
+            subtitle: "Traducción de nivel profesional impulsada por tecnología de IA de vanguardia",
+            ai: {
+                title: "Traducción impulsada por IA",
+                description: "Las redes neuronales avanzadas ofrecen traducciones de calidad humana en segundos.",
+            },
+            format: {
+                title: "Conserva el formato",
+                description: "Mantiene perfectamente el diseño, las fuentes y el estilo originales de su documento.",
+            },
+            secure: {
+                title: "Seguro y privado",
+                description: "El cifrado de extremo a extremo garantiza que sus documentos permanezcan completamente confidenciales.",
+            },
+            fast: {
+                title: "Entrega rápida",
+                description: "Obtenga traducciones profesionales al instante, sin esperas.",
+            },
+        },
+        formats: {
+            title: "Formatos de documentos compatibles",
+            subtitle: "Admitimos todos los principales formatos de documentos para una traducción fluida",
+        },
+        footer: {
+            tagline: "Traducción de documentos por IA con precisión y privacidad garantizadas",
+            rights: "© 2025 Doccoder. Todos los derechos reservados.",
+            privacy: "Privacidad",
+            terms: "Términos",
+            download: "Descargar",
+            settings: "Configuración",
+        },
+        transformer: {
+            hero: {
+                title: "Transformar documentos con",
+                accent: "Inteligencia Artificial",
+                subtitle: "Convierta instantáneamente entre PDF y múltiples formatos. Impulsado por tecnología avanzada de IA.",
+            },
+            toPdf: {
+                title: "Convertir a PDF",
+                description: "Los documentos PDF se pueden convertir y traducir fácilmente.",
+            },
+            fromPdf: {
+                title: "Convertir desde PDF",
+                description: "Todos los tipos de fichiers pueden ser convertidos y traducidos con la ayuda de la IA.",
+            }
+        },
+        auth: {
+            login: {
+                title: "Inicie sesión en su cuenta",
+                subtitle: "¡Bienvenido de nuevo! Inicie sesión en su cuenta",
+                google: "Inicie sesión con Google",
+                github: "Inicie sesión con GitHub",
+                or: "O continuar con",
+                email: "Correo electrónico",
+                password: "Contraseña",
+                forgot: "¿Olvidó su contraseña?",
+                submit: "Iniciar sesión",
+                submitting: "Iniciando sesión...",
+                noAccount: "¿No tiene una cuenta?",
+                create: "Crear cuenta",
+            },
+            signup: {
+                title: "Registrarse",
+                subtitle: "Cree su cuenta para comenzar a traducir documentos",
+                firstName: "Nombre",
+                lastName: "Apellido",
+                phone: "Número de teléfono",
+                country: "País",
+                dob: "Fecha de nacimiento",
+                confirmPassword: "Confirmar contraseña",
+                submit: "Crear cuenta",
+                submitting: "Creando cuenta...",
+                haveAccount: "¿Ya tiene una cuenta?",
+                signIn: "Iniciar sesión",
+            }
+        }
+    },
+    ko: {
+        nav: {
+            features: "기능",
+            pricing: "가격",
+            signIn: "로그인",
+        },
+        hero: {
+            zapTitle: "AI 기반 번역 기술",
+            title: "Doccoder로 업무를 명확하게 만드세요",
+            description: "타의 추종을 불허하는 정확성과 완벽한 개인 정보 보호를 갖춘 초고속 문서 번역을 경험해 보세요. 당신의 문서가 몇 초 만에 완벽하게 번역됩니다.",
+            cta: "번역 시작하기",
+        },
+        features: {
+            title: "왜 Doccoder를 선택해야 할까요?",
+            subtitle: "최첨단 AI 기술 기반의 전문가급 번역",
+            ai: {
+                title: "AI 기반 번역",
+                description: "고급 신경망이 몇 초 만에 사람 수준의 품질로 번역을 제공합니다.",
+            },
+            format: {
+                title: "서식 유지",
+                description: "문서의 원래 레이아웃, 글꼴 및 스타일을 완벽하게 유지합니다.",
+            },
+            secure: {
+                title: "안전 및 보안",
+                description: "엔드 투 엔드 암호화로 문서의 기밀을 완벽하게 보장합니다.",
+            },
+            fast: {
+                title: "빠른 처리",
+                description: "대기 시간 없이 즉시 전문적인 번역 결과를 얻으세요.",
+            },
+        },
+        formats: {
+            title: "지원되는 문서 형식",
+            subtitle: "원활한 번역을 위해 모든 주요 문서 형식을 지원합니다",
+        },
+        footer: {
+            tagline: "정확성과 개인 정보 보호가 보장된 AI 기반 문서 번역",
+            rights: "© 2025 Doccoder. All rights reserved.",
+            privacy: "개인 정보 보호",
+            terms: "약관",
+            download: "다운로드",
+            settings: "설정",
+        },
+        transformer: {
+            hero: {
+                title: "문서 변환하기",
+                accent: "AI 인텔리전스",
+                subtitle: "PDF와 여러 형식 간을 즉시 변환하세요. 고급 AI 기술로 구동됩니다.",
+            },
+            toPdf: {
+                title: "PDF로 변환",
+                description: "PDF 문서는 쉽게 변환 및 번역될 수 있습니다.",
+            },
+            fromPdf: {
+                title: "PDF에서 변환",
+                description: "AI의 도움으로 모든 유형의 파일을 변환 및 번역할 수 있습니다.",
+            }
+        },
+        auth: {
+            login: {
+                title: "로그인",
+                subtitle: "환영합니다! 계정에 로그인하세요",
+                google: "Google로 로그인",
+                github: "GitHub로 로그인",
+                or: "또는 다음으로 계속",
+                email: "이메일 주소",
+                password: "비밀번호",
+                forgot: "비밀번호를 잊으셨나요?",
+                submit: "로그인",
+                submitting: "로그인 중...",
+                noAccount: "계정이 없으신가요?",
+                create: "계정 생성",
+            },
+            signup: {
+                title: "회원가입",
+                subtitle: "문서 번역을 시작하려면 계정을 만드세요",
+                firstName: "이름",
+                lastName: "성",
+                phone: "전화번호",
+                country: "국가",
+                dob: "생년월일",
+                confirmPassword: "비밀번호 확인",
+                submit: "계정 생성",
+                submitting: "계정 생성 중...",
+                haveAccount: "이미 계정이 있으신가요?",
+                signIn: "로그인",
+            }
+        }
+    }
+}
+
+export type TranslationType = typeof translations.en
+export type LanguageCode = keyof typeof translations

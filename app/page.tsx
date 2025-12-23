@@ -6,9 +6,12 @@ import { ArrowRight, Shield, Zap, FileCheck, Lock, Gauge, Star } from "lucide-re
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UploadZone } from "@/components/upload-zone"
 import { useState } from "react"
+import { LanguageSelector } from "@/components/language-selector"
+import { useTranslation } from "@/components/language-context"
 
 export default function Home() {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
+  const { t } = useTranslation()
 
   return (
     <main className="min-h-screen bg-background">
@@ -28,18 +31,19 @@ export default function Home() {
                 href="#features"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Features
+                {t.nav.features}
               </a>
               <a
                 href="#pricing"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Pricing
+                {t.nav.pricing}
               </a>
             </nav>
           </div>
 
           <div className="flex items-center gap-4">
+            <LanguageSelector />
             <Link href="/auth/login">
               <Button
                 variant="ghost"
@@ -48,7 +52,7 @@ export default function Home() {
                 onMouseEnter={() => setHoveredButton("signin")}
                 onMouseLeave={() => setHoveredButton(null)}
               >
-                Sign In
+                {t.nav.signIn}
                 <Star className={`h-3 w-3 transition-colors ${hoveredButton === "signin" ? "fill-current text-white dark:text-black" : "text-transparent"}`} />
               </Button>
             </Link>
@@ -66,16 +70,15 @@ export default function Home() {
           <div className="mx-auto max-w-4xl text-center space-y-8 mb-16">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 backdrop-blur-sm px-4 py-1.5 text-sm shadow-lg">
               <Zap className="h-3.5 w-3.5 text-primary" />
-              <span className="font-medium">AI-Powered Translation Technology</span>
+              <span className="font-medium">{t.hero.zapTitle}</span>
             </div>
 
             <h1 className="font-sans text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl text-balance animate-in fade-in slide-in-from-bottom-4 duration-700">
-              Make your work clear with Doccoder
+              {t.hero.title}
             </h1>
 
             <p className="text-xl text-muted-foreground text-balance leading-relaxed max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-              Experience lightning-fast document translation with unmatched accuracy and complete privacy.
-              Your documents, translated perfectly in seconds.
+              {t.hero.description}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
@@ -85,7 +88,7 @@ export default function Home() {
                 asChild
               >
                 <a href="#upload">
-                  Start Translating
+                  {t.hero.cta}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
               </Button>
@@ -103,10 +106,10 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
-              Why Choose Doccoder?
+              {t.features.title}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Professional-grade translation powered by cutting-edge AI technology
+              {t.features.subtitle}
             </p>
           </div>
 
@@ -114,23 +117,23 @@ export default function Home() {
             {[
               {
                 icon: Zap,
-                title: "AI-Powered Translation",
-                description: "Advanced neural networks deliver human-quality translations in seconds.",
+                title: t.features.ai.title,
+                description: t.features.ai.description,
               },
               {
                 icon: FileCheck,
-                title: "Preserves Formatting",
-                description: "Maintains your document's original layout, fonts, and styling perfectly.",
+                title: t.features.format.title,
+                description: t.features.format.description,
               },
               {
                 icon: Lock,
-                title: "Secure & Private",
-                description: "End-to-end encryption ensures your documents remain completely confidential.",
+                title: t.features.secure.title,
+                description: t.features.secure.description,
               },
               {
                 icon: Gauge,
-                title: "Fast Turnaround",
-                description: "Get professional translations instantly, no waiting required.",
+                title: t.features.fast.title,
+                description: t.features.fast.description,
               },
             ].map((feature, idx) => (
               <div
@@ -153,10 +156,10 @@ export default function Home() {
           <div className="rounded-2xl border border-border bg-gradient-to-br from-card via-card to-primary/5 p-12 shadow-2xl">
             <div className="text-center mb-12">
               <h2 className="font-sans text-3xl font-bold md:text-4xl mb-4">
-                Supported Document Formats
+                {t.formats.title}
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                We support all major document formats for seamless translation
+                {t.formats.subtitle}
               </p>
             </div>
 
@@ -189,7 +192,7 @@ export default function Home() {
                 Doccoder
               </h3>
               <p className="text-sm text-muted-foreground max-w-md">
-                AI-powered document translation with guaranteed accuracy and privacy
+                {t.footer.tagline}
               </p>
             </div>
 
@@ -197,24 +200,24 @@ export default function Home() {
               <div className="md:w-1/3" /> {/* Spacer for centering */}
 
               <p className="text-sm text-muted-foreground order-2 md:order-1">
-                © 2025 Doccoder. All rights reserved.
+                {t.footer.rights}
               </p>
 
               <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 order-1 md:order-2 md:w-1/3">
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Privacy
+                  {t.footer.privacy}
                 </a>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Terms
+                  {t.footer.terms}
                 </a>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Cookies
                 </a>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Download
+                  {t.footer.download}
                 </a>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Settings
+                  {t.footer.settings}
                 </a>
               </div>
             </div>

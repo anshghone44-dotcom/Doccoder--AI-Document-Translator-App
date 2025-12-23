@@ -11,8 +11,11 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Github, Star } from "lucide-react"
+import { useTranslation } from "@/components/language-context"
 
 export default function LoginPage() {
+  const { t } = useTranslation()
+  const { login: lt } = t.auth
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -69,8 +72,8 @@ export default function LoginPage() {
 
         <Card className="shadow-2xl border-border/50 backdrop-blur-sm bg-card/95">
           <CardHeader>
-            <CardTitle className="text-2xl">Login Your Account</CardTitle>
-            <CardDescription>Welcome back! Sign in to your account</CardDescription>
+            <CardTitle className="text-2xl">{lt.title}</CardTitle>
+            <CardDescription>{lt.subtitle}</CardDescription>
           </CardHeader>
           <CardContent>
             {/* OAuth Buttons */}
@@ -102,6 +105,7 @@ export default function LoginPage() {
                   />
                 </svg>
                 Sign in with Google
+                {lt.google}
                 {hoveredButton === "google" && (
                   <Star className="absolute right-3 h-4 w-4 fill-current" />
                 )}
@@ -116,7 +120,7 @@ export default function LoginPage() {
                 onMouseLeave={() => setHoveredButton(null)}
               >
                 <Github className="mr-2 h-4 w-4" />
-                Sign in with GitHub
+                {lt.github}
                 {hoveredButton === "github" && (
                   <Star className="absolute right-3 h-4 w-4 fill-current" />
                 )}
@@ -129,7 +133,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-xs uppercase items-center gap-2">
                 <span className="bg-card px-2 text-muted-foreground flex items-center gap-1">
-                  Or Continue with
+                  {lt.or}
                   <svg className="h-4 w-4" viewBox="0 0 24 24">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -155,7 +159,7 @@ export default function LoginPage() {
             <form onSubmit={handleLogin}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">{lt.email}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -167,9 +171,9 @@ export default function LoginPage() {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{lt.password}</Label>
                     <Link href="#" className="text-sm text-primary hover:underline">
-                      Forgot password?
+                      {lt.forgot}
                     </Link>
                   </div>
                   <Input
@@ -188,16 +192,16 @@ export default function LoginPage() {
                   onMouseEnter={() => setHoveredButton("submit")}
                   onMouseLeave={() => setHoveredButton(null)}
                 >
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading ? lt.submitting : lt.submit}
                   {hoveredButton === "submit" && !isLoading && (
                     <Star className="absolute right-3 h-4 w-4 fill-current" />
                   )}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Don't have an account?{" "}
+                {lt.noAccount}{" "}
                 <Link href="/auth/sign-up" className="text-primary hover:underline font-medium">
-                  Create account
+                  {lt.create}
                 </Link>
               </div>
             </form>

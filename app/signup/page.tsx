@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Github, Star } from "lucide-react"
+import { useTranslation } from "@/components/language-context"
 
 const COUNTRIES = [
     "United States", "United Kingdom", "Canada", "Australia", "Germany",
@@ -41,6 +42,8 @@ const COUNTRY_CODES = [
 ]
 
 export default function SignupPage() {
+    const { t } = useTranslation()
+    const { signup: st, login: lt } = t.auth
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
@@ -129,8 +132,8 @@ export default function SignupPage() {
 
                 <Card className="shadow-2xl border-border/50 backdrop-blur-sm bg-card/95">
                     <CardHeader>
-                        <CardTitle className="text-2xl">Sign In</CardTitle>
-                        <CardDescription>Create your account to start translating documents</CardDescription>
+                        <CardTitle className="text-2xl">{st.title}</CardTitle>
+                        <CardDescription>{st.subtitle}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         {/* OAuth Buttons */}
@@ -161,7 +164,7 @@ export default function SignupPage() {
                                         fill="#EA4335"
                                     />
                                 </svg>
-                                Sign in with Google
+                                {lt.google}
                                 {hoveredButton === "google" && (
                                     <Star className="absolute right-3 h-4 w-4 fill-current" />
                                 )}
@@ -176,7 +179,7 @@ export default function SignupPage() {
                                 onMouseLeave={() => setHoveredButton(null)}
                             >
                                 <Github className="mr-2 h-4 w-4" />
-                                Sign in with GitHub
+                                {lt.github}
                                 {hoveredButton === "github" && (
                                     <Star className="absolute right-3 h-4 w-4 fill-current" />
                                 )}
@@ -189,7 +192,7 @@ export default function SignupPage() {
                             </div>
                             <div className="relative flex justify-center text-xs uppercase items-center gap-2">
                                 <span className="bg-card px-2 text-muted-foreground flex items-center gap-1">
-                                    Or Continue with
+                                    {lt.or}
                                     <svg className="h-4 w-4" viewBox="0 0 24 24">
                                         <path
                                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -216,7 +219,7 @@ export default function SignupPage() {
                             <div className="flex flex-col gap-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="firstName">First Name</Label>
+                                        <Label htmlFor="firstName">{st.firstName}</Label>
                                         <Input
                                             id="firstName"
                                             type="text"
@@ -227,7 +230,7 @@ export default function SignupPage() {
                                         />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="lastName">Last Name</Label>
+                                        <Label htmlFor="lastName">{st.lastName}</Label>
                                         <Input
                                             id="lastName"
                                             type="text"
@@ -240,7 +243,7 @@ export default function SignupPage() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email Address</Label>
+                                    <Label htmlFor="email">{lt.email}</Label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -252,7 +255,7 @@ export default function SignupPage() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="phone">Phone Number</Label>
+                                    <Label htmlFor="phone">{st.phone}</Label>
                                     <div className="flex gap-2">
                                         <Select value={phoneCode} onValueChange={setPhoneCode}>
                                             <SelectTrigger className="w-[120px]">
@@ -278,7 +281,7 @@ export default function SignupPage() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="country">Country</Label>
+                                    <Label htmlFor="country">{st.country}</Label>
                                     <Select value={country} onValueChange={setCountry}>
                                         <SelectTrigger id="country">
                                             <SelectValue placeholder="Select your country" />
@@ -294,7 +297,7 @@ export default function SignupPage() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="dob">Date of Birth</Label>
+                                    <Label htmlFor="dob">{st.dob}</Label>
                                     <Input
                                         id="dob"
                                         type="date"
@@ -304,7 +307,7 @@ export default function SignupPage() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">{lt.password}</Label>
                                     <Input
                                         id="password"
                                         type="password"
@@ -316,7 +319,7 @@ export default function SignupPage() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="repeatPassword">Confirm Password</Label>
+                                    <Label htmlFor="repeatPassword">{st.confirmPassword}</Label>
                                     <Input
                                         id="repeatPassword"
                                         type="password"
@@ -336,7 +339,7 @@ export default function SignupPage() {
                                     onMouseEnter={() => setHoveredButton("submit")}
                                     onMouseLeave={() => setHoveredButton(null)}
                                 >
-                                    {isLoading ? "Creating account..." : "Create Account"}
+                                    {isLoading ? st.submitting : st.submit}
                                     {hoveredButton === "submit" && !isLoading && (
                                         <Star className="absolute right-3 h-4 w-4 fill-current" />
                                     )}
@@ -344,9 +347,9 @@ export default function SignupPage() {
                             </div>
 
                             <div className="mt-4 text-center text-sm">
-                                Already have an account?{" "}
+                                {st.haveAccount}{" "}
                                 <Link href="/auth/login" className="text-primary hover:underline font-medium">
-                                    Sign in
+                                    {st.signIn}
                                 </Link>
                             </div>
                         </form>

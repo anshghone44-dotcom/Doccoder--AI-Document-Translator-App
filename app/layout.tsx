@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   generator: "v0.app",
 }
 
+import { LanguageProvider } from "@/components/language-context"
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,12 +36,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${manrope.variable} ${bodoniModa.variable}`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Suspense>
-            {children}
-            <Analytics />
-          </Suspense>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Suspense>
+              {children}
+              <Analytics />
+            </Suspense>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   )

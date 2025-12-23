@@ -1,11 +1,16 @@
+"use client"
+
 import TransformChat from "@/components/transform-chat"
 import ReverseTransformChat from "@/components/reverse-transform-chat"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageSelector } from "@/components/language-selector"
+import { useTranslation } from "@/components/language-context"
 
 export default function Page() {
+  const { t } = useTranslation()
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-secondary to-background">
       {/* Header with Back Button */}
@@ -32,20 +37,7 @@ export default function Page() {
           </div>
 
           <div className="flex items-center gap-4">
-            <nav className="hidden gap-8 md:flex">
-              <a
-                href="#convert-to"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                Convert to PDF
-              </a>
-              <a
-                href="#convert-from"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                Convert from PDF
-              </a>
-            </nav>
+            <LanguageSelector />
             <ThemeToggle />
           </div>
         </div>
@@ -55,13 +47,13 @@ export default function Page() {
       <section className="mx-auto max-w-7xl px-6 py-16 text-center md:py-24">
         <div className="space-y-4">
           <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-sans text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
-            Transform Documents with{" "}
+            {t.transformer.hero.title}{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              AI Intelligence
+              {t.transformer.hero.accent}
             </span>
           </h2>
           <p className="animate-in fade-in slide-in-from-bottom-4 duration-500 mx-auto max-w-2xl text-lg text-muted-foreground">
-            Convert between PDF and multiple formats instantly. Powered by advanced AI technology.
+            {t.transformer.hero.subtitle}
           </p>
         </div>
       </section>
@@ -71,9 +63,9 @@ export default function Page() {
         {/* Convert to PDF Section */}
         <section id="convert-to" className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold">Convert to PDF</h2>
+            <h2 className="text-3xl font-bold">{t.transformer.toPdf.title}</h2>
             <p className="text-muted-foreground">
-              PDF documents can be easily converted and translated.
+              {t.transformer.toPdf.description}
             </p>
           </div>
           <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50">
@@ -84,9 +76,9 @@ export default function Page() {
         {/* Convert from PDF Section */}
         <section id="convert-from" className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold">Convert from PDF</h2>
+            <h2 className="text-3xl font-bold">{t.transformer.fromPdf.title}</h2>
             <p className="text-muted-foreground">
-              All types of files can be converted and translated with AI assistance.
+              {t.transformer.fromPdf.description}
             </p>
           </div>
           <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50">
