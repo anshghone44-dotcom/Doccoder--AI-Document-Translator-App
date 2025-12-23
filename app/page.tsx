@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
@@ -44,12 +44,12 @@ export default function Home() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-primary hover:text-primary-foreground group"
+                className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-foreground hover:text-background group"
                 onMouseEnter={() => setHoveredButton("signin")}
                 onMouseLeave={() => setHoveredButton(null)}
               >
                 Sign In
-                <Star className={`h-3 w-3 transition-colors ${hoveredButton === "signin" ? "fill-current" : "text-transparent"}`} />
+                <Star className={`h-3 w-3 transition-colors ${hoveredButton === "signin" ? "fill-current text-white dark:text-black" : "text-transparent"}`} />
               </Button>
             </Link>
             <ThemeToggle />
@@ -58,9 +58,9 @@ export default function Home() {
       </header>
 
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,119,198,0.15),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(74,222,128,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-background" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,0,0,0.03),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(0,0,0,0.02),transparent_50%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 py-16 md:py-24">
           <div className="mx-auto max-w-4xl text-center space-y-8 mb-16">
