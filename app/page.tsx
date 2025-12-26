@@ -39,7 +39,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
-              <Link href="/ai-transformer" target="_blank">
+              <Link href="/translate" target="_blank">
                 <Button
                   size="lg"
                   className="h-14 px-8 text-lg font-bold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.24)] hover:scale-105 active:scale-95 group"
@@ -123,7 +123,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground/90">
               Ready to experience lightning-fast translations?
             </h2>
-            <Link href="/ai-transformer" target="_blank">
+            <Link href="/translate" target="_blank">
               <Button
                 size="lg"
                 className="h-16 px-12 text-xl font-black bg-foreground text-background hover:bg-foreground/90 transition-all duration-500 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 group relative overflow-hidden"
@@ -155,22 +155,34 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto relative z-10">
+            <div className="flex gap-6 overflow-x-auto pb-8 relative z-10 no-scrollbar snap-x scroll-smooth -mx-4 px-4 md:mx-0 md:px-0">
               {[
-                { name: "PDF Documents", ext: ".pdf", delay: "0" },
-                { name: "Word Documents", ext: ".docx", delay: "100" },
-                { name: "PowerPoint", ext: ".pptx", delay: "200" },
-                { name: "Text Files", ext: ".txt", delay: "300" },
+                { name: "PDF Documents", ext: ".pdf" },
+                { name: "Word Documents", ext: ".docx" },
+                { name: "PowerPoint", ext: ".pptx" },
+                { name: "Text Files", ext: ".txt" },
+                { name: "Excel Sheets", ext: ".xlsx" },
+                { name: "Google Sheets", ext: "Sheet" },
+                { name: "Google Docs", ext: "Doc" },
+                { name: "MS Excel", ext: ".csv" },
+                { name: "JSON Data", ext: ".json" },
+                { name: "Image File", ext: "IMG" },
+                { name: "PNG Image", ext: ".png" },
+                { name: "GIF Animation", ext: ".gif" },
+                { name: "TIFF Format", ext: ".tiff" },
+                { name: "JPEG Image", ext: ".jpeg" },
+                { name: "JPG Image", ext: ".jpg" },
+                { name: "SVG Vector", ext: ".svg" },
+                { name: "Bitmap", ext: ".bmp" },
               ].map((format, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col items-center gap-4 p-8 rounded-2xl bg-background/40 border border-border/50 hover:border-foreground/20 hover:bg-background/60 hover:scale-105 transition-all duration-300 group/item shadow-sm hover:shadow-xl"
-                  style={{ transitionDelay: `${format.delay}ms` }}
+                  className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-background/40 border border-border/50 hover:border-foreground/20 hover:bg-background/60 hover:scale-105 transition-all duration-300 group/item shadow-sm hover:shadow-xl min-w-[200px] snap-center aspect-square"
                 >
-                  <div className="text-5xl font-black text-foreground/20 group-hover/item:text-foreground/80 transition-colors duration-500">
+                  <div className="text-4xl font-black text-foreground/20 group-hover/item:text-foreground/80 transition-colors duration-500">
                     {format.ext}
                   </div>
-                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover/item:text-foreground transition-colors">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover/item:text-foreground transition-colors text-center">
                     {format.name}
                   </div>
                 </div>
@@ -209,9 +221,6 @@ export default function Home() {
                 </a>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Cookies
-                </a>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  {t.footer.download}
                 </a>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t.footer.settings}

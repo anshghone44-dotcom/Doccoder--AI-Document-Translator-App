@@ -78,27 +78,16 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                 <div className="flex items-center gap-4">
                     <LanguageSelector />
 
-                    {!isTransformerPage && (
-                        <Link href="/ai-transformer" target="_blank">
-                            <Button
-                                size="sm"
-                                className="hidden md:inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 relative group overflow-hidden shadow-lg hover:scale-105 active:scale-95"
-                                onMouseEnter={() => setHoveredButton("start-translating")}
-                                onMouseLeave={() => setHoveredButton(null)}
-                            >
-                                <span className="relative z-10 flex items-center gap-2">
-                                    {t.hero.cta}
-                                    <Star
-                                        className={`h-4 w-4 transition-all duration-300 ${hoveredButton === "start-translating"
-                                            ? "fill-current scale-110 rotate-90"
-                                            : "scale-0 rotate-0 opacity-0"
-                                            }`}
-                                    />
-                                </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </Button>
-                        </Link>
-                    )}
+                    <Link href="#">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-foreground hover:text-background group"
+                        >
+                            {t.footer.download}
+                            <Star className="h-3.5 w-3.5 text-transparent transition-colors group-hover:fill-current group-hover:text-white dark:group-hover:text-black" />
+                        </Button>
+                    </Link>
 
                     <Link href="/auth/login">
                         <Button
