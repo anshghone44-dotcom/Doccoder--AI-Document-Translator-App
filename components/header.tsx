@@ -3,18 +3,12 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Star, Zap, ChevronLeft, Globe } from "lucide-react"
+import { Star, Zap, ChevronLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSelector } from "@/components/language-selector"
 import { useTranslation } from "@/components/language-context"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 interface HeaderProps {
     showBackButton?: boolean
@@ -25,7 +19,6 @@ export default function Header({ showBackButton = false }: HeaderProps) {
     const [scrolled, setScrolled] = useState(false)
     const { t } = useTranslation()
     const pathname = usePathname()
-    const router = useRouter()
     const isTransformerPage = pathname === "/ai-transformer"
 
     useEffect(() => {
@@ -83,51 +76,6 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-foreground hover:text-background group"
-                            >
-                                <Globe className="h-4 w-4" />
-                                Translate
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=English')}>
-                                English
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Hindi')}>
-                                Hindi
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Marathi')}>
-                                Marathi
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Gujarati')}>
-                                Gujarati
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Korean')}>
-                                Korean
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Tamil')}>
-                                Tamil
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=French')}>
-                                French
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Spanish')}>
-                                Spanish
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=German')}>
-                                German
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/translate?lang=Swiss German')}>
-                                Swiss German
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
                     <LanguageSelector />
 
                     <Link href="#">
