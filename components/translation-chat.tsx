@@ -4,9 +4,10 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
+import { useSearchParams } from "next/navigation"
 
 type Message = {
     role: "user" | "assistant"
@@ -15,6 +16,7 @@ type Message = {
 
 export default function TranslationChat() {
     const { t } = useTranslation()
+    const searchParams = useSearchParams()
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
@@ -23,9 +25,18 @@ export default function TranslationChat() {
     ])
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(false)
-    const [targetLang, setTargetLang] = useState("English")
+    const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
     const [selectedModel, setSelectedModel] = useState("GPT-4o")
+    const [useGlossary, setUseGlossary] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
+
+    const copyToClipboard = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text)
+        } catch (err) {
+            console.error('Failed to copy: ', err)
+        }
+    }
 
     const AI_MODELS = [
         { id: "gpt-5", name: "GPT-5", provider: "OpenAI" },
@@ -64,6 +75,7 @@ export default function TranslationChat() {
                     messages: [...messages, { role: "user", content: userMessage }],
                     targetLanguage: targetLang,
                     model: selectedModel,
+                    useGlossary: useGlossary,
                 }),
             })
 
@@ -137,11 +149,26 @@ export default function TranslationChat() {
                         >
                             <option value="English">English</option>
                             <option value="Hindi">Hindi</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="French">French</option>
-                            <option value="German">German</option>
+                            <option value="Marathi">Marathi</option>
+                            <option value="Gujarati">Gujarati</option>
+                            <option value="Korean">Korean</option>
                             <option value="Tamil">Tamil</option>
+                            <option value="French">French</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="German">German</option>
+                            <option value="Swiss German">Swiss German</option>
                         </select>
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
+                        <input
+                            type="checkbox"
+                            id="useGlossary"
+                            checked={useGlossary}
+                            onChange={(e) => setUseGlossary(e.target.checked)}
+                            className="rounded"
+                        />
+                        <label htmlFor="useGlossary" className="text-sm font-medium cursor-pointer">Use Glossary</label>
                     </div>
                 </div>
             </div>
@@ -158,13 +185,22 @@ export default function TranslationChat() {
                     >
                         <div
                             className={cn(
-                                "px-6 py-4 rounded-3xl text-sm leading-relaxed",
+                                "px-6 py-4 rounded-3xl text-sm leading-relaxed relative group",
                                 m.role === "user"
                                     ? "bg-foreground text-background font-medium shadow-lg"
                                     : "glass border border-white/10 text-foreground"
                             )}
                         >
                             {m.content}
+                            {m.role === "assistant" && (
+                                <button
+                                    onClick={() => copyToClipboard(m.content)}
+                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded bg-black/20 hover:bg-black/40"
+                                    title="Copy translation"
+                                >
+                                    <Copy className="h-3 w-3" />
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}
