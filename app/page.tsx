@@ -2,12 +2,22 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Zap, FileCheck, Lock, Gauge, Star } from "lucide-react"
+import { Zap, FileCheck, Lock, Gauge, Star, ChevronLeft, ChevronRight } from "lucide-react"
 import { useTranslation } from "@/components/language-context"
+import { useRef } from "react"
 import Header from "@/components/header"
 
 export default function Home() {
   const { t } = useTranslation()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current
+      const scrollTo = direction === "left" ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2
+      scrollContainerRef.current.scrollTo({ left: scrollTo, behavior: "smooth" })
+    }
+  }
 
   return (
     <main className="min-h-screen bg-background relative overflow-hidden">
@@ -155,38 +165,65 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex gap-6 overflow-x-auto pb-8 relative z-10 no-scrollbar snap-x scroll-smooth -mx-4 px-4 md:mx-0 md:px-0">
-              {[
-                { name: "PDF Documents", ext: ".pdf" },
-                { name: "Word Documents", ext: ".docx" },
-                { name: "PowerPoint", ext: ".pptx" },
-                { name: "Text Files", ext: ".txt" },
-                { name: "Excel Sheets", ext: ".xlsx" },
-                { name: "Google Sheets", ext: "Sheet" },
-                { name: "Google Docs", ext: "Doc" },
-                { name: "MS Excel", ext: ".csv" },
-                { name: "JSON Data", ext: ".json" },
-                { name: "Image File", ext: "IMG" },
-                { name: "PNG Image", ext: ".png" },
-                { name: "GIF Animation", ext: ".gif" },
-                { name: "TIFF Format", ext: ".tiff" },
-                { name: "JPEG Image", ext: ".jpeg" },
-                { name: "JPG Image", ext: ".jpg" },
-                { name: "SVG Vector", ext: ".svg" },
-                { name: "Bitmap", ext: ".bmp" },
-              ].map((format, idx) => (
-                <div
-                  key={idx}
-                  className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-background/40 border border-border/50 hover:border-foreground/20 hover:bg-background/60 hover:scale-105 transition-all duration-300 group/item shadow-sm hover:shadow-xl min-w-[200px] snap-center aspect-square"
+            <div className="relative group/scroll">
+              <div
+                ref={scrollContainerRef}
+                className="flex gap-6 overflow-x-auto pb-8 relative z-10 no-scrollbar snap-x scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
+              >
+                {[
+                  { name: "PDF Documents", ext: ".pdf" },
+                  { name: "Word Documents", ext: ".docx" },
+                  { name: "PowerPoint", ext: ".pptx" },
+                  { name: "Text Files", ext: ".txt" },
+                  { name: "Excel Sheets", ext: ".xlsx" },
+                  { name: "Google Sheets", ext: "Sheet" },
+                  { name: "Google Docs", ext: "Doc" },
+                  { name: "MS Excel", ext: ".csv" },
+                  { name: "JSON Data", ext: ".json" },
+                  { name: "Image File", ext: "IMG" },
+                  { name: "PNG Image", ext: ".png" },
+                  { name: "GIF Animation", ext: ".gif" },
+                  { name: "TIFF Format", ext: ".tiff" },
+                  { name: "JPEG Image", ext: ".jpeg" },
+                  { name: "JPG Image", ext: ".jpg" },
+                  { name: "SVG Vector", ext: ".svg" },
+                  { name: "Bitmap", ext: ".bmp" },
+                ].map((format, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-background/40 border border-border/50 hover:border-foreground/20 hover:bg-background/60 hover:scale-105 transition-all duration-300 group/item shadow-sm hover:shadow-xl min-w-[200px] snap-center aspect-square"
+                  >
+                    <div className="text-4xl font-black text-foreground/20 group-hover/item:text-foreground/80 transition-colors duration-500">
+                      {format.ext}
+                    </div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover/item:text-foreground transition-colors text-center">
+                      {format.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="absolute top-1/2 -translate-y-1/2 left-0 z-20 opacity-0 group-hover/scroll:opacity-100 transition-opacity pointer-events-none md:pointer-events-auto">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-12 w-12 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background -ml-6 pointer-events-auto"
+                  onClick={() => scroll("left")}
                 >
-                  <div className="text-4xl font-black text-foreground/20 group-hover/item:text-foreground/80 transition-colors duration-500">
-                    {format.ext}
-                  </div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover/item:text-foreground transition-colors text-center">
-                    {format.name}
-                  </div>
-                </div>
-              ))}
+                  <ChevronLeft className="h-6 w-6" />
+                </Button>
+              </div>
+
+              <div className="absolute top-1/2 -translate-y-1/2 right-0 z-20 opacity-0 group-hover/scroll:opacity-100 transition-opacity pointer-events-none md:pointer-events-auto">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-12 w-12 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background -mr-6 pointer-events-auto"
+                  onClick={() => scroll("right")}
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
