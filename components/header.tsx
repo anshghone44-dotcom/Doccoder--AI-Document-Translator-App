@@ -5,7 +5,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Star, Zap, ChevronLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSelector } from "@/components/language-selector"
 import { useTranslation } from "@/components/language-context"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -76,16 +75,14 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <LanguageSelector />
-
                     <Link href="#">
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-foreground hover:text-background group"
+                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-primary/15 hover:text-primary hover:scale-105 group"
                         >
                             {t.footer.download}
-                            <Star className="h-3.5 w-3.5 text-transparent transition-colors group-hover:fill-current group-hover:text-white dark:group-hover:text-black" />
+                            <Star className="h-3.5 w-3.5 text-transparent transition-colors group-hover:fill-primary group-hover:text-primary" />
                         </Button>
                     </Link>
 
@@ -93,12 +90,12 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-foreground hover:text-background group"
+                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-primary/15 hover:text-primary hover:scale-105 group"
                             onMouseEnter={() => setHoveredButton("signin")}
                             onMouseLeave={() => setHoveredButton(null)}
                         >
                             {t.nav.signIn}
-                            <Star className={`h-3.5 w-3.5 transition-colors ${hoveredButton === "signin" ? "fill-current text-white dark:text-black" : "text-transparent"}`} />
+                            <Star className={`h-3.5 w-3.5 transition-colors ${hoveredButton === "signin" ? "fill-primary text-primary" : "text-transparent"}`} />
                         </Button>
                     </Link>
                     <ThemeToggle />
