@@ -85,7 +85,7 @@ export default function LoginPage() {
                 type="button"
                 variant="outline"
                 className="w-full relative overflow-hidden border-2 border-border hover:border-primary/50 bg-gradient-to-r from-background to-muted/20 hover:from-muted/30 hover:to-primary/5 text-foreground hover:text-primary font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group"
-                onClick={() => handleOAuthSignIn("google")}
+                onClick={() => window.location.href = 'https://accounts.google.com/signin'}
                 onMouseEnter={() => setHoveredButton("google")}
                 onMouseLeave={() => setHoveredButton(null)}
               >
@@ -108,7 +108,7 @@ export default function LoginPage() {
                 type="button"
                 variant="outline"
                 className="w-full relative overflow-hidden border-2 border-border hover:border-primary/50 bg-gradient-to-r from-background to-muted/20 hover:from-muted/30 hover:to-primary/5 text-foreground hover:text-primary font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group"
-                onClick={() => handleOAuthSignIn("github")}
+                onClick={() => window.location.href = 'https://github.com/login'}
                 onMouseEnter={() => setHoveredButton("github")}
                 onMouseLeave={() => setHoveredButton(null)}
               >
