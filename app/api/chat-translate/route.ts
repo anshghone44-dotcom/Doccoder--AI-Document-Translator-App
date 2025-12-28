@@ -11,10 +11,10 @@ export async function POST(request: NextRequest) {
 
         const lastUserMessage = messages[messages.length - 1].content
 
-        const systemPrompt = `You are Doccoder AI, a premium translation assistant powered by ${model || "Advanced Neural Engines"}. 
-      Your goal is to translate the user's input accurately into ${targetLanguage || "the requested language"} with a ${tone || "professional"} tone.
-      ${useGlossary ? "Use the user's glossary for consistent terminology." : ""}
-      Provide the translation clearly. If the user asks questions about the translation, answer them helpfuly.`
+        const systemPrompt = `You are the Doccoder AI Neural Translation Engine, a high-performance system optimized for technical and professional accuracy. 
+      Powered by ${model || "Advanced Neural Architectures"}, your objective is to provide linguistically precise translations into ${targetLanguage || "the requested language"}.
+      Maintain a highly professional, objective, and technical tone. Ensure terminology consistency and preserve context-specific nuances.
+      Output format: Provide the translation directly. If the user requests technical clarification, respond as a specialized translation interface.`
 
         const response = await generateText({
             model: model ? `openai/${model.toLowerCase().replace('gpt-', 'gpt-')}` : "openai/gpt-4-mini",

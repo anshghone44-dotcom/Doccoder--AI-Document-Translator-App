@@ -20,14 +20,13 @@ export default function TranslationChat() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "Hello! I am Doccoder AI. Send me any text or document content you'd like translated, and tell me the target language.",
+            content: "SYSTEM INITIALIZED: Doccoder AI Neural Engine is online. Input source text or document content for high-precision translation. Specify target parameters to begin processing.",
         },
     ])
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
     const [selectedModel, setSelectedModel] = useState("GPT-4o")
-    const [useGlossary, setUseGlossary] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
 
     const copyToClipboard = async (text: string) => {
@@ -75,7 +74,6 @@ export default function TranslationChat() {
                     messages: [...messages, { role: "user", content: userMessage }],
                     targetLanguage: targetLang,
                     model: selectedModel,
-                    useGlossary: useGlossary,
                 }),
             })
 
@@ -158,17 +156,6 @@ export default function TranslationChat() {
                             <option value="German">German</option>
                             <option value="Swiss German">Swiss German</option>
                         </select>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
-                        <input
-                            type="checkbox"
-                            id="useGlossary"
-                            checked={useGlossary}
-                            onChange={(e) => setUseGlossary(e.target.checked)}
-                            className="rounded"
-                        />
-                        <label htmlFor="useGlossary" className="text-sm font-medium cursor-pointer">Use Glossary</label>
                     </div>
                 </div>
             </div>
