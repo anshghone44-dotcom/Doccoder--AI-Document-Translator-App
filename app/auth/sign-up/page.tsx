@@ -145,17 +145,18 @@ export default function SignUpPage() {
             </div>
 
             {/* Sign Up Form */}
-            <Card className="border-border/30 bg-card/60 backdrop-blur-2xl shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] relative overflow-hidden group/card px-1 pt-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-50 pointer-events-none" />
+            <Card className="border-border/30 bg-card/60 backdrop-blur-2xl shadow-xl relative overflow-hidden group/card px-1 pt-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-30 pointer-events-none" />
 
-              {/* Tech-inspired background pattern */}
-              <div className="absolute inset-0 opacity-[0.05]">
+              {/* Tech-inspired background pattern - more subtle */}
+              <div className="absolute inset-0 opacity-[0.03]">
                 <div className="absolute inset-0" style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='1'%3E%3Cpath d='M30 30h2v2h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
                 }} />
               </div>
 
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[64px] rounded-full -mr-16 -mt-16 animate-pulse" />
+              {/* Very faint accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[100px] rounded-full -mr-16 -mt-16" />
 
               <CardContent className="p-8 relative z-10">
                 {error && (
@@ -185,8 +186,8 @@ export default function SignUpPage() {
                           onBlur={() => setFocusedField(null)}
                           required
                           className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'firstName'
-                              ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                              : 'border-border/30 hover:border-border/60'
+                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                            : 'border-border/30 hover:border-border/60'
                             }`}
                         />
                         {focusedField === 'firstName' && (
@@ -210,8 +211,8 @@ export default function SignUpPage() {
                           onBlur={() => setFocusedField(null)}
                           required
                           className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'lastName'
-                              ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                              : 'border-border/30 hover:border-border/60'
+                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                            : 'border-border/30 hover:border-border/60'
                             }`}
                         />
                         {focusedField === 'lastName' && (
@@ -237,8 +238,8 @@ export default function SignUpPage() {
                         onBlur={() => setFocusedField(null)}
                         required
                         className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'email'
-                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                            : 'border-border/30 hover:border-border/60'
+                          ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                          : 'border-border/30 hover:border-border/60'
                           }`}
                       />
                       {focusedField === 'email' && (
@@ -263,8 +264,8 @@ export default function SignUpPage() {
                         onBlur={() => setFocusedField(null)}
                         required
                         className={`h-12 pl-4 pr-12 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'password'
-                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                            : 'border-border/30 hover:border-border/60'
+                          ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                          : 'border-border/30 hover:border-border/60'
                           }`}
                       />
                       <button
@@ -296,8 +297,8 @@ export default function SignUpPage() {
                         onBlur={() => setFocusedField(null)}
                         required
                         className={`h-12 pl-4 pr-12 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'confirmPassword'
-                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                            : 'border-border/30 hover:border-border/60'
+                          ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                          : 'border-border/30 hover:border-border/60'
                           }`}
                       />
                       <button
@@ -317,12 +318,12 @@ export default function SignUpPage() {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full h-14 text-lg font-black relative overflow-hidden bg-primary text-primary-foreground shadow-[0_0_25px_-5px_rgba(var(--primary),0.4)] hover:shadow-primary/40 transition-all duration-500 rounded-2xl group/btn border border-primary/20"
+                      className="w-full h-14 text-lg font-black relative overflow-hidden bg-primary text-primary-foreground shadow-lg hover:shadow-primary/20 transition-all duration-500 rounded-2xl group/btn border border-primary/20"
                       onMouseEnter={() => setHoveredButton("signup")}
                       onMouseLeave={() => setHoveredButton(null)}
                     >
-                      {/* Animated scan line */}
-                      <div className="absolute inset-0 w-full h-[2px] bg-white/20 -translate-y-[100px] group-hover/btn:animate-[scan_2s_infinite] pointer-events-none" />
+                      {/* Animated scan line - slightly faster and more subtle */}
+                      <div className="absolute inset-0 w-full h-[1px] bg-white/10 -translate-y-[100px] group-hover/btn:animate-[scan_1.5s_infinite] pointer-events-none" />
 
                       {/* Gradient glow */}
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
