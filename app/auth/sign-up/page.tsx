@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Star, Zap, Shield, Users, User, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { Star, Zap, Shield, Users, User, Mail, Lock, Eye, EyeOff, Globe, Cpu, Layers, ArrowRight } from "lucide-react"
 import { useTranslation } from "@/components/language-context"
 
 export default function SignUpPage() {
@@ -82,42 +82,48 @@ export default function SignUpPage() {
       <div className="flex min-h-screen">
         {/* Left Side - Branding */}
         <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12">
-          <div className="max-w-md space-y-8">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
-                <Zap className="h-4 w-4" />
-                AI-Powered Platform
+          {/* Subtle Grid Background */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, var(--primary) 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }} />
+
+          <div className="max-w-md space-y-8 relative z-10">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold tracking-widest uppercase text-primary">
+                <Cpu className="h-4 w-4" />
+                Next-Gen AI Core
               </div>
-              <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-foreground">
-                Join the Future of
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 block mt-2">
-                  Document Translation
+              <h1 className="text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.1]">
+                Neural Document
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/40 block mt-2">
+                  Intelligence
                 </span>
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Create your account and unlock unlimited access to advanced AI translation tools.
-                Transform documents instantly with cutting-edge neural technology.
+              <p className="text-xl text-muted-foreground leading-relaxed font-medium">
+                Architecting the future of global communication.
+                Deploy advanced neural translation models with enterprise-grade precision.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 pt-8">
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-card/50 border border-border/50 backdrop-blur-sm">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Shield className="h-5 w-5 text-primary" />
+            <div className="grid grid-cols-1 gap-6 pt-8">
+              <div className="group flex items-center gap-4 p-5 rounded-3xl bg-card/30 border border-white/10 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:bg-card/50">
+                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                  <Shield className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">Enterprise Security</h3>
-                  <p className="text-sm text-muted-foreground">Bank-level encryption for all your data</p>
+                  <h3 className="font-bold text-foreground">Military-Grade Security</h3>
+                  <p className="text-sm text-muted-foreground/80">End-to-end encryption for sensitive data</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-card/50 border border-border/50 backdrop-blur-sm">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-primary" />
+              <div className="group flex items-center gap-4 p-5 rounded-3xl bg-card/30 border border-white/10 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:bg-card/50">
+                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                  <Globe className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">Team Collaboration</h3>
-                  <p className="text-sm text-muted-foreground">Work together seamlessly on translations</p>
+                  <h3 className="font-bold text-foreground">Global Scalability</h3>
+                  <p className="text-sm text-muted-foreground/80">Optimized for 100+ languages and formats</p>
                 </div>
               </div>
             </div>
@@ -139,13 +145,18 @@ export default function SignUpPage() {
             </div>
 
             {/* Sign Up Form */}
-            <Card className="border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl relative overflow-hidden">
-              {/* Tech-inspired background pattern */}
-              <div className="absolute inset-0 opacity-5">
+            <Card className="border-border/30 bg-card/60 backdrop-blur-2xl shadow-xl relative overflow-hidden group/card px-1 pt-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-30 pointer-events-none" />
+
+              {/* Tech-inspired background pattern - more subtle */}
+              <div className="absolute inset-0 opacity-[0.03]">
                 <div className="absolute inset-0" style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='1'%3E%3Cpath d='M30 30h2v2h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
                 }} />
               </div>
+
+              {/* Very faint accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[100px] rounded-full -mr-16 -mt-16" />
 
               <CardContent className="p-8 relative z-10">
                 {error && (
@@ -174,11 +185,10 @@ export default function SignUpPage() {
                           onFocus={() => setFocusedField('firstName')}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${
-                            focusedField === 'firstName'
-                              ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                              : 'border-border/30 hover:border-border/60'
-                          }`}
+                          className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'firstName'
+                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                            : 'border-border/30 hover:border-border/60'
+                            }`}
                         />
                         {focusedField === 'firstName' && (
                           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none animate-pulse" />
@@ -200,11 +210,10 @@ export default function SignUpPage() {
                           onFocus={() => setFocusedField('lastName')}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${
-                            focusedField === 'lastName'
-                              ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                              : 'border-border/30 hover:border-border/60'
-                          }`}
+                          className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'lastName'
+                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                            : 'border-border/30 hover:border-border/60'
+                            }`}
                         />
                         {focusedField === 'lastName' && (
                           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none animate-pulse" />
@@ -228,11 +237,10 @@ export default function SignUpPage() {
                         onFocus={() => setFocusedField('email')}
                         onBlur={() => setFocusedField(null)}
                         required
-                        className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${
-                          focusedField === 'email'
-                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                            : 'border-border/30 hover:border-border/60'
-                        }`}
+                        className={`h-12 pl-4 pr-4 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'email'
+                          ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                          : 'border-border/30 hover:border-border/60'
+                          }`}
                       />
                       {focusedField === 'email' && (
                         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none animate-pulse" />
@@ -255,11 +263,10 @@ export default function SignUpPage() {
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
                         required
-                        className={`h-12 pl-4 pr-12 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${
-                          focusedField === 'password'
-                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                            : 'border-border/30 hover:border-border/60'
-                        }`}
+                        className={`h-12 pl-4 pr-12 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'password'
+                          ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                          : 'border-border/30 hover:border-border/60'
+                          }`}
                       />
                       <button
                         type="button"
@@ -289,11 +296,10 @@ export default function SignUpPage() {
                         onFocus={() => setFocusedField('confirmPassword')}
                         onBlur={() => setFocusedField(null)}
                         required
-                        className={`h-12 pl-4 pr-12 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${
-                          focusedField === 'confirmPassword'
-                            ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
-                            : 'border-border/30 hover:border-border/60'
-                        }`}
+                        className={`h-12 pl-4 pr-12 bg-background/30 border-2 backdrop-blur-sm transition-all duration-300 rounded-xl text-foreground placeholder:text-muted-foreground/50 ${focusedField === 'confirmPassword'
+                          ? 'border-primary/60 shadow-lg shadow-primary/10 bg-background/50'
+                          : 'border-border/30 hover:border-border/60'
+                          }`}
                       />
                       <button
                         type="button"
@@ -308,33 +314,31 @@ export default function SignUpPage() {
                     </div>
                   </div>
 
-                  <div className="pt-2">
+                  <div className="pt-4">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full h-14 text-lg font-bold relative overflow-hidden bg-gradient-to-r from-primary via-primary to-primary/80 hover:from-primary/90 hover:via-primary/95 hover:to-primary/70 text-primary-foreground shadow-2xl hover:shadow-primary/25 transition-all duration-500 rounded-2xl group border-2 border-primary/20"
+                      className="w-full h-14 text-lg font-black relative overflow-hidden bg-primary text-primary-foreground shadow-lg hover:shadow-primary/20 transition-all duration-500 rounded-2xl group/btn border border-primary/20"
                       onMouseEnter={() => setHoveredButton("signup")}
                       onMouseLeave={() => setHoveredButton(null)}
                     >
-                      {/* Animated background */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+                      {/* Animated scan line - slightly faster and more subtle */}
+                      <div className="absolute inset-0 w-full h-[1px] bg-white/10 -translate-y-[100px] group-hover/btn:animate-[scan_1.5s_infinite] pointer-events-none" />
 
-                      {/* Glow effect */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+                      {/* Gradient glow */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
 
                       <div className="relative flex items-center justify-center gap-3">
                         {isLoading ? (
                           <>
-                            <div className="h-5 w-5 border-3 border-current border-t-transparent rounded-full animate-spin" />
-                            <span className="tracking-wide">Creating Account...</span>
+                            <div className="h-5 w-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                            <span className="tracking-widest uppercase text-sm">Initializing Profile...</span>
                           </>
                         ) : (
                           <>
-                            <Zap className={`h-5 w-5 transition-all duration-300 ${hoveredButton === "signup" ? "rotate-12 scale-110" : ""}`} />
-                            <span className="tracking-wide">{st.button}</span>
-                            {hoveredButton === "signup" && (
-                              <Star className="h-5 w-5 fill-current animate-pulse scale-110" />
-                            )}
+                            <Layers className={`h-5 w-5 transition-all duration-500 ${hoveredButton === "signup" ? "scale-110 rotate-180" : ""}`} />
+                            <span className="tracking-widest uppercase text-sm">{st.button}</span>
+                            <ArrowRight className={`h-5 w-5 transition-all duration-500 ${hoveredButton === "signup" ? "translate-x-1 opacity-100" : "opacity-0 -translate-x-2"}`} />
                           </>
                         )}
                       </div>
