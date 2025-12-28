@@ -4,6 +4,8 @@ import Header from "@/components/header"
 import TranslationChat from "@/components/translation-chat"
 import { useTranslation } from "@/components/language-context"
 import { Sparkles } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { UploadZone } from "@/components/upload-zone"
 
 export default function TranslatePage() {
     const { t } = useTranslation()
@@ -30,7 +32,20 @@ export default function TranslatePage() {
                     </div>
 
                     <div className="animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
-                        <TranslationChat />
+                        <Tabs defaultValue="chat" className="w-full">
+                            <div className="flex justify-center mb-8">
+                                <TabsList className="grid w-full max-w-[400px] grid-cols-2">
+                                    <TabsTrigger value="chat">AI Chatbot</TabsTrigger>
+                                    <TabsTrigger value="document">Doc Translation</TabsTrigger>
+                                </TabsList>
+                            </div>
+                            <TabsContent value="chat" className="mt-0">
+                                <TranslationChat />
+                            </TabsContent>
+                            <TabsContent value="document" className="mt-0">
+                                <UploadZone />
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </div>
 
