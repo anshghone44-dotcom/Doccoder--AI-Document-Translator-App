@@ -11,6 +11,19 @@ if (typeof window !== "undefined") {
       globalThis.__supabaseClient = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        {
+          auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true,
+            flowType: 'pkce'
+          },
+          global: {
+            headers: {
+              'X-Client-Info': 'doccoder-web-app'
+            }
+          }
+        }
       )
     }
   }
@@ -20,7 +33,7 @@ if (typeof window !== "undefined") {
 
 export function createClient() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    throw new Error("Missing Supabase environment variables")
+    throw new Error("Missing Supabase environment variables. Please check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY")
   }
 
   if (client) {
@@ -28,7 +41,23 @@ export function createClient() {
   }
 
   // This should only run on first call if globalThis wasn't set
-  client = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  client = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce'
+      },
+      global: {
+        headers: {
+          'X-Client-Info': 'doccoder-web-app'
+        }
+      }
+    }
+  )
 
   return client
 }

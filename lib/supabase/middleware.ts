@@ -47,5 +47,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Protect main application routes
+  if ((request.nextUrl.pathname.startsWith("/translate") ||
+       request.nextUrl.pathname.startsWith("/ai-transformer")) && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/auth/login"
+    return NextResponse.redirect(url)
+  }
+
   return supabaseResponse
 }
