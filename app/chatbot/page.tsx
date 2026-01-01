@@ -27,11 +27,11 @@ export default function ChatbotPage() {
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                            AI Document <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 italic">Processor</span>
+                            Neural Context <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 italic">Engine</span>
                         </h1>
 
-                        <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-                            The most advanced neural engine for professional document translation and transformation. Upload any format to begin high-fidelity processing.
+                        <p className="max-w-3xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
+                            High-fidelity document transformation engineered for professional business architectures. Translate and synthesize complex documentation with absolute contextual integrity and technical precision.
                         </p>
 
                         <div className="flex items-center gap-8 pt-4 animate-in fade-in duration-1000 delay-700 opacity-40">

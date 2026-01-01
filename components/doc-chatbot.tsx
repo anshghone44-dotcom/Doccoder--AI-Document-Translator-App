@@ -35,7 +35,7 @@ export default function DocChatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "SYSTEM ONLINE: Doccoder AI Neural Document Processor is ready. Upload documents or provide technical instructions for high-precision translation and transformation. I am optimized for context preservation across complex architectures.",
+            content: "NEURAL ENGINE INITIALIZED: Doccoder Advanced Context Engine is online. High-fidelity document synthesis and technical translation protocols are active. Optimized for complex enterprise documentation and architectural integrity.",
         },
     ])
     const [input, setInput] = useState("")
