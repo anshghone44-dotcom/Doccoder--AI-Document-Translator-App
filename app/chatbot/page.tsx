@@ -14,7 +14,7 @@ export default function ChatbotPage() {
 
             {/* Background elements to match landing page */}
             <div className="absolute inset-0 z-0 opacity-40">
-                <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[140px] animate-pulse" />
+                <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[140px]" />
                 <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px]" />
             </div>
 
@@ -27,7 +27,7 @@ export default function ChatbotPage() {
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                            AI Document <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 text-glow-primary italic">Processsor</span>
+                            AI Document <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 italic">Processsor</span>
                         </h1>
 
                         <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">

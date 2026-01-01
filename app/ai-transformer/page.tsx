@@ -18,7 +18,7 @@ export default function Page() {
         <div className="space-y-4">
           <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans text-balance text-5xl font-black md:text-6xl lg:text-7xl tracking-tighter">
             {t.transformer.hero.title}{" "}
-            <span className="bg-gradient-to-br from-primary via-primary/80 to-primary/40 bg-clip-text text-transparent text-glow-primary">
+            <span className="bg-gradient-to-br from-primary via-primary/80 to-primary/40 bg-clip-text text-transparent">
               {t.transformer.hero.accent}
             </span>
           </h2>

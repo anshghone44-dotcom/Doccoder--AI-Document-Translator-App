@@ -26,7 +26,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
         </div>
 
@@ -39,7 +39,7 @@ export default function Home() {
 
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
               {t.hero.title.split(" ").slice(0, -1).join(" ")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 text-glow-primary">
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30">
                 {t.hero.title.split(" ").pop()}
               </span>
             </h1>

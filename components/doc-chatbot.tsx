@@ -267,7 +267,7 @@ export default function DocChatbot() {
                         <div className="glass px-8 py-5 rounded-[2rem] border border-white/10 flex items-center gap-4 bg-white/5">
                             <div className="relative">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                                <div className="absolute inset-0 bg-primary/20 blur-lg animate-pulse" />
+                                <div className="absolute inset-0 bg-primary/20 blur-lg" />
                             </div>
                             <span className="text-sm text-foreground/70 font-mono italic tracking-tight">ENGINE PROCESSING...</span>
                         </div>
@@ -352,8 +352,8 @@ export default function DocChatbot() {
             </div>
 
             {/* Decorative BG Glows */}
-            <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -z-10 animate-glow-pulse" />
-            <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
+            <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -z-10" />
+            <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10" />
         </div>
     )
 }
