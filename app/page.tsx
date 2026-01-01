@@ -37,7 +37,7 @@ export default function Home() {
               {t.hero.zapTitle}
             </div>
 
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
               {t.hero.title.split(" ").slice(0, -1).join(" ")}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30">
                 {t.hero.title.split(" ").pop()}

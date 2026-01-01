@@ -45,8 +45,22 @@ export async function POST(req: NextRequest) {
 
     try {
       console.log("[v0] Generating AI title for:", filename, "using model:", aiModel)
+
+      const modelMapping: Record<string, string> = {
+        "openai/gpt-5": "gpt-4o",
+        "xai/grok-4": "gpt-4o",
+        "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+        "openai/gpt-4-mini": "gpt-4o-mini",
+        "xai/grok-3": "gpt-4o",
+        "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
+      }
+
+      const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
+      const mappedModel = modelMapping[aiModel] || modelId
+      const finalModel = aiModel && aiModel.startsWith('anthropic') ? `anthropic:${mappedModel}` : `openai:${mappedModel}`
+
       const { text } = await generateText({
-        model: aiModel,
+        model: finalModel as any,
         prompt: `Create a professional, concise one-line title for converting the file "${filename}" into a PDF.
 
 User's transformation goal: ${prompt}

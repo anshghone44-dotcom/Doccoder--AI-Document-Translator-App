@@ -27,7 +27,7 @@ export default function ChatbotPage() {
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                            AI Document <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 italic">Processsor</span>
+                            AI Document <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 italic">Processor</span>
                         </h1>
 
                         <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
