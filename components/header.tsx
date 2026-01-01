@@ -33,56 +33,54 @@ export default function Header({ showBackButton = false }: HeaderProps) {
             className={cn(
                 "sticky top-0 z-50 transition-all duration-500",
                 scrolled
-                    ? "bg-background/80 backdrop-blur-lg border-b border-border/40 py-3 shadow-sm"
+                    ? "bg-background/80 backdrop-blur-xl border-b border-border/40 py-3 shadow-lg"
                     : "bg-transparent py-5 border-b border-transparent"
             )}
         >
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
                 <div className="flex items-center gap-4">
                     {showBackButton && (
                         <Link href="/">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="transition-all duration-300 hover:bg-primary/10 hover:scale-105"
+                                className="transition-all duration-300 hover:bg-primary/10 hover:scale-110 active:scale-90"
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </Button>
                         </Link>
                     )}
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2 group">
                         <h1
-                            className="text-2xl font-bold tracking-tight text-foreground hover:text-primary transition-colors"
+                            className="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500 group-hover:scale-105"
                             style={{ fontFamily: "var(--font-bodoni)" }}
                         >
                             Doccoder
                         </h1>
                     </Link>
-                    <nav className="hidden gap-6 md:flex items-center ml-4">
-                        <a
-                            href="/#features"
-                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            {t.nav.features}
-                        </a>
-                        <a
-                            href="/#pricing"
-                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            {t.nav.pricing}
-                        </a>
+                    <nav className="hidden gap-8 md:flex items-center ml-8">
+                        {["features", "pricing"].map((item) => (
+                            <a
+                                key={item}
+                                href={`/#${item}`}
+                                className="relative text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group/link"
+                            >
+                                {t.nav[item as keyof typeof t.nav]}
+                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover/link:w-full" />
+                            </a>
+                        ))}
                     </nav>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                     <Link href="#">
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-primary/15 hover:text-primary hover:scale-105 group"
+                            className="hidden md:inline-flex items-center gap-2 font-bold transition-all duration-500 hover:bg-primary/10 hover:text-primary hover:scale-105 group"
                         >
                             {t.footer.download}
-                            <Star className="h-3.5 w-3.5 text-transparent transition-colors group-hover:fill-primary group-hover:text-primary" />
+                            <Star className="h-4 w-4 text-transparent transition-all duration-500 group-hover:fill-primary group-hover:text-primary group-hover:rotate-12" />
                         </Button>
                     </Link>
 
@@ -90,12 +88,12 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="hidden md:inline-flex items-center gap-2 transition-all duration-300 hover:bg-primary/15 hover:text-primary hover:scale-105 group"
+                            className="hidden md:inline-flex items-center gap-2 font-bold px-4 py-2 rounded-xl transition-all duration-500 hover:bg-foreground hover:text-background hover:scale-105 active:scale-95 group"
                             onMouseEnter={() => setHoveredButton("signin")}
                             onMouseLeave={() => setHoveredButton(null)}
                         >
                             {t.nav.signIn}
-                            <Star className={`h-3.5 w-3.5 transition-colors ${hoveredButton === "signin" ? "fill-primary text-primary" : "text-transparent"}`} />
+                            <Star className={cn("h-4 w-4 transition-all duration-500 group-hover:rotate-[144deg]", hoveredButton === "signin" ? "fill-current" : "opacity-0")} />
                         </Button>
                     </Link>
                     <ThemeToggle />
