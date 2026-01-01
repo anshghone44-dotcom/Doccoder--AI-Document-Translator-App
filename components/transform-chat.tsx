@@ -8,7 +8,9 @@ import ModelSelector, { type AIModel } from "@/components/model-selector"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Paperclip, Send, X } from "lucide-react"
+import { Paperclip, Send, X, Volume2, Loader2 } from "lucide-react"
+import VoiceSettings from "@/components/voice-settings"
+import { useEffect, useCallback } from "react"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -32,6 +34,10 @@ export default function TransformChat() {
   })
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
+  const [autoPlay, setAutoPlay] = useState(false)
+  const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
 
   function removeFileAt(index: number) {
     setFiles((prev) => prev.filter((_, i) => i !== index))
@@ -165,6 +171,51 @@ export default function TransformChat() {
     }
   }
 
+  const handlePlayTTS = async (text: string, index: number) => {
+    if (playingMessageIndex === index) {
+      audioRef.current?.pause()
+      setPlayingMessageIndex(null)
+      return
+    }
+
+    setPlayingMessageIndex(index)
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, voiceId: selectedVoice }),
+      })
+
+      if (!res.ok) throw new Error("TTS failed")
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+
+      if (audioRef.current) {
+        audioRef.current.src = url
+        audioRef.current.play()
+        audioRef.current.onended = () => setPlayingMessageIndex(null)
+      } else {
+        const audio = new Audio(url)
+        audioRef.current = audio
+        audio.play()
+        audio.onended = () => setPlayingMessageIndex(null)
+      }
+    } catch (err) {
+      console.error("TTS Error:", err)
+      setPlayingMessageIndex(null)
+    }
+  }
+
+  useEffect(() => {
+    if (autoPlay && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage.role === "assistant" && !isLoading) {
+        handlePlayTTS(lastMessage.content, messages.length - 1)
+      }
+    }
+  }, [messages.length, isLoading])
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
@@ -181,8 +232,14 @@ export default function TransformChat() {
 
   return (
     <section aria-label="AI transformer chat" className="flex h-full flex-col">
-      <div className="mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+        <VoiceSettings
+          selectedVoice={selectedVoice}
+          onVoiceChange={setSelectedVoice}
+          autoPlay={autoPlay}
+          onAutoPlayChange={setAutoPlay}
+        />
       </div>
 
       <div className="mb-4 rounded-lg border bg-card p-3">
@@ -205,10 +262,32 @@ export default function TransformChat() {
                 onCancel={() => setEditingMessageIndex(null)}
               />
             ) : (
-              <div className={cn("rounded-lg p-3", m.role === "user" ? "bg-muted" : "bg-card border")}>
-                <div className="text-sm">
-                  <strong className="mr-2">{m.role === "user" ? "You" : "Assistant"}:</strong>
-                  <span className="whitespace-pre-wrap">{m.content}</span>
+              <>
+                <div className="text-sm flex flex-col gap-2">
+                  <div>
+                    <strong className="mr-2">{m.role === "user" ? "You" : "Assistant"}:</strong>
+                    <span className="whitespace-pre-wrap">{m.content}</span>
+                  </div>
+                  {m.role === "assistant" && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "h-8 px-2 text-[10px] font-bold uppercase tracking-widest gap-2",
+                          playingMessageIndex === idx && "bg-primary/10 text-primary"
+                        )}
+                        onClick={() => handlePlayTTS(m.content, idx)}
+                      >
+                        {playingMessageIndex === idx ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Volume2 className="h-3 w-3" />
+                        )}
+                        {playingMessageIndex === idx ? "Listening..." : "Listen"}
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 {m.downloadUrl && (
                   <div className="mt-2 flex gap-2">
@@ -222,7 +301,7 @@ export default function TransformChat() {
                     )}
                   </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         ))}
@@ -291,6 +370,6 @@ export default function TransformChat() {
           </Button>
         </div>
       </div>
-    </section>
+    </section >
   )
 }

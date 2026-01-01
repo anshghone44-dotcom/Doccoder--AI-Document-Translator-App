@@ -4,10 +4,11 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Volume2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import { useSearchParams } from "next/navigation"
+import VoiceSettings from "@/components/voice-settings"
 
 type Message = {
     role: "user" | "assistant"
@@ -27,7 +28,11 @@ export default function TranslationChat() {
     const [isLoading, setIsLoading] = useState(false)
     const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
     const [selectedModel, setSelectedModel] = useState("GPT-4o")
+    const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
+    const [autoPlay, setAutoPlay] = useState(false)
+    const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
     const scrollRef = useRef<HTMLDivElement>(null)
+    const audioRef = useRef<HTMLAudioElement | null>(null)
 
     const copyToClipboard = async (text: string) => {
         try {
@@ -37,18 +42,58 @@ export default function TranslationChat() {
         }
     }
 
+    const handlePlayTTS = async (text: string, index: number) => {
+        if (playingMessageIndex === index) {
+            audioRef.current?.pause()
+            setPlayingMessageIndex(null)
+            return
+        }
+
+        setPlayingMessageIndex(index)
+        try {
+            const res = await fetch("/api/tts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text, voiceId: selectedVoice }),
+            })
+
+            if (!res.ok) throw new Error("TTS failed")
+
+            const blob = await res.blob()
+            const url = URL.createObjectURL(blob)
+
+            if (audioRef.current) {
+                audioRef.current.src = url
+                audioRef.current.play()
+                audioRef.current.onended = () => setPlayingMessageIndex(null)
+            } else {
+                const audio = new Audio(url)
+                audioRef.current = audio
+                audio.play()
+                audio.onended = () => setPlayingMessageIndex(null)
+            }
+        } catch (err) {
+            console.error("TTS Error:", err)
+            setPlayingMessageIndex(null)
+        }
+    }
+
+    useEffect(() => {
+        if (autoPlay && messages.length > 0) {
+            const lastMessage = messages[messages.length - 1]
+            if (lastMessage.role === "assistant" && !isLoading) {
+                handlePlayTTS(lastMessage.content, messages.length - 1)
+            }
+        }
+    }, [messages.length, isLoading])
+
     const AI_MODELS = [
         { id: "gpt-5", name: "GPT-5", provider: "OpenAI" },
         { id: "gpt-4", name: "GPT-4", provider: "OpenAI" },
         { id: "grok-3", name: "Grok-3", provider: "X.AI" },
-        { id: "grok-4", name: "Grok-4", provider: "X.AI" },
-        { id: "claude-sonnet-4", name: "Claude Sonnet-4", provider: "Anthropic" },
         { id: "claude-sonnet-4.5", name: "Claude Sonnet-4.5", provider: "Anthropic" },
         { id: "deepseek-r1", name: "DeepSeek R1", provider: "DeepSeek" },
-        { id: "deepseek-r3", name: "DeepSeek R3", provider: "DeepSeek" },
-        { id: "qwen-3", name: "Qwen 3", provider: "Alibaba" },
         { id: "gemini-2.5", name: "Gemini-2.5", provider: "Google" },
-        { id: "gemini-3", name: "Gemini-3", provider: "Google" },
     ]
 
     useEffect(() => {
@@ -95,35 +140,26 @@ export default function TranslationChat() {
         <div className="flex flex-col h-[600px] w-full max-w-4xl mx-auto glass-dark rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
             {/* Header Area */}
             <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-foreground/10 flex items-center justify-center border border-white/10 relative">
-                            <Zap className="h-5 w-5 text-foreground" />
-                            <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-black tracking-tighter uppercase italic">Neural Core x1</h3>
-                            <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest opacity-60">Status: Active // Latency: 24ms</p>
-                        </div>
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-foreground/10 flex items-center justify-center border border-white/10 relative">
+                        <Zap className="h-5 w-5 text-foreground" />
+                        <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-black tracking-tighter uppercase italic">Neural Core x1</h3>
+                        <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest opacity-60">Status: Active // Latency: 24ms</p>
                     </div>
                 </div>
 
-                <div className="hidden md:flex flex-col items-end gap-2">
-                    <div className="flex items-center gap-4">
-                        <div className="text-[10px] font-mono text-muted-foreground uppercase">System Load</div>
-                        <div className="w-24 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-foreground/40 w-[65%]" />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="text-[10px] font-mono text-muted-foreground uppercase">Memory Arch</div>
-                        <div className="w-24 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-foreground/20 w-[42%]" />
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
+                <div className="flex items-center gap-3">
+                    <VoiceSettings
+                        selectedVoice={selectedVoice}
+                        onVoiceChange={setSelectedVoice}
+                        autoPlay={autoPlay}
+                        onAutoPlayChange={setAutoPlay}
+                    />
+
+                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5 h-10">
                         <Zap className="h-4 w-4 text-primary" />
                         <select
                             value={selectedModel}
@@ -138,7 +174,7 @@ export default function TranslationChat() {
                         </select>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5 h-10">
                         <Globe className="h-4 w-4 text-muted-foreground" />
                         <select
                             value={targetLang}
@@ -180,13 +216,25 @@ export default function TranslationChat() {
                         >
                             {m.content}
                             {m.role === "assistant" && (
-                                <button
-                                    onClick={() => copyToClipboard(m.content)}
-                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded bg-black/20 hover:bg-black/40"
-                                    title="Copy translation"
-                                >
-                                    <Copy className="h-3 w-3" />
-                                </button>
+                                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => handlePlayTTS(m.content, idx)}
+                                        className={cn(
+                                            "p-1.5 rounded-lg bg-black/20 hover:bg-black/40 transition-colors",
+                                            playingMessageIndex === idx && "bg-primary/20 text-primary"
+                                        )}
+                                        title="Play Synthesis"
+                                    >
+                                        {playingMessageIndex === idx ? <Loader2 className="h-3 w-3 animate-spin" /> : <Volume2 className="h-3 w-3" />}
+                                    </button>
+                                    <button
+                                        onClick={() => copyToClipboard(m.content)}
+                                        className="p-1.5 rounded-lg bg-black/20 hover:bg-black/40 transition-colors"
+                                        title="Copy translation"
+                                    >
+                                        <Copy className="h-3 w-3" />
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>

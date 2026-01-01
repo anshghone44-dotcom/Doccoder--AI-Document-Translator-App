@@ -4,11 +4,12 @@ import type React from "react"
 import FileEditor from "@/components/file-editor"
 import VoiceRecorder from "@/components/voice-recorder"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Paperclip, Send, X, Sparkles } from "lucide-react"
+import { Paperclip, Send, X, Sparkles, Volume2, Loader2 } from "lucide-react"
+import VoiceSettings from "@/components/voice-settings"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -32,8 +33,13 @@ export default function ReverseTransformChat() {
   >("txt")
   const [selectedTone, setSelectedTone] = useState<ToneOption>("formal")
   const [showRecommendations, setShowRecommendations] = useState(true)
+  const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
+  const [autoPlay, setAutoPlay] = useState(false)
+  const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
+
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const recommendations = [
     "Convert to professional format",
@@ -94,6 +100,51 @@ export default function ReverseTransformChat() {
     setPrompt((prev) => (prev ? `${prev} ${recommendation}` : recommendation))
     setShowRecommendations(false)
   }
+
+  const handlePlayTTS = async (text: string, index: number) => {
+    if (playingMessageIndex === index) {
+      audioRef.current?.pause()
+      setPlayingMessageIndex(null)
+      return
+    }
+
+    setPlayingMessageIndex(index)
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, voiceId: selectedVoice }),
+      })
+
+      if (!res.ok) throw new Error("TTS failed")
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+
+      if (audioRef.current) {
+        audioRef.current.src = url
+        audioRef.current.play()
+        audioRef.current.onended = () => setPlayingMessageIndex(null)
+      } else {
+        const audio = new Audio(url)
+        audioRef.current = audio
+        audio.play()
+        audio.onended = () => setPlayingMessageIndex(null)
+      }
+    } catch (err) {
+      console.error("TTS Error:", err)
+      setPlayingMessageIndex(null)
+    }
+  }
+
+  useEffect(() => {
+    if (autoPlay && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage.role === "assistant" && !isLoading) {
+        handlePlayTTS(lastMessage.content, messages.length - 1)
+      }
+    }
+  }, [messages.length, isLoading])
 
   async function onSubmit(e?: React.FormEvent) {
     e?.preventDefault()
@@ -186,8 +237,14 @@ export default function ReverseTransformChat() {
 
   return (
     <section aria-label="PDF reverse transformer" className="flex h-full flex-col">
-      <div className="mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+        <VoiceSettings
+          selectedVoice={selectedVoice}
+          onVoiceChange={setSelectedVoice}
+          autoPlay={autoPlay}
+          onAutoPlayChange={setAutoPlay}
+        />
       </div>
 
       <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(85,_100,_200,_0.3)]">
@@ -251,7 +308,7 @@ export default function ReverseTransformChat() {
             ) : (
               <div
                 className={cn(
-                  "rounded-xl p-4 transition-all duration-300",
+                  "rounded-xl p-4 transition-all duration-300 relative group",
                   m.role === "user"
                     ? "bg-primary/10 border border-primary/20 ml-8"
                     : "bg-accent/10 border border-accent/20 mr-8 ai-glow",
@@ -261,6 +318,26 @@ export default function ReverseTransformChat() {
                   <strong className="mr-2 text-foreground">{m.role === "user" ? "You" : "Assistant"}:</strong>
                   <span className="whitespace-pre-wrap text-muted-foreground">{m.content}</span>
                 </div>
+                {m.role === "assistant" && (
+                  <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="secondary"
+                      size="xs"
+                      className={cn(
+                        "h-7 px-2 text-[10px] font-bold uppercase tracking-widest gap-2 rounded-lg",
+                        playingMessageIndex === idx && "bg-primary/20 text-primary border-primary/30"
+                      )}
+                      onClick={() => handlePlayTTS(m.content, idx)}
+                    >
+                      {playingMessageIndex === idx ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Volume2 className="h-3 w-3" />
+                      )}
+                      {playingMessageIndex === idx ? "Listening..." : "Listen"}
+                    </Button>
+                  </div>
+                )}
                 {m.downloadUrl && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     <a

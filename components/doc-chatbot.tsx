@@ -4,10 +4,11 @@ import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
+import VoiceSettings from "@/components/voice-settings"
 
 type Message = {
     role: "user" | "assistant"
@@ -43,8 +44,12 @@ export default function DocChatbot() {
     const [isLoading, setIsLoading] = useState(false)
     const [targetLang, setTargetLang] = useState("en")
     const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-5")
+    const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
+    const [autoPlay, setAutoPlay] = useState(false)
+    const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
     const scrollRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const audioRef = useRef<HTMLAudioElement | null>(null)
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -70,6 +75,51 @@ export default function DocChatbot() {
             console.error('Failed to copy: ', err)
         }
     }
+
+    const handlePlayTTS = async (text: string, index: number) => {
+        if (playingMessageIndex === index) {
+            audioRef.current?.pause()
+            setPlayingMessageIndex(null)
+            return
+        }
+
+        setPlayingMessageIndex(index)
+        try {
+            const res = await fetch("/api/tts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text, voiceId: selectedVoice }),
+            })
+
+            if (!res.ok) throw new Error("TTS failed")
+
+            const blob = await res.blob()
+            const url = URL.createObjectURL(blob)
+
+            if (audioRef.current) {
+                audioRef.current.src = url
+                audioRef.current.play()
+                audioRef.current.onended = () => setPlayingMessageIndex(null)
+            } else {
+                const audio = new Audio(url)
+                audioRef.current = audio
+                audio.play()
+                audio.onended = () => setPlayingMessageIndex(null)
+            }
+        } catch (err) {
+            console.error("TTS Error:", err)
+            setPlayingMessageIndex(null)
+        }
+    }
+
+    useEffect(() => {
+        if (autoPlay && messages.length > 0) {
+            const lastMessage = messages[messages.length - 1]
+            if (lastMessage.role === "assistant" && !isLoading) {
+                handlePlayTTS(lastMessage.content, messages.length - 1)
+            }
+        }
+    }, [messages.length, isLoading])
 
     const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault()
@@ -164,24 +214,29 @@ export default function DocChatbot() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex flex-col gap-3 w-full md:w-auto">
-                        <div className="flex items-center gap-2">
-                            <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+                    <div className="flex items-center gap-2">
+                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
 
-                            <div className="flex items-center gap-2 bg-background/40 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-sm self-stretch">
-                                <Globe className="h-4 w-4 text-muted-foreground" />
-                                <select
-                                    value={targetLang}
-                                    onChange={(e) => setTargetLang(e.target.value)}
-                                    className="bg-transparent text-sm font-medium outline-none cursor-pointer h-full"
-                                >
-                                    {LANGUAGES.map(lang => (
-                                        <option key={lang.code} value={lang.code} className="bg-background text-foreground">
-                                            {lang.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                        <VoiceSettings
+                            selectedVoice={selectedVoice}
+                            onVoiceChange={setSelectedVoice}
+                            autoPlay={autoPlay}
+                            onAutoPlayChange={setAutoPlay}
+                        />
+
+                        <div className="flex items-center gap-2 bg-background/40 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-sm self-stretch h-10">
+                            <Globe className="h-4 w-4 text-muted-foreground" />
+                            <select
+                                value={targetLang}
+                                onChange={(e) => setTargetLang(e.target.value)}
+                                className="bg-transparent text-sm font-medium outline-none cursor-pointer h-full"
+                            >
+                                {LANGUAGES.map(lang => (
+                                    <option key={lang.code} value={lang.code} className="bg-background text-foreground">
+                                        {lang.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -250,13 +305,25 @@ export default function DocChatbot() {
                             )}
 
                             {m.role === "assistant" && (
-                                <button
-                                    onClick={() => copyToClipboard(m.content)}
-                                    className="absolute -right-12 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 border border-white/10"
-                                    title="Copy to terminal"
-                                >
-                                    <Copy className="h-4 w-4" />
-                                </button>
+                                <div className="absolute -right-12 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+                                    <button
+                                        onClick={() => handlePlayTTS(m.content, idx)}
+                                        className={cn(
+                                            "opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 border border-white/10",
+                                            playingMessageIndex === idx && "opacity-100 bg-primary/20 text-primary border-primary/50"
+                                        )}
+                                        title="Play Synthesis"
+                                    >
+                                        {playingMessageIndex === idx ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
+                                    </button>
+                                    <button
+                                        onClick={() => copyToClipboard(m.content)}
+                                        className="opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 border border-white/10"
+                                        title="Copy to terminal"
+                                    >
+                                        <Copy className="h-4 w-4" />
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
