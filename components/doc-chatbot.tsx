@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
 import VoiceSettings from "@/components/voice-settings"
+import LanguagePicker from "@/components/language-picker"
 
 type Message = {
     role: "user" | "assistant"
@@ -18,18 +19,6 @@ type Message = {
     filename?: string
 }
 
-const LANGUAGES = [
-    { code: "en", name: "English" },
-    { code: "hi", name: "Hindi" },
-    { code: "mr", name: "Marathi" },
-    { code: "gu", name: "Gujarati" },
-    { code: "fr", name: "French" },
-    { code: "de", name: "German" },
-    { code: "es", name: "Spanish" },
-    { code: "ja", name: "Japanese" },
-    { code: "ko", name: "Korean" },
-    { code: "zh", name: "Chinese" },
-]
 
 export default function DocChatbot() {
     const { t } = useTranslation()
@@ -125,7 +114,7 @@ export default function DocChatbot() {
         e?.preventDefault()
         if ((!input.trim() && files.length === 0) || isLoading) return
 
-        const userMessage = input.trim() || (files.length > 0 ? `Process and translate ${files.length} document(s) to ${LANGUAGES.find(l => l.code === targetLang)?.name}` : "")
+        const userMessage = input.trim() || (files.length > 0 ? `Process and translate ${files.length} document(s)` : "")
         const currentFiles = [...files]
 
         setMessages(prev => [...prev, {
@@ -176,7 +165,7 @@ export default function DocChatbot() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         messages: [...messages, { role: "user", content: userMessage }],
-                        targetLanguage: LANGUAGES.find(l => l.code === targetLang)?.name,
+                        targetLanguage: targetLang, // Passing the code directly, or could map if needed
                         model: selectedModel,
                     }),
                 })
@@ -199,22 +188,16 @@ export default function DocChatbot() {
     return (
         <div className="flex flex-col h-[700px] w-full max-w-5xl mx-auto glass rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl relative noise">
             {/* Header / Control Bar */}
-            <div className="p-6 border-b border-white/5 bg-background/40 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-foreground/5 flex items-center justify-center border border-white/10 relative group">
-                        <Zap className="h-6 w-6 text-foreground group-hover:scale-110 transition-transform" />
-                        <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+            <div className="p-6 border-b border-white/5 bg-background/40 backdrop-blur-xl flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-white/10">
+                        <Zap className="h-5 w-5 text-foreground/50" />
                     </div>
-                    <div>
-                        <h3 className="text-xl font-black tracking-tighter uppercase italic flex items-center gap-2">
-                            Neural Engine <span className="text-[10px] not-italic px-2 py-0.5 rounded-full bg-foreground/10 font-mono">v4.2</span>
-                        </h3>
-                        <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest opacity-60">Status: Optimized // Document Mode Active</p>
-                    </div>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground opacity-50">Interface Control Panel</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 text-foreground/80">
                         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
 
                         <VoiceSettings
@@ -224,20 +207,10 @@ export default function DocChatbot() {
                             onAutoPlayChange={setAutoPlay}
                         />
 
-                        <div className="flex items-center gap-2 bg-background/40 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-sm self-stretch h-10">
-                            <Globe className="h-4 w-4 text-muted-foreground" />
-                            <select
-                                value={targetLang}
-                                onChange={(e) => setTargetLang(e.target.value)}
-                                className="bg-transparent text-sm font-medium outline-none cursor-pointer h-full"
-                            >
-                                {LANGUAGES.map(lang => (
-                                    <option key={lang.code} value={lang.code} className="bg-background text-foreground">
-                                        {lang.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <LanguagePicker
+                            value={targetLang}
+                            onChange={setTargetLang}
+                        />
                     </div>
                 </div>
             </div>
@@ -407,13 +380,10 @@ export default function DocChatbot() {
 
                 <div className="mt-4 flex items-center justify-center gap-8 opacity-20 hover:opacity-40 transition-opacity duration-1000">
                     <div className="flex items-center gap-2 text-[8px] font-mono tracking-[0.2em] uppercase">
-                        <Sparkles className="h-2 w-2" /> Encrypted Link: SECURE
-                    </div>
-                    <div className="flex items-center gap-2 text-[8px] font-mono tracking-[0.2em] uppercase">
-                        <Zap className="h-2 w-2" /> Neural Load: 0.04%
+                        SECURE_LINK: ACTIVE
                     </div>
                     <div className="flex items-center gap-2 text-[8px] font-mono tracking-[0.2em] uppercase text-green-500">
-                        <div className="h-1 w-1 rounded-full bg-current animate-pulse" /> Stream: STABLE
+                        <div className="h-1 w-1 rounded-full bg-current animate-pulse" /> SYSTEM: OPTIMIZED
                     </div>
                 </div>
             </div>

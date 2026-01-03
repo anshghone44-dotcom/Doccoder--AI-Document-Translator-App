@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import { useSearchParams } from "next/navigation"
 import VoiceRecorder from "./voice-recorder"
+import VoiceSettings from "@/components/voice-settings"
+import LanguagePicker from "@/components/language-picker"
 
 type Message = {
     role: "user" | "assistant"
@@ -193,80 +195,69 @@ export default function TranslationChat() {
                         </select>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
-                        <Globe className="h-4 w-4 text-muted-foreground" />
-                        <select
-                            value={targetLang}
-                            onChange={(e) => setTargetLang(e.target.value)}
-                            className="bg-transparent text-sm font-medium outline-none cursor-pointer"
-                        >
-                            <option value="English">English</option>
-                            <option value="Hindi">Hindi</option>
-                            <option value="Marathi">Marathi</option>
-                            <option value="Gujarati">Gujarati</option>
-                            <option value="Korean">Korean</option>
-                            <option value="Tamil">Tamil</option>
-                            <option value="French">French</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="German">German</option>
-                            <option value="Swiss German">Swiss German</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+                    <LanguagePicker
+                        value={targetLang}
+                        onChange={setTargetLang}
+                    />
+                </div >
+            </div >
 
             {/* Messages Area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
-                {messages.map((m, idx) => (
-                    <div
-                        key={idx}
-                        className={cn(
-                            "flex flex-col max-w-[80%] animate-in fade-in slide-in-from-bottom-2 duration-500",
-                            m.role === "user" ? "ml-auto items-end" : "items-start"
-                        )}
-                    >
+            < div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar" >
+                {
+                    messages.map((m, idx) => (
                         <div
+                            key={idx}
                             className={cn(
-                                "px-6 py-4 rounded-3xl text-sm leading-relaxed relative group",
-                                m.role === "user"
-                                    ? "bg-foreground text-background font-medium shadow-lg"
-                                    : "glass border border-white/10 text-foreground"
+                                "flex flex-col max-w-[80%] animate-in fade-in slide-in-from-bottom-2 duration-500",
+                                m.role === "user" ? "ml-auto items-end" : "items-start"
                             )}
                         >
-                            {m.content}
-                            {m.role === "assistant" && (
-                                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        onClick={() => playVoiceResponse(m.content, idx)}
-                                        className="p-1 rounded bg-black/20 hover:bg-black/40"
-                                        title="Play voice response"
-                                    >
-                                        <Volume2 className={cn("h-3 w-3", playingMessageIndex === idx ? "text-primary" : "")} />
-                                    </button>
-                                    <button
-                                        onClick={() => copyToClipboard(m.content)}
-                                        className="p-1 rounded bg-black/20 hover:bg-black/40"
-                                        title="Copy translation"
-                                    >
-                                        <Copy className="h-3 w-3" />
-                                    </button>
-                                </div>
-                            )}
+                            <div
+                                className={cn(
+                                    "px-6 py-4 rounded-3xl text-sm leading-relaxed relative group",
+                                    m.role === "user"
+                                        ? "bg-foreground text-background font-medium shadow-lg"
+                                        : "glass border border-white/10 text-foreground"
+                                )}
+                            >
+                                {m.content}
+                                {m.role === "assistant" && (
+                                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button
+                                            onClick={() => playVoiceResponse(m.content, idx)}
+                                            className="p-1 rounded bg-black/20 hover:bg-black/40"
+                                            title="Play voice response"
+                                        >
+                                            <Volume2 className={cn("h-3 w-3", playingMessageIndex === idx ? "text-primary" : "")} />
+                                        </button>
+                                        <button
+                                            onClick={() => copyToClipboard(m.content)}
+                                            className="p-1 rounded bg-black/20 hover:bg-black/40"
+                                            title="Copy translation"
+                                        >
+                                            <Copy className="h-3 w-3" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
-                {isLoading && (
-                    <div className="flex items-start max-w-[80%]">
-                        <div className="glass px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-3">
-                            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground font-medium">Doccoder is thinking...</span>
+                    ))
+                }
+                {
+                    isLoading && (
+                        <div className="flex items-start max-w-[80%]">
+                            <div className="glass px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-3">
+                                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                <span className="text-sm text-muted-foreground font-medium">Doccoder is thinking...</span>
+                            </div>
                         </div>
-                    </div>
-                )}
-            </div>
+                    )
+                }
+            </div >
 
             {/* Input Area */}
-            <form onSubmit={handleSend} className="p-6 border-t border-white/5 bg-white/5">
+            < form onSubmit={handleSend} className="p-6 border-t border-white/5 bg-white/5" >
                 <div className="relative flex items-center gap-4">
                     <div className="relative flex-1">
                         <Input
@@ -288,10 +279,10 @@ export default function TranslationChat() {
                         {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                     </Button>
                 </div>
-            </form>
+            </form >
 
             <div className="absolute top-0 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
             <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
-        </div>
+        </div >
     )
 }

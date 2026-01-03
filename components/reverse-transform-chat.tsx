@@ -8,7 +8,9 @@ import { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Paperclip, Send, X, Sparkles, Volume2 } from "lucide-react"
+import { Paperclip, Send, X, Sparkles, Volume2, Loader2, Globe } from "lucide-react"
+import VoiceSettings from "@/components/voice-settings"
+import LanguagePicker from "@/components/language-picker"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -32,10 +34,10 @@ export default function ReverseTransformChat() {
   >("txt")
   const [selectedTone, setSelectedTone] = useState<ToneOption>("formal")
   const [showRecommendations, setShowRecommendations] = useState(true)
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
+  const [autoPlay, setAutoPlay] = useState(false)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
+  const [targetLang, setTargetLang] = useState("en")
 
   useEffect(() => {
     return () => {
@@ -236,6 +238,13 @@ export default function ReverseTransformChat() {
     <section aria-label="PDF reverse transformer" className="flex h-full flex-col">
       <div className="mb-4">
         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+        <LanguagePicker value={targetLang} onChange={setTargetLang} />
+        <VoiceSettings
+          selectedVoice={selectedVoice}
+          onVoiceChange={setSelectedVoice}
+          autoPlay={autoPlay}
+          onAutoPlayChange={setAutoPlay}
+        />
       </div>
 
       <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(85,_100,_200,_0.3)]">
@@ -315,7 +324,10 @@ export default function ReverseTransformChat() {
                       variant="outline"
                       size="sm"
                       onClick={() => playVoiceResponse(m.content, idx)}
-                      className="flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                      className={cn(
+                        "flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
+                        playingMessageIndex === idx && "bg-primary/20 text-primary border-primary/30"
+                      )}
                     >
                       <Volume2 className={cn("h-4 w-4", playingMessageIndex === idx ? "text-primary" : "")} />
                       {playingMessageIndex === idx ? "Stop Voice" : "Play Voice"}

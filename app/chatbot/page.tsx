@@ -20,7 +20,7 @@ export default function ChatbotPage() {
 
             <div className="relative pt-32 pb-20 px-6 z-10">
                 <div className="mx-auto max-w-7xl">
-                    <div className="flex flex-col items-center text-center space-y-6 mb-16">
+                    <div className="flex flex-col items-center text-center space-y-6 mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/5 border border-white/10 text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70 animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <Zap className="h-3 w-3 fill-current text-primary" />
                             Neural Interface Active

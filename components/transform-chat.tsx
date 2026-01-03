@@ -8,7 +8,10 @@ import ModelSelector, { type AIModel } from "@/components/model-selector"
 import { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Paperclip, Send, X, Volume2 } from "lucide-react"
+import { Paperclip, Send, X, Volume2, Loader2 } from "lucide-react"
+import VoiceSettings from "@/components/voice-settings"
+import LanguagePicker from "@/components/language-picker"
+import { useCallback } from "react"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -34,6 +37,7 @@ export default function TransformChat() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
+  const [targetLang, setTargetLang] = useState("en")
 
   useEffect(() => {
     return () => {
@@ -231,7 +235,17 @@ export default function TransformChat() {
     <section aria-label="AI transformer chat" className="flex h-full flex-col">
       <div className="mb-4">
         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-      </div>
+        <VoiceSettings
+          selectedVoice={selectedVoice}
+          onVoiceChange={setSelectedVoice}
+          autoPlay={autoPlay}
+          onAutoPlayChange={setAutoPlay}
+        />
+        <LanguagePicker
+          value={targetLang}
+          onChange={setTargetLang}
+        />
+      </div >
 
       <div className="mb-4 rounded-lg border bg-card p-3">
         <details className="cursor-pointer">
@@ -352,6 +366,6 @@ export default function TransformChat() {
           </Button>
         </div>
       </div>
-    </section>
+    </section >
   )
 }
