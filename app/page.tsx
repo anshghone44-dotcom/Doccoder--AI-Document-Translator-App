@@ -20,14 +20,14 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <main className="min-h-screen bg-background relative overflow-hidden noise">
       <Header />
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/2 rounded-full blur-3xl" />
+        <div className="absolute inset-0 z-0 opacity-40">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
         </div>
 
         <div className="mx-auto max-w-7xl px-6 relative z-10">
@@ -37,9 +37,9 @@ export default function Home() {
               {t.hero.zapTitle}
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
               {t.hero.title.split(" ").slice(0, -1).join(" ")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/40 text-glow">
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30">
                 {t.hero.title.split(" ").pop()}
               </span>
             </h1>
@@ -49,7 +49,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
-              <Link href="/ai-transformer">
+              <Link href="/chatbot">
                 <Button
                   size="lg"
                   className="h-14 px-8 text-lg font-bold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.24)] hover:scale-105 active:scale-95 group"
@@ -133,16 +133,16 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground/90">
               Ready to experience lightning-fast translations?
             </h2>
-            <Link href="/ai-transformer">
+            <Link href="/chatbot">
               <Button
                 size="lg"
-                className="h-16 px-12 text-xl font-black bg-foreground text-background hover:bg-foreground/90 transition-all duration-500 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 group relative overflow-hidden"
+                className="h-20 px-16 text-2xl font-black bg-foreground text-background hover:bg-foreground/90 transition-all duration-500 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 group relative overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-4">
                   {t.hero.cta}
-                  <Star className="h-6 w-6 transition-transform duration-700 group-hover:rotate-[144deg] group-hover:scale-125 fill-current" />
+                  <Star className="h-8 w-8 transition-all duration-700 group-hover:rotate-[144deg] group-hover:scale-125 fill-current" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full -translate-x-full skew-x-12" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full -translate-x-full skew-x-12" />
               </Button>
             </Link>
           </div>

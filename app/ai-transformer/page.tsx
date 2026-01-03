@@ -8,16 +8,17 @@ import Header from "@/components/header"
 export default function Page() {
   const { t } = useTranslation()
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-secondary to-background">
+    <main className="min-h-screen bg-background noise relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-secondary/50 to-background pointer-events-none" />
       {/* Header with Back Button */}
       <Header showBackButton />
 
       {/* Hero Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 text-center md:py-24">
         <div className="space-y-4">
-          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-sans text-balance text-4xl font-bold md:text-5xl lg:text-6xl">
+          <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans text-balance text-5xl font-black md:text-6xl lg:text-7xl tracking-tighter">
             {t.transformer.hero.title}{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-primary via-primary/80 to-primary/40 bg-clip-text text-transparent">
               {t.transformer.hero.accent}
             </span>
           </h2>
@@ -37,8 +38,10 @@ export default function Page() {
               {t.transformer.toPdf.description}
             </p>
           </div>
-          <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50">
-            <TransformChat />
+          <div className="glass rounded-[2.5rem] p-1 shadow-2xl transition-all duration-500 hover:shadow-primary/5 group/card">
+            <div className="rounded-[2.2rem] bg-card/40 p-8 backdrop-blur-xl border border-white/10">
+              <TransformChat />
+            </div>
           </div>
         </section>
 
@@ -50,8 +53,10 @@ export default function Page() {
               {t.transformer.fromPdf.description}
             </p>
           </div>
-          <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur transition-all duration-300 hover:shadow-xl hover:border-primary/50">
-            <ReverseTransformChat />
+          <div className="glass rounded-[2.5rem] p-1 shadow-2xl transition-all duration-500 hover:shadow-primary/5 group/card">
+            <div className="rounded-[2.2rem] bg-card/40 p-8 backdrop-blur-xl border border-white/10">
+              <ReverseTransformChat />
+            </div>
           </div>
         </section>
       </div>
