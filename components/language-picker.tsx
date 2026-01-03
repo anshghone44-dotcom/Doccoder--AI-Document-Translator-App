@@ -22,31 +22,34 @@ export interface Language {
 }
 
 const LANGUAGES: Language[] = [
+    { name: "Bengali", nativeName: "বাংলা", code: "bn" },
+    { name: "Chinese", nativeName: "中文", code: "zh", region: "Simplified" },
     { name: "Danish", nativeName: "Dansk", code: "da" },
     { name: "Dutch", nativeName: "Nederlands", code: "nl" },
     { name: "English", nativeName: "English", code: "en", region: "United States" },
     { name: "English", nativeName: "English", code: "en-GB", region: "United Kingdom" },
+    { name: "English", nativeName: "English", code: "en-IN", region: "India" },
     { name: "Estonian", nativeName: "Eesti", code: "et" },
     { name: "Filipino", nativeName: "Filipino", code: "fil" },
     { name: "Finnish", nativeName: "Suomi", code: "fi" },
     { name: "French", nativeName: "Français", code: "fr-CA", region: "Canada" },
     { name: "French", nativeName: "Français", code: "fr-FR", region: "France" },
     { name: "German", nativeName: "Deutsch", code: "de" },
-    { name: "Hindi", nativeName: "हिन्दी", code: "hi" },
-    { name: "Marathi", nativeName: "मराठी", code: "mr" },
+    { name: "Greek", nativeName: "Ελληνικά", code: "el" },
     { name: "Gujarati", nativeName: "ગુજરાતી", code: "gu" },
-    { name: "Bengali", nativeName: "বাংলা", code: "bn" },
+    { name: "Hindi", nativeName: "हिन्दी", code: "hi" },
+    { name: "Italian", nativeName: "Italiano", code: "it" },
     { name: "Japanese", nativeName: "日本語", code: "ja" },
     { name: "Korean", nativeName: "한국어", code: "ko" },
-    { name: "Chinese", nativeName: "中文", code: "zh", region: "Simplified" },
-    { name: "Spanish", nativeName: "Español", code: "es" },
-    { name: "Italian", nativeName: "Italiano", code: "it" },
+    { name: "Marathi", nativeName: "मराठी", code: "mr" },
+    { name: "Persian", nativeName: "فارسی", code: "fa", region: "Iran" },
     { name: "Portuguese", nativeName: "Português", code: "pt" },
     { name: "Russian", nativeName: "Русский", code: "ru" },
-    { name: "Arabic", nativeName: "العربية", code: "ar" },
+    { name: "Spanish", nativeName: "Español", code: "es" },
+    { name: "Tamil", nativeName: "தமிழ்", code: "ta" },
+    { name: "Telugu", nativeName: "తెలుగు", code: "te" },
     { name: "Turkish", nativeName: "Türkçe", code: "tr" },
     { name: "Vietnamese", nativeName: "Tiếng Việt", code: "vi" },
-    { name: "Tamil", nativeName: "தமிழ்", code: "ta" },
 ]
 
 interface LanguagePickerProps {
@@ -85,37 +88,22 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                     </span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] glass-dark border-white/10 p-0 rounded-[2rem] overflow-hidden shadow-2xl backdrop-blur-2xl">
-                <DialogHeader className="p-6 pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                        <DialogTitle className="text-lg font-black uppercase tracking-widest italic flex items-center gap-2">
-                            <Globe className="h-5 w-5 text-primary" />
-                            Select Language
-                        </DialogTitle>
-                    </div>
+            <DialogContent className="sm:max-w-[425px] glass-dark border-white/10 p-0 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-3xl">
+                <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between space-y-0">
+                    <DialogTitle className="text-sm font-semibold text-foreground/70">
+                        Select language
+                    </DialogTitle>
+                    <button
+                        onClick={() => setOpen(false)}
+                        className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+                    >
+                        <X className="h-4 w-4 text-muted-foreground" />
+                    </button>
                 </DialogHeader>
 
-                <div className="p-6 pt-2 space-y-4">
-                    <div className="relative group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        <Input
-                            placeholder="Search languages..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 bg-white/5 border-white/10 rounded-2xl h-12 focus-visible:ring-primary/50 transition-all"
-                        />
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery("")}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-full transition-colors"
-                            >
-                                <X className="h-3 w-3 text-muted-foreground" />
-                            </button>
-                        )}
-                    </div>
-
-                    <ScrollArea className="h-[350px] pr-4 -mr-4">
-                        <div className="space-y-1">
+                <div className="flex flex-col h-[500px]">
+                    <ScrollArea className="flex-1">
+                        <div className="p-2 space-y-0.5">
                             {filteredLanguages.map((lang) => (
                                 <button
                                     key={lang.code}
@@ -124,43 +112,54 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                                         setOpen(false)
                                     }}
                                     className={cn(
-                                        "w-full flex items-center justify-between p-3 rounded-2xl transition-all group",
+                                        "w-full flex items-center justify-between p-4 rounded-2xl transition-all group relative",
                                         value === lang.code
-                                            ? "bg-primary/20 text-primary border border-primary/20"
-                                            : "hover:bg-white/5 text-muted-foreground hover:text-foreground"
+                                            ? "bg-white/5"
+                                            : "hover:bg-white/5"
                                     )}
                                 >
-                                    <div className="flex flex-col items-start">
+                                    <div className="flex flex-col items-start gap-1">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-bold text-sm tracking-tight">{lang.nativeName}</span>
+                                            <span className="font-bold text-[16px] text-foreground tracking-tight">
+                                                {lang.nativeName}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium uppercase tracking-tight opacity-50">
+                                            <span>{lang.name}</span>
                                             {lang.region && (
-                                                <span className="text-[10px] font-mono uppercase opacity-40 group-hover:opacity-60 transition-opacity">
-                                                    {lang.region}
-                                                </span>
+                                                <>
+                                                    <span className="h-1 w-1 rounded-full bg-current opacity-30" />
+                                                    <span>{lang.region}</span>
+                                                </>
                                             )}
                                         </div>
-                                        <span className="text-[11px] opacity-60 font-medium">
-                                            {lang.name} {lang.region && <span className="italic font-normal">({lang.region})</span>}
-                                        </span>
                                     </div>
                                     {value === lang.code && (
-                                        <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                                            <Check className="h-4 w-4 text-primary-foreground stroke-[3px]" />
+                                        <div className="h-6 w-6 rounded-full bg-white flex items-center justify-center shadow-lg">
+                                            <Check className="h-3.5 w-3.5 text-black stroke-[3px]" />
                                         </div>
                                     )}
                                 </button>
                             ))}
                             {filteredLanguages.length === 0 && (
-                                <div className="py-12 text-center space-y-2">
-                                    <div className="bg-white/5 h-12 w-12 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                        <Globe className="h-6 w-6 text-muted-foreground opacity-20" />
-                                    </div>
-                                    <p className="text-sm font-bold text-muted-foreground">No languages found</p>
-                                    <p className="text-xs text-muted-foreground/60">Try searching for something else</p>
+                                <div className="py-20 text-center">
+                                    <p className="text-sm font-medium text-muted-foreground">No languages found</p>
                                 </div>
                             )}
                         </div>
                     </ScrollArea>
+
+                    <div className="p-6 border-t border-white/5 bg-black/20">
+                        <div className="relative group">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50 group-focus-within:text-foreground transition-colors" />
+                            <Input
+                                placeholder="Search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-11 bg-white/5 border-white/5 rounded-full h-12 focus-visible:ring-0 focus-visible:border-white/20 transition-all placeholder:text-muted-foreground/30 text-sm"
+                            />
+                        </div>
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>

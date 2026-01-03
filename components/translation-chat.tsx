@@ -23,7 +23,7 @@ export default function TranslationChat() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "SYSTEM INITIALIZED: Doccoder AI Neural Engine is online. Input source text or document content for high-precision translation. Specify target parameters to begin processing.",
+            content: "Interface initialized. Advanced document synthesis and high-precision translation protocols are active. Input source text or document content to begin processing.",
         },
     ])
     const [input, setInput] = useState("")

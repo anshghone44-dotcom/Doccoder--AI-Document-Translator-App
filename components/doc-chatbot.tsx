@@ -25,7 +25,7 @@ export default function DocChatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "NEURAL ENGINE INITIALIZED: Doccoder Advanced Context Engine is online. High-fidelity document synthesis and technical translation protocols are active. Optimized for complex enterprise documentation and architectural integrity.",
+            content: "Interface initialized. Advanced document synthesis and high-fidelity translation protocols are active. Optimized for complex technical documentation and structural integrity.",
         },
     ])
     const [input, setInput] = useState("")
@@ -154,7 +154,7 @@ export default function DocChatbot() {
 
                 setMessages(prev => [...prev, {
                     role: "assistant",
-                    content: `NEURAL PROCESSING COMPLETE. Translated document(s) have been synthesized. Model: ${selectedModel}. Integrity: 99.9%.`,
+                    content: `Processing complete. Document(s) synthesized successfully using ${selectedModel}. Integrity verification passed.`,
                     downloadUrl: objectUrl,
                     filename
                 }])
@@ -178,7 +178,7 @@ export default function DocChatbot() {
         } catch (error) {
             setMessages(prev => [
                 ...prev,
-                { role: "assistant", content: "CRITICAL ERROR: Neural link disrupted. Failed to process translation request. Please check connectivity and retry." },
+                { role: "assistant", content: "Connection disrupted. Failed to process request. Please check your network and retry." },
             ])
         } finally {
             setIsLoading(false)
@@ -188,31 +188,21 @@ export default function DocChatbot() {
     return (
         <div className="flex flex-col h-[700px] w-full max-w-5xl mx-auto glass rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl relative noise">
             {/* Header / Control Bar */}
-            <div className="p-6 border-b border-white/5 bg-background/40 backdrop-blur-xl flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                    <div className="h-10 w-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-white/10">
-                        <Zap className="h-5 w-5 text-foreground/50" />
-                    </div>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground opacity-50">Interface Control Panel</span>
-                </div>
+            {/* Header / Control Bar */}
+            <div className="p-4 border-b border-white/5 bg-background/20 backdrop-blur-xl flex items-center justify-end gap-3">
+                <ModelSelector value={selectedModel} onChange={setSelectedModel} />
 
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-foreground/80">
-                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+                <VoiceSettings
+                    selectedVoice={selectedVoice}
+                    onVoiceChange={setSelectedVoice}
+                    autoPlay={autoPlay}
+                    onAutoPlayChange={setAutoPlay}
+                />
 
-                        <VoiceSettings
-                            selectedVoice={selectedVoice}
-                            onVoiceChange={setSelectedVoice}
-                            autoPlay={autoPlay}
-                            onAutoPlayChange={setAutoPlay}
-                        />
-
-                        <LanguagePicker
-                            value={targetLang}
-                            onChange={setTargetLang}
-                        />
-                    </div>
-                </div>
+                <LanguagePicker
+                    value={targetLang}
+                    onChange={setTargetLang}
+                />
             </div>
 
             {/* Messages Area */}
