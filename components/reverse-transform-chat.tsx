@@ -38,6 +38,9 @@ export default function ReverseTransformChat() {
   const [autoPlay, setAutoPlay] = useState(false)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
   const [targetLang, setTargetLang] = useState("en")
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     return () => {

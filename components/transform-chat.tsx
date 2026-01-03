@@ -245,7 +245,7 @@ export default function TransformChat() {
           value={targetLang}
           onChange={setTargetLang}
         />
-      </div >
+      </div>
 
       <div className="mb-4 rounded-lg border bg-card p-3">
         <details className="cursor-pointer">
@@ -366,6 +366,6 @@ export default function TransformChat() {
           </Button>
         </div>
       </div>
-    </section >
+    </section>
   )
 }

@@ -199,11 +199,11 @@ export default function TranslationChat() {
                         value={targetLang}
                         onChange={setTargetLang}
                     />
-                </div >
-            </div >
+                </div>
+            </div>
 
             {/* Messages Area */}
-            < div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar" >
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar" >
                 {
                     messages.map((m, idx) => (
                         <div
@@ -254,10 +254,10 @@ export default function TranslationChat() {
                         </div>
                     )
                 }
-            </div >
+            </div>
 
             {/* Input Area */}
-            < form onSubmit={handleSend} className="p-6 border-t border-white/5 bg-white/5" >
+            <form onSubmit={handleSend} className="p-6 border-t border-white/5 bg-white/5" >
                 <div className="relative flex items-center gap-4">
                     <div className="relative flex-1">
                         <Input
@@ -279,10 +279,10 @@ export default function TranslationChat() {
                         {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                     </Button>
                 </div>
-            </form >
+            </form>
 
             <div className="absolute top-0 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
             <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
-        </div >
+        </div>
     )
 }
