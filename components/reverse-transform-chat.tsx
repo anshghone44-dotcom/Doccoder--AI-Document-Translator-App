@@ -4,11 +4,11 @@ import type React from "react"
 import FileEditor from "@/components/file-editor"
 import VoiceRecorder from "@/components/voice-recorder"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Paperclip, Send, X, Sparkles } from "lucide-react"
+import { Paperclip, Send, X, Sparkles, Volume2 } from "lucide-react"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -34,6 +34,17 @@ export default function ReverseTransformChat() {
   const [showRecommendations, setShowRecommendations] = useState(true)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        URL.revokeObjectURL(audioRef.current.src)
+      }
+    }
+  }, [])
 
   const recommendations = [
     "Convert to professional format",
@@ -53,6 +64,43 @@ export default function ReverseTransformChat() {
 
   function removeFileAt(index: number) {
     setFiles((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const playVoiceResponse = async (content: string, index: number) => {
+    if (playingMessageIndex === index) {
+      // Stop playing
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.currentTime = 0
+      }
+      setPlayingMessageIndex(null)
+      return
+    }
+
+    try {
+      setPlayingMessageIndex(index)
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: content }),
+      })
+
+      if (!res.ok) throw new Error("TTS failed")
+
+      const audioBlob = await res.blob()
+      const audioUrl = URL.createObjectURL(audioBlob)
+
+      if (audioRef.current) {
+        audioRef.current.pause()
+      }
+
+      audioRef.current = new Audio(audioUrl)
+      audioRef.current.onended = () => setPlayingMessageIndex(null)
+      audioRef.current.play()
+    } catch (error) {
+      console.error("TTS error:", error)
+      setPlayingMessageIndex(null)
+    }
   }
 
   async function onFilesSelected(selected: FileList | null) {
@@ -261,6 +309,19 @@ export default function ReverseTransformChat() {
                   <strong className="mr-2 text-foreground">{m.role === "user" ? "You" : "Assistant"}:</strong>
                   <span className="whitespace-pre-wrap text-muted-foreground">{m.content}</span>
                 </div>
+                {m.role === "assistant" && (
+                  <div className="mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => playVoiceResponse(m.content, idx)}
+                      className="flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                    >
+                      <Volume2 className={cn("h-4 w-4", playingMessageIndex === idx ? "text-primary" : "")} />
+                      {playingMessageIndex === idx ? "Stop Voice" : "Play Voice"}
+                    </Button>
+                  </div>
+                )}
                 {m.downloadUrl && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     <a

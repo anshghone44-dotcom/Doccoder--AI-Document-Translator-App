@@ -50,7 +50,6 @@ User's goal: ${prompt}
 Provide a brief one-line instruction for optimal conversion (e.g., "Preserve formatting and structure" or "Extract main text content only").
 
 Instruction:`,
-          maxTokens: 150,
           temperature: 0.7,
         })
         conversionInstructions = text.trim()
@@ -83,7 +82,7 @@ Instruction:`,
     // If single file, return directly
     if (results.length === 1) {
       const single = results[0]
-      return new Response(single.bytes, {
+      return new Response(Buffer.from(single.bytes), {
         headers: {
           "Content-Type": single.mimeType,
           "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
@@ -97,7 +96,7 @@ Instruction:`,
       zip.file(r.name, r.bytes)
     }
     const zipped = await zip.generateAsync({ type: "uint8array" })
-    return new Response(zipped, {
+    return new Response(Buffer.from(zipped), {
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename="${encodeRFC5987("converted-files.zip")}"`,

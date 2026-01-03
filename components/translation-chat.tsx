@@ -4,10 +4,11 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Volume2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import { useSearchParams } from "next/navigation"
+import VoiceRecorder from "./voice-recorder"
 
 type Message = {
     role: "user" | "assistant"
@@ -28,12 +29,57 @@ export default function TranslationChat() {
     const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
     const [selectedModel, setSelectedModel] = useState("GPT-4o")
     const scrollRef = useRef<HTMLDivElement>(null)
+    const audioRef = useRef<HTMLAudioElement | null>(null)
+    const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
 
     const copyToClipboard = async (text: string) => {
         try {
             await navigator.clipboard.writeText(text)
         } catch (err) {
             console.error('Failed to copy: ', err)
+        }
+    }
+
+    const handleVoiceTranscript = (text: string) => {
+        setInput(text)
+        // Optionally auto-send the voice input
+        // handleSend()
+    }
+
+    const playVoiceResponse = async (content: string, index: number) => {
+        if (playingMessageIndex === index) {
+            // Stop playing
+            if (audioRef.current) {
+                audioRef.current.pause()
+                audioRef.current.currentTime = 0
+            }
+            setPlayingMessageIndex(null)
+            return
+        }
+
+        try {
+            setPlayingMessageIndex(index)
+            const res = await fetch("/api/tts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: content }),
+            })
+
+            if (!res.ok) throw new Error("TTS failed")
+
+            const audioBlob = await res.blob()
+            const audioUrl = URL.createObjectURL(audioBlob)
+
+            if (audioRef.current) {
+                audioRef.current.pause()
+            }
+
+            audioRef.current = new Audio(audioUrl)
+            audioRef.current.onended = () => setPlayingMessageIndex(null)
+            audioRef.current.play()
+        } catch (error) {
+            console.error("TTS error:", error)
+            setPlayingMessageIndex(null)
         }
     }
 
@@ -56,6 +102,15 @@ export default function TranslationChat() {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight
         }
     }, [messages])
+
+    useEffect(() => {
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause()
+                URL.revokeObjectURL(audioRef.current.src)
+            }
+        }
+    }, [])
 
     const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault()
@@ -180,13 +235,22 @@ export default function TranslationChat() {
                         >
                             {m.content}
                             {m.role === "assistant" && (
-                                <button
-                                    onClick={() => copyToClipboard(m.content)}
-                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded bg-black/20 hover:bg-black/40"
-                                    title="Copy translation"
-                                >
-                                    <Copy className="h-3 w-3" />
-                                </button>
+                                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => playVoiceResponse(m.content, idx)}
+                                        className="p-1 rounded bg-black/20 hover:bg-black/40"
+                                        title="Play voice response"
+                                    >
+                                        <Volume2 className={cn("h-3 w-3", playingMessageIndex === idx ? "text-primary" : "")} />
+                                    </button>
+                                    <button
+                                        onClick={() => copyToClipboard(m.content)}
+                                        className="p-1 rounded bg-black/20 hover:bg-black/40"
+                                        title="Copy translation"
+                                    >
+                                        <Copy className="h-3 w-3" />
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -215,6 +279,7 @@ export default function TranslationChat() {
                             <Languages className="h-5 w-5 opacity-30" />
                         </div>
                     </div>
+                    <VoiceRecorder onTranscript={handleVoiceTranscript} />
                     <Button
                         type="submit"
                         disabled={!input.trim() || isLoading}

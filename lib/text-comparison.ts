@@ -105,7 +105,6 @@ async function analyzeChangedMeanings(original: string, translated: string, targ
       
       Meaning Changes:`,
       temperature: 0.7,
-      maxTokens: 300,
     })
 
     return analysis
@@ -140,7 +139,6 @@ async function findSynonymAlternatives(
         prompt: `Provide 3 alternative ${targetLanguage} translations for the word "${term}".
         Return them as a comma-separated list:`,
         temperature: 0.7,
-        maxTokens: 100,
       })
 
       synonymResults.push({

@@ -337,7 +337,7 @@ export default function SignUpPage() {
                         ) : (
                           <>
                             <Layers className={`h-5 w-5 transition-all duration-500 ${hoveredButton === "signup" ? "scale-110 rotate-180" : ""}`} />
-                            <span className="tracking-widest uppercase text-sm">{st.button}</span>
+                            <span className="tracking-widest uppercase text-sm">{st.submit}</span>
                             <ArrowRight className={`h-5 w-5 transition-all duration-500 ${hoveredButton === "signup" ? "translate-x-1 opacity-100" : "opacity-0 -translate-x-2"}`} />
                           </>
                         )}

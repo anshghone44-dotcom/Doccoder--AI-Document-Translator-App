@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "validate-supabase": "node scripts/validate-setup.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -80,6 +81,8 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "16.1.1",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "typescript": "^5"

@@ -23,14 +23,13 @@ export async function explainParagraph(
   try {
     const { text: explanation } = await generateText({
       model: "openai/gpt-4-mini",
-      prompt: `Explain the following text in a ${tone} tone for translation to ${targetLanguage}. 
+      prompt: `Explain the following text in a ${tone} tone for translation to ${targetLanguage}.
       Provide a clear, concise explanation that helps understand the context and nuances:
-      
+
       "${text}"
-      
+
       Explanation:`,
       temperature: 0.7,
-      maxTokens: 300,
     })
 
     return explanation
@@ -54,7 +53,6 @@ export async function summarizeDocument(text: string, maxLength = 200): Promise<
       
       Summary:`,
       temperature: 0.7,
-      maxTokens: Math.ceil(maxLength / 0.75),
     })
 
     return summary
@@ -78,7 +76,6 @@ export async function extractKeyPoints(text: string, maxPoints = 5): Promise<str
       
       Key Points:`,
       temperature: 0.7,
-      maxTokens: 300,
     })
 
     return response
@@ -111,7 +108,6 @@ export async function rewriteInStyle(text: string, style: RewriteStyle, targetLa
       
       Rewritten Text:`,
       temperature: 0.8,
-      maxTokens: 500,
     })
 
     return rewritten
@@ -148,7 +144,6 @@ export async function applyToneToTranslation(
       
       Adjusted Translation:`,
       temperature: 0.7,
-      maxTokens: 500,
     })
 
     return tonedTranslation

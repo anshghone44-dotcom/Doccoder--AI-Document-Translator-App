@@ -45,7 +45,6 @@ export async function detectGrammarErrors(text: string, language: string): Promi
       
       Errors (JSON):`,
       temperature: 0.7,
-      maxTokens: 500,
     })
 
     try {
@@ -97,7 +96,6 @@ export async function checkCompliance(
       
       Issues (JSON):`,
       temperature: 0.7,
-      maxTokens: 500,
     })
 
     try {

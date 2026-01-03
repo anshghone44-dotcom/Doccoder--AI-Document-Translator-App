@@ -59,7 +59,6 @@ Instructions:
 - Return ONLY the title, no quotes or extra text
 
 Title:`,
-        maxTokens: 150,
         temperature: 0.7,
       })
       const single = text.split("\n").filter(Boolean)[0]?.trim()
@@ -95,7 +94,7 @@ Title:`,
   // If single file, return PDF directly
   if (results.length === 1) {
     const single = results[0]
-    return new Response(single.bytes, {
+    return new Response(Buffer.from(single.bytes), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
@@ -109,7 +108,7 @@ Title:`,
     zip.file(r.name, r.bytes)
   }
   const zipped = await zip.generateAsync({ type: "uint8array" })
-  return new Response(zipped, {
+  return new Response(Buffer.from(zipped), {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${encodeRFC5987("transformed-pdfs.zip")}"`,
