@@ -27,7 +27,7 @@ export default function TransformChat() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null)
-  const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-5")
+  const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
   const [template, setTemplate] = useState<TemplateSelection>({
     id: "minimal",
     orientation: "portrait",
@@ -242,7 +242,7 @@ export default function TransformChat() {
             <Bot className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Format Architect</h2>
+            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Document Assistant</h2>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -357,7 +357,7 @@ export default function TransformChat() {
               value={prompt}
               onChange={handleTextareaChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type your instructions or press Enter to convert..."
+              placeholder="Enter instructions or upload files..."
               className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none"
               rows={1}
             />
@@ -378,6 +378,7 @@ export default function TransformChat() {
             </Button>
           </div>
         </div>
+      </div>
     </section>
   )
 }
