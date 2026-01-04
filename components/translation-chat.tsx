@@ -152,40 +152,22 @@ export default function TranslationChat() {
         <div className="flex flex-col h-[600px] w-full max-w-4xl mx-auto glass-dark rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
             {/* Header Area */}
             <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-foreground/10 flex items-center justify-center border border-white/10 relative">
-                            <Zap className="h-5 w-5 text-foreground" />
-                            <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-black tracking-tighter uppercase italic">Neural Core x1</h3>
-                            <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest opacity-60">Status: Active // Latency: 24ms</p>
-                        </div>
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-foreground/10">
+                        <Globe className="h-5 w-5 text-foreground/70" />
                     </div>
-                </div>
-
-                <div className="hidden md:flex flex-col items-end gap-2">
-                    <div className="flex items-center gap-4">
-                        <div className="text-[10px] font-mono text-muted-foreground uppercase">System Load</div>
-                        <div className="w-24 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-foreground/40 w-[65%]" />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="text-[10px] font-mono text-muted-foreground uppercase">Memory Arch</div>
-                        <div className="w-24 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-foreground/20 w-[42%]" />
-                        </div>
+                    <div>
+                        <h3 className="text-sm font-bold tracking-tight text-foreground uppercase">Translation Engine</h3>
+                        <p className="text-[10px] text-muted-foreground/60 font-medium uppercase tracking-widest">Enterprise Protocol v4.2</p>
                     </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-2 bg-foreground/5 px-4 py-2 rounded-xl border border-foreground/10">
                         <Zap className="h-4 w-4 text-primary" />
                         <select
                             value={selectedModel}
                             onChange={(e) => setSelectedModel(e.target.value)}
-                            className="bg-transparent text-sm font-medium outline-none cursor-pointer text-foreground"
+                            className="bg-transparent text-xs font-bold uppercase tracking-wider outline-none cursor-pointer text-foreground"
                         >
                             {AI_MODELS.map(model => (
                                 <option key={model.id} value={model.id} className="bg-background">

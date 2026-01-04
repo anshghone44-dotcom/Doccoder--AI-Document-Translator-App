@@ -61,16 +61,15 @@ export async function POST(req: NextRequest) {
 
       const { text } = await generateText({
         model: finalModel as any,
-        prompt: `Create a professional, concise one-line title for converting the file "${filename}" into a PDF.
+        prompt: `Create a professional, concise one-line title for the document "${filename}".
 
-User's transformation goal: ${prompt}
+User's goal for this document: ${prompt}
 
-Instructions:
-- Analyze the file type and purpose
-- Create a clear, descriptive title that reflects the document's content
-- Keep it under 60 characters
-- Use professional language
-- Return ONLY the title, no quotes or extra text
+Guidelines:
+- Analyze the document purpose and content description.
+- Use business-grade, semi-formal language.
+- Keep the title descriptive yet under 60 characters.
+- Return ONLY the title text. No quotes.
 
 Title:`,
         temperature: 0.7,

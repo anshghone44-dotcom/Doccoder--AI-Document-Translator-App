@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2 } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2, Bot } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
@@ -32,7 +32,7 @@ export default function DocChatbot() {
     const [files, setFiles] = useState<File[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [targetLang, setTargetLang] = useState("en")
-    const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-5")
+    const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
     const [autoPlay, setAutoPlay] = useState(false)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -178,7 +178,7 @@ export default function DocChatbot() {
         } catch (error) {
             setMessages(prev => [
                 ...prev,
-                { role: "assistant", content: "I encountered an error while processing your request. Please check your connection and try again." },
+                { role: "assistant", content: "I'm sorry, I encountered an internal error while processing your request. Please try again in a moment or check your file format." },
             ])
         } finally {
             setIsLoading(false)
@@ -186,23 +186,32 @@ export default function DocChatbot() {
     }
 
     return (
-        <div className="flex flex-col h-[700px] w-full max-w-5xl mx-auto glass rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl relative noise">
+        <div className="flex flex-col h-[700px] w-full max-w-5xl mx-auto bg-card/60 backdrop-blur-3xl rounded-3xl overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] relative group/chatbot">
             {/* Header / Control Bar */}
-            {/* Header / Control Bar */}
-            <div className="p-4 border-b border-white/5 bg-background/20 backdrop-blur-xl flex items-center justify-end gap-3">
-                <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+            <div className="p-4 border-b border-border/10 bg-background/40 backdrop-blur-xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <Bot className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Technical Assistant</h2>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <ModelSelector value={selectedModel} onChange={setSelectedModel} />
 
-                <VoiceSettings
-                    selectedVoice={selectedVoice}
-                    onVoiceChange={setSelectedVoice}
-                    autoPlay={autoPlay}
-                    onAutoPlayChange={setAutoPlay}
-                />
+                    <VoiceSettings
+                        selectedVoice={selectedVoice}
+                        onVoiceChange={setSelectedVoice}
+                        autoPlay={autoPlay}
+                        onAutoPlayChange={setAutoPlay}
+                    />
 
-                <LanguagePicker
-                    value={targetLang}
-                    onChange={setTargetLang}
-                />
+                    <LanguagePicker
+                        value={targetLang}
+                        onChange={setTargetLang}
+                    />
+                </div>
             </div>
 
             {/* Messages Area */}
@@ -224,10 +233,10 @@ export default function DocChatbot() {
 
                         <div
                             className={cn(
-                                "px-8 py-5 rounded-[2rem] text-sm leading-relaxed relative group shadow-lg transition-all duration-300",
+                                "px-8 py-5 rounded-2xl text-sm leading-relaxed relative group transition-all duration-300",
                                 m.role === "user"
-                                    ? "bg-foreground text-background font-medium hover:shadow-xl"
-                                    : "bg-background/80 backdrop-blur-md border border-border/50 text-foreground hover:bg-background/90"
+                                    ? "bg-foreground text-background font-medium"
+                                    : "bg-background/80 backdrop-blur-md border border-border/50 text-foreground"
                             )}
                         >
                             <div className="whitespace-pre-wrap">{m.content}</div>

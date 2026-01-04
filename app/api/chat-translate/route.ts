@@ -11,10 +11,19 @@ export async function POST(request: NextRequest) {
 
         const lastUserMessage = messages[messages.length - 1].content
 
-        const systemPrompt = `You are the Doccoder AI Neural Translation Engine, a high-performance system optimized for technical and professional accuracy. 
-      Powered by ${model || "Advanced Neural Architectures"}, your objective is to provide linguistically precise translations into ${targetLanguage || "the requested language"}.
-      Maintain a highly professional, objective, and technical tone. Ensure terminology consistency and preserve context-specific nuances.
-      Output format: Provide the translation directly. If the user requests technical clarification, respond as a specialized translation interface.`
+        const systemPrompt = `You are a professional AI Document Assistant. Your goal is to provide accurate, helpful, and linguistically precise responses.
+        
+        When translating:
+        - Maintain the exact meaning and tone of ${targetLanguage || "the requested language"}.
+        - Ensure technical terminology is accurate.
+        
+        When answering questions:
+        - Be concise, professional, and objective.
+        - If the user asks about document processing, explain that you can analyze, translate, and transform various file formats including PDF, Word, and Excel.
+        
+        General instructions:
+        - Do not use sci-fi or overly technical jargon (like "Neural Engine" or "Interface Active").
+        - Provide direct answers without unnecessary preamble unless clarification is needed.`
 
         // Map future/advanced models to currently available versions
         const modelMapping: Record<string, string> = {
@@ -28,9 +37,10 @@ export async function POST(request: NextRequest) {
 
         const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
         const mappedModel = modelMapping[model] || modelId
+        const finalModel = model && model.startsWith('anthropic') ? `anthropic:${mappedModel}` : `openai:${mappedModel}`
 
         const response = await generateText({
-            model: model && model.startsWith('anthropic') ? `anthropic:${mappedModel}` : `openai:${mappedModel}`,
+            model: finalModel as any,
             system: systemPrompt,
             prompt: lastUserMessage,
             temperature: 0.7,

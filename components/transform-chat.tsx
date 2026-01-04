@@ -8,7 +8,7 @@ import ModelSelector, { type AIModel } from "@/components/model-selector"
 import { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Paperclip, Send, X, Volume2, Loader2 } from "lucide-react"
+import { Paperclip, Send, X, Volume2, Loader2, Bot } from "lucide-react"
 import VoiceSettings from "@/components/voice-settings"
 import LanguagePicker from "@/components/language-picker"
 import { useCallback } from "react"
@@ -33,6 +33,8 @@ export default function TransformChat() {
     orientation: "portrait",
     margin: 36,
   })
+  const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
+  const [autoPlay, setAutoPlay] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -232,140 +234,150 @@ export default function TransformChat() {
   }
 
   return (
-    <section aria-label="AI transformer chat" className="flex h-full flex-col">
-      <div className="mb-4">
-        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-        <VoiceSettings
-          selectedVoice={selectedVoice}
-          onVoiceChange={setSelectedVoice}
-          autoPlay={autoPlay}
-          onAutoPlayChange={setAutoPlay}
-        />
-        <LanguagePicker
-          value={targetLang}
-          onChange={setTargetLang}
-        />
-      </div>
-
-      <div className="mb-4 rounded-lg border bg-card p-3">
-        <details className="cursor-pointer">
-          <summary className="text-sm font-medium">Template Settings</summary>
-          <div className="mt-3">
-            <TemplatePicker value={template} onChange={setTemplate} />
+    <section aria-label="AI transformer chat" className="flex h-[700px] flex-col bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 shadow-xl overflow-hidden group/chatbot">
+      {/* Header Area */}
+      <div className="p-4 border-b border-border/10 bg-background/20 backdrop-blur-xl flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+            <Bot className="h-4 w-4 text-primary" />
           </div>
-        </details>
-      </div>
-
-      <div className="flex-1 space-y-4 overflow-y-auto pb-4">
-        {messages.map((m, idx) => (
-          <div key={idx}>
-            {editingMessageIndex === idx && m.editableContent ? (
-              <FileEditor
-                content={m.editableContent}
-                filename={m.filename || "file"}
-                onSave={(edited) => handleSaveEdit(idx, edited)}
-                onCancel={() => setEditingMessageIndex(null)}
-              />
-            ) : (
-              <div className={cn("rounded-lg p-3", m.role === "user" ? "bg-muted" : "bg-card border")}>
-                <div className="text-sm">
-                  <strong className="mr-2">{m.role === "user" ? "You" : "Assistant"}:</strong>
-                  <span className="whitespace-pre-wrap">{m.content}</span>
-                </div>
-                {m.role === "assistant" && (
-                  <div className="mt-2 flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => playVoiceResponse(m.content, idx)}
-                      className="flex items-center gap-1"
-                    >
-                      <Volume2 className={cn("h-4 w-4", playingMessageIndex === idx ? "text-primary" : "")} />
-                      {playingMessageIndex === idx ? "Stop" : "Play Voice"}
-                    </Button>
-                  </div>
-                )}
-                {m.downloadUrl && (
-                  <div className="mt-2 flex gap-2">
-                    <a href={m.downloadUrl} download={m.filename} className="underline">
-                      Download {m.filename}
-                    </a>
-                    {m.editableContent && (
-                      <Button variant="outline" size="sm" onClick={() => setEditingMessageIndex(idx)}>
-                        Edit Before Download
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+          <div>
+            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Format Architect</h2>
           </div>
-        ))}
-      </div>
-
-      <div className="sticky bottom-0 border-t bg-background pt-4">
-        {files.length > 0 && (
-          <div className="mb-2 flex flex-wrap gap-2">
-            {files.map((f, i) => (
-              <div key={`${f.name}-${i}`} className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
-                <span className="max-w-[200px] truncate">{f.name}</span>
-                <button
-                  onClick={() => removeFileAt(i)}
-                  className="rounded-full p-0.5 hover:bg-muted-foreground/20"
-                  aria-label={`Remove ${f.name}`}
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="flex items-end gap-2 rounded-lg border bg-card p-2">
-          <input
-            ref={inputRef}
-            type="file"
-            multiple
-            className="hidden"
-            onChange={(e) => onFilesSelected(e.target.files)}
+        </div>
+        <div className="flex items-center gap-2">
+          <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+          <LanguagePicker value={targetLang} onChange={setTargetLang} />
+          <VoiceSettings
+            selectedVoice={selectedVoice}
+            onVoiceChange={setSelectedVoice}
+            autoPlay={autoPlay}
+            onAutoPlayChange={setAutoPlay}
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => inputRef.current?.click()}
-            className="shrink-0"
-            aria-label="Upload files"
-          >
-            <Paperclip className="h-5 w-5" />
-          </Button>
-
-          <textarea
-            ref={textareaRef}
-            value={prompt}
-            onChange={handleTextareaChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your instructions or press Enter to convert..."
-            className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none"
-            rows={1}
-          />
-
-          <div className="shrink-0">
-            <VoiceRecorder onTranscript={(text) => setPrompt((prev) => (prev ? `${prev} ${text}` : text))} />
-          </div>
-
-          <Button
-            type="submit"
-            size="icon"
-            onClick={() => onSubmit()}
-            disabled={isLoading || (files.length === 0 && !prompt.trim())}
-            className="shrink-0"
-            aria-label="Send message"
-          >
-            <Send className="h-5 w-5" />
-          </Button>
         </div>
       </div>
+
+      <div className="flex-1 p-6 flex flex-col overflow-hidden">
+
+        <div className="mb-4 rounded-lg border bg-card p-3">
+          <details className="cursor-pointer">
+            <summary className="text-sm font-medium">Template Settings</summary>
+            <div className="mt-3">
+              <TemplatePicker value={template} onChange={setTemplate} />
+            </div>
+          </details>
+        </div>
+
+        <div className="space-y-4 overflow-y-auto pb-4 no-scrollbar">
+          {messages.map((m, idx) => (
+            <div key={idx}>
+              {editingMessageIndex === idx && m.editableContent ? (
+                <FileEditor
+                  content={m.editableContent}
+                  filename={m.filename || "file"}
+                  onSave={(edited) => handleSaveEdit(idx, edited)}
+                  onCancel={() => setEditingMessageIndex(null)}
+                />
+              ) : (
+                <div className={cn("rounded-lg p-3", m.role === "user" ? "bg-muted" : "bg-card border")}>
+                  <div className="text-sm">
+                    <strong className="mr-2">{m.role === "user" ? "You" : "Assistant"}:</strong>
+                    <span className="whitespace-pre-wrap">{m.content}</span>
+                  </div>
+                  {m.role === "assistant" && (
+                    <div className="mt-2 flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => playVoiceResponse(m.content, idx)}
+                        className="flex items-center gap-1"
+                      >
+                        <Volume2 className={cn("h-4 w-4", playingMessageIndex === idx ? "text-primary" : "")} />
+                        {playingMessageIndex === idx ? "Stop" : "Play Voice"}
+                      </Button>
+                    </div>
+                  )}
+                  {m.downloadUrl && (
+                    <div className="mt-2 flex gap-2">
+                      <a href={m.downloadUrl} download={m.filename} className="underline">
+                        Download {m.filename}
+                      </a>
+                      {m.editableContent && (
+                        <Button variant="outline" size="sm" onClick={() => setEditingMessageIndex(idx)}>
+                          Edit Before Download
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="sticky bottom-0 border-t bg-background pt-4">
+          {files.length > 0 && (
+            <div className="mb-2 flex flex-wrap gap-2">
+              {files.map((f, i) => (
+                <div key={`${f.name}-${i}`} className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
+                  <span className="max-w-[200px] truncate">{f.name}</span>
+                  <button
+                    onClick={() => removeFileAt(i)}
+                    className="rounded-full p-0.5 hover:bg-muted-foreground/20"
+                    aria-label={`Remove ${f.name}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-end gap-2 rounded-lg border bg-card p-2">
+            <input
+              ref={inputRef}
+              type="file"
+              multiple
+              className="hidden"
+              onChange={(e) => onFilesSelected(e.target.files)}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => inputRef.current?.click()}
+              className="shrink-0"
+              aria-label="Upload files"
+            >
+              <Paperclip className="h-5 w-5" />
+            </Button>
+
+            <textarea
+              ref={textareaRef}
+              value={prompt}
+              onChange={handleTextareaChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your instructions or press Enter to convert..."
+              className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none"
+              rows={1}
+            />
+
+            <div className="shrink-0">
+              <VoiceRecorder onTranscript={(text) => setPrompt((prev) => (prev ? `${prev} ${text}` : text))} />
+            </div>
+
+            <Button
+              type="submit"
+              size="icon"
+              onClick={() => onSubmit()}
+              disabled={isLoading || (files.length === 0 && !prompt.trim())}
+              className="shrink-0"
+              aria-label="Send message"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
     </section>
   )
 }
