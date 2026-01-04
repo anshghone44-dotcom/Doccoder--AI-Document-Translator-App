@@ -108,7 +108,7 @@ Title:`,
   // If single file, return PDF directly
   if (results.length === 1) {
     const single = results[0]
-    return new Response(Buffer.from(single.bytes), {
+    return new Response(single.bytes as any, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
@@ -122,7 +122,7 @@ Title:`,
     zip.file(r.name, r.bytes)
   }
   const zipped = await zip.generateAsync({ type: "uint8array" })
-  return new Response(Buffer.from(zipped), {
+  return new Response(zipped as any, {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${encodeRFC5987("transformed-pdfs.zip")}"`,

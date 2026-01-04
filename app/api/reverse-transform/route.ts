@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       try {
         console.log("[v0] Generating AI conversion instructions using model:", aiModel)
         const { text } = await generateText({
-          model: aiModel,
+          model: aiModel as any,
           prompt: `The user wants to convert PDF files to ${targetFormat} format.
 
 User's goal: ${prompt}
@@ -82,7 +82,7 @@ Instruction:`,
     // If single file, return directly
     if (results.length === 1) {
       const single = results[0]
-      return new Response(Buffer.from(single.bytes), {
+      return new Response(single.bytes as any, {
         headers: {
           "Content-Type": single.mimeType,
           "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
@@ -96,7 +96,7 @@ Instruction:`,
       zip.file(r.name, r.bytes)
     }
     const zipped = await zip.generateAsync({ type: "uint8array" })
-    return new Response(Buffer.from(zipped), {
+    return new Response(zipped as any, {
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename="${encodeRFC5987("converted-files.zip")}"`,
