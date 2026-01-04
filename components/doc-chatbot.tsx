@@ -131,7 +131,8 @@ export default function DocChatbot() {
             if (currentFiles.length > 0) {
                 // Handle file translation/transformation
                 const form = new FormData()
-                form.set("prompt", userMessage + ` (Target Language: ${targetLang})`)
+                form.set("prompt", userMessage)
+                form.set("targetLanguage", targetLang)
                 form.set("aiModel", selectedModel)
                 currentFiles.forEach(f => form.append("files", f, f.name))
 
@@ -194,7 +195,7 @@ export default function DocChatbot() {
                         <Bot className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Technical Assistant</h2>
+                        <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Enterprise AI Document Architect</h2>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">

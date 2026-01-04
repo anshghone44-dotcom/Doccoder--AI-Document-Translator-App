@@ -5,12 +5,44 @@ import { generateText } from "ai"
 
 export const maxDuration = 60
 
+const LANGUAGE_MAP: Record<string, string> = {
+  bn: "Bengali",
+  zh: "Chinese (Simplified)",
+  da: "Danish",
+  nl: "Dutch",
+  en: "English (United States)",
+  "en-GB": "English (United Kingdom)",
+  "en-IN": "English (India)",
+  et: "Estonian",
+  fil: "Filipino",
+  fi: "Finnish",
+  "fr-CA": "French (Canada)",
+  "fr-FR": "French (France)",
+  de: "German",
+  el: "Greek",
+  gu: "Gujarati",
+  hi: "Hindi",
+  it: "Italian",
+  ja: "Japanese",
+  ko: "Korean",
+  mr: "Marathi",
+  fa: "Persian",
+  pt: "Portuguese",
+  ru: "Russian",
+  es: "Spanish",
+  ta: "Tamil",
+  te: "Telugu",
+  tr: "Turkish",
+  vi: "Vietnamese",
+}
+
 export async function POST(req: NextRequest) {
   console.log("[v0] Transform API called")
 
   const form = await req.formData()
   const prompt = (form.get("prompt") || "").toString()
-  const aiModel = (form.get("aiModel") || "openai/gpt-5").toString()
+  const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
+  const targetLanguage = (form.get("targetLanguage") || "en").toString()
 
   // Parse template selection
   let template: {
@@ -40,8 +72,10 @@ export async function POST(req: NextRequest) {
     return new Response("No files provided.", { status: 400 })
   }
 
-  async function getCoverLineFor(filename: string) {
+  async function getCoverLineFor(filename: string, languageCode: string) {
     if (!prompt.trim()) return undefined
+
+    const languageFull = LANGUAGE_MAP[languageCode] || languageCode || "English"
 
     try {
       console.log("[v0] Generating AI title for:", filename, "using model:", aiModel)
@@ -61,13 +95,15 @@ export async function POST(req: NextRequest) {
 
       const { text } = await generateText({
         model: finalModel as any,
-        prompt: `Create a professional, concise one-line title for the document "${filename}".
+        prompt: `Create a technically precise, concise one-line title for the document "${filename}".
 
 User's goal for this document: ${prompt}
 
+CRITICAL: Return the title ENTIRELY in ${languageFull}.
+
 Guidelines:
-- Analyze the document purpose and content description.
-- Use business-grade, semi-formal language.
+- Analyze the document purpose and content architecture.
+- Use professional, enterprise-grade terminology.
 - Keep the title descriptive yet under 60 characters.
 - Return ONLY the title text. No quotes.
 
@@ -88,7 +124,7 @@ Title:`,
   for (const f of files) {
     try {
       console.log("[v0] Converting file:", f.name)
-      const coverLine = await getCoverLineFor(f.name)
+      const coverLine = await getCoverLineFor(f.name, targetLanguage)
       // Pass through template options
       const { bytes, suggestedName } = await convertAnyToPdf(f, {
         coverLine,

@@ -168,6 +168,7 @@ export default function ReverseTransformChat() {
       form.set("targetFormat", targetFormat)
       form.set("tone", selectedTone)
       form.set("aiModel", selectedModel)
+      form.set("targetLanguage", targetLang)
       files.forEach((f) => form.append("files", f, f.name))
 
       const res = await fetch("/api/reverse-transform", {
@@ -246,7 +247,7 @@ export default function ReverseTransformChat() {
             <Bot className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Document Extractor</h2>
+            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Enterprise AI Document Architect</h2>
           </div>
         </div>
         <div className="flex items-center gap-2">

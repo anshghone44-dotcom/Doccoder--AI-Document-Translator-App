@@ -1,6 +1,37 @@
 import { generateText } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
 
+const LANGUAGE_MAP: Record<string, string> = {
+    bn: "Bengali",
+    zh: "Chinese (Simplified)",
+    da: "Danish",
+    nl: "Dutch",
+    en: "English (United States)",
+    "en-GB": "English (United Kingdom)",
+    "en-IN": "English (India)",
+    et: "Estonian",
+    fil: "Filipino",
+    fi: "Finnish",
+    "fr-CA": "French (Canada)",
+    "fr-FR": "French (France)",
+    de: "German",
+    el: "Greek",
+    gu: "Gujarati",
+    hi: "Hindi",
+    it: "Italian",
+    ja: "Japanese",
+    ko: "Korean",
+    mr: "Marathi",
+    fa: "Persian",
+    pt: "Portuguese",
+    ru: "Russian",
+    es: "Spanish",
+    ta: "Tamil",
+    te: "Telugu",
+    tr: "Turkish",
+    vi: "Vietnamese",
+}
+
 export async function POST(request: NextRequest) {
     try {
         const { messages, targetLanguage, tone, model, useGlossary } = await request.json()
@@ -10,20 +41,23 @@ export async function POST(request: NextRequest) {
         }
 
         const lastUserMessage = messages[messages.length - 1].content
+        const targetLanguageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
-        const systemPrompt = `You are a professional AI Document Assistant. Your goal is to provide accurate, helpful, and linguistically precise responses.
-        
-        When translating:
-        - Maintain the exact meaning and tone of ${targetLanguage || "the requested language"}.
-        - Ensure technical terminology is accurate.
-        
-        When answering questions:
-        - Be concise, professional, and objective.
-        - If the user asks about document processing, explain that you can analyze, translate, and transform various file formats including PDF, Word, and Excel.
-        
-        General instructions:
-        - Do not use sci-fi or overly technical jargon (like "Neural Engine" or "Interface Active").
-        - Provide direct answers without unnecessary preamble unless clarification is needed.`
+        const systemPrompt = `You are the Enterprise AI Document Architect, a high-performance system optimized for technical precision and global document integrity.
+
+        CRITICAL INSTRUCTION: You must respond ENTIRELY in ${targetLanguageFull}. Even if the user asks a question in another language, your response, explanations, and labels MUST be in ${targetLanguageFull}.
+
+        Persona:
+        - Technically precise, efficiently helpful, and globally aware.
+        - Avoid jargon unless it's industry-standard technical terminology.
+        - Maintain a professional, executive-grade tone.
+
+        Role: 
+        - Assist with document translation, analysis, and generation.
+        - Maintain absolute contextual integrity across all supported file formats.
+        - Provide clear, actionable insights when requested.
+
+        Output Language: ${targetLanguageFull}`
 
         // Map future/advanced models to currently available versions
         const modelMapping: Record<string, string> = {
