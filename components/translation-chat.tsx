@@ -29,7 +29,7 @@ export default function TranslationChat() {
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
-    const [selectedModel, setSelectedModel] = useState("GPT-4o")
+    const [selectedModel, setSelectedModel] = useState("gpt-4")
     const scrollRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef<HTMLAudioElement | null>(null)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -69,7 +69,8 @@ export default function TranslationChat() {
 
             if (!res.ok) throw new Error("TTS failed")
 
-            const audioBlob = await res.blob()
+            const audioBuffer = await res.arrayBuffer()
+            const audioBlob = new Blob([audioBuffer], { type: 'audio/mpeg' })
             const audioUrl = URL.createObjectURL(audioBlob)
 
             if (audioRef.current) {

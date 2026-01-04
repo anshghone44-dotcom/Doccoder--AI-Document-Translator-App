@@ -53,6 +53,44 @@ export interface Database {
           }
         ]
       }
+      glossary: {
+        Row: {
+          context: string | null
+          created_at: string
+          id: string
+          language_pair: string | null
+          term: string
+          translation: string
+          user_id: string
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string
+          id?: string
+          language_pair?: string | null
+          term: string
+          translation: string
+          user_id: string
+        }
+        Update: {
+          context?: string | null
+          created_at?: string
+          id?: string
+          language_pair?: string | null
+          term?: string
+          translation?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "glossary_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

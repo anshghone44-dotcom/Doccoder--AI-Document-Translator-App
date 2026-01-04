@@ -5,6 +5,7 @@
  * This script validates your Supabase configuration and database setup
  */
 
+require('dotenv').config({ path: '.env.local' });
 const https = require('https');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -17,24 +18,27 @@ async function validateSupabaseSetup() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   console.log('1. Checking Environment Variables:');
-  console.log(`   ✅ SUPABASE_URL: ${supabaseUrl ? 'Set' : '❌ Missing'}`);
-  console.log(`   ✅ SUPABASE_ANON_KEY: ${supabaseKey ? 'Set' : '❌ Missing'}`);
-  console.log(`   ✅ SUPABASE_SERVICE_ROLE_KEY: ${serviceRoleKey ? 'Set (server-side only)' : '❌ Missing'}\n`);
+  console.log(`   ✅ NEXT_PUBLIC_SUPABASE_URL: ${supabaseUrl ? (supabaseUrl.includes('your-project') ? '❌ Placeholder' : 'Set') : '❌ Missing'}`);
+  console.log(`   ✅ NEXT_PUBLIC_SUPABASE_ANON_KEY: ${supabaseKey ? (supabaseKey.includes('your-') ? '❌ Placeholder' : 'Set') : '❌ Missing'}`);
+  console.log(`   ✅ SUPABASE_SERVICE_ROLE_KEY: ${serviceRoleKey ? (serviceRoleKey.includes('your-') ? '❌ Placeholder' : 'Set (server-side only)') : '❌ Missing'}\n`);
 
   if (!supabaseUrl || !supabaseKey) {
-    console.log('❌ Environment variables not properly configured. Please check your .env.local file.');
-    process.exit(1);
+    console.log('❌ Environment variables not properly configured. Some features will be disabled.');
+    console.log('   Please check your .env.local file and set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+    console.log('   App will continue to run but database features will be unavailable.');
   }
 
   // Check if URL is placeholder
   if (supabaseUrl.includes('your-project-ref')) {
-    console.log('❌ SUPABASE_URL still contains placeholder values. Please update with your actual Supabase project URL.');
-    process.exit(1);
+    console.log('⚠️  SUPABASE_URL still contains placeholder values. Please update with your actual Supabase project URL.');
+    console.log('   Example: https://abcdefghijklmnop.supabase.co');
+    console.log('   App will run in limited mode without database features.');
   }
 
   if (supabaseKey.includes('your-supabase-anon-key')) {
-    console.log('❌ SUPABASE_ANON_KEY still contains placeholder values. Please update with your actual anon key.');
-    process.exit(1);
+    console.log('⚠️  SUPABASE_ANON_KEY still contains placeholder values. Please update with your actual anon key.');
+    console.log('   This should be a long JWT token starting with "eyJ..."');
+    console.log('   App will run in limited mode without database features.');
   }
 
   // Test connection
@@ -60,7 +64,7 @@ async function validateSupabaseSetup() {
 
   // Check database tables
   console.log('\n3. Checking Database Tables:');
-  const tables = ['profiles', 'user_preferences', 'translation_history', 'api_usage_stats'];
+  const tables = ['profiles', 'user_preferences', 'translation_history', 'api_usage_stats', 'glossary'];
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);

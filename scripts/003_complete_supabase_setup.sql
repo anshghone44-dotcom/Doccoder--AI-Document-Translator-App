@@ -63,6 +63,18 @@ CREATE TABLE IF NOT EXISTS public.api_usage_stats (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
+-- Create glossary table for brand style memory
+CREATE TABLE IF NOT EXISTS public.glossary (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  term TEXT NOT NULL,
+  translation TEXT NOT NULL,
+  language_pair TEXT, -- e.g., 'en-es'
+  context TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  UNIQUE(user_id, term, language_pair)
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_translation_history_user_id ON public.translation_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_translation_history_created_at ON public.translation_history(created_at DESC);
@@ -113,6 +125,7 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_preferences ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.translation_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.api_usage_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.glossary ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies for profiles
 CREATE POLICY "Users can view their own profile" ON public.profiles
@@ -151,12 +164,26 @@ CREATE POLICY "Users can view their own API usage" ON public.api_usage_stats
 CREATE POLICY "Users can insert their own API usage" ON public.api_usage_stats
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+-- Create RLS policies for glossary
+CREATE POLICY "Users can view their own glossary" ON public.glossary
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own glossary" ON public.glossary
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own glossary" ON public.glossary
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own glossary" ON public.glossary
+  FOR DELETE USING (auth.uid() = user_id);
+
 -- Grant necessary permissions
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT ALL ON public.profiles TO anon, authenticated;
 GRANT ALL ON public.user_preferences TO anon, authenticated;
 GRANT ALL ON public.translation_history TO anon, authenticated;
 GRANT ALL ON public.api_usage_stats TO anon, authenticated;
+GRANT ALL ON public.glossary TO anon, authenticated;
 
 -- Grant permissions on sequences
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
@@ -166,6 +193,7 @@ COMMENT ON TABLE public.profiles IS 'User profile information and preferences';
 COMMENT ON TABLE public.user_preferences IS 'User application preferences and settings';
 COMMENT ON TABLE public.translation_history IS 'History of all translations performed by users';
 COMMENT ON TABLE public.api_usage_stats IS 'API usage statistics for billing and analytics';
+COMMENT ON TABLE public.glossary IS 'User glossary entries for consistent translations';
 
 -- Verification query
 SELECT
@@ -174,5 +202,5 @@ SELECT
   rowsecurity
 FROM pg_tables
 WHERE schemaname = 'public'
-  AND tablename IN ('profiles', 'user_preferences', 'translation_history', 'api_usage_stats')
+  AND tablename IN ('profiles', 'user_preferences', 'translation_history', 'api_usage_stats', 'glossary')
 ORDER BY tablename;

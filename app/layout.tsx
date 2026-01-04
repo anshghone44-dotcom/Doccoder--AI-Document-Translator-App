@@ -27,7 +27,6 @@ export const metadata: Metadata = {
 }
 
 import { LanguageProvider } from "@/components/language-context"
-import SupabaseHealthCheck from "@/components/supabase-health-check"
 
 export default function RootLayout({
   children,
@@ -43,7 +42,6 @@ export default function RootLayout({
               {children}
               <Analytics />
             </Suspense>
-            <SupabaseHealthCheck />
           </ThemeProvider>
         </LanguageProvider>
       </body>

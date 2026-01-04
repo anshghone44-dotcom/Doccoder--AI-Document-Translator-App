@@ -31,7 +31,7 @@ export default function SupabaseHealthCheck() {
       updateResult('env', {
         status: 'error',
         message: 'Environment variables missing',
-        details: 'NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set'
+        details: 'NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set. Some features will be disabled.'
       })
       return
     }
@@ -40,7 +40,7 @@ export default function SupabaseHealthCheck() {
       updateResult('env', {
         status: 'error',
         message: 'Environment variables contain placeholders',
-        details: 'Please update .env.local with your actual Supabase credentials'
+        details: 'Please update .env.local with your actual Supabase credentials. App will run in limited mode.'
       })
       return
     }
@@ -76,7 +76,7 @@ export default function SupabaseHealthCheck() {
 
     try {
       const supabase = createClient()
-      const tables = ['profiles', 'user_preferences', 'translation_history']
+      const tables = ['profiles', 'user_preferences', 'translation_history', 'api_usage_stats', 'glossary']
       let successCount = 0
 
       for (const table of tables) {
