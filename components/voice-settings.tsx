@@ -78,25 +78,25 @@ export default function VoiceSettings({
                 <div className="space-y-6">
                     <div className="flex items-center gap-2 mb-2">
                         <Volume2 className="h-4 w-4 text-primary" />
-                        <h4 className="font-black text-sm uppercase tracking-widest italic">Voice Interaction</h4>
+                        <h4 className="font-bold text-xs uppercase tracking-wider">Voice Settings</h4>
                     </div>
 
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-mono uppercase opacity-60">Neural Engine Voice</Label>
+                            <Label className="text-[10px] font-semibold uppercase tracking-wider opacity-60">Selection</Label>
                             <div className="flex gap-2">
                                 <Select value={selectedVoice} onValueChange={onVoiceChange}>
-                                    <SelectTrigger className="bg-background/40 border-white/10 rounded-xl h-12">
+                                    <SelectTrigger className="bg-background/40 border-border/50 rounded-xl h-10">
                                         <SelectValue placeholder="Select a voice" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-background/95 backdrop-blur-xl border-white/10 rounded-xl">
+                                    <SelectContent className="bg-background/95 backdrop-blur-xl border-border/50 rounded-xl">
                                         {isLoading ? (
                                             <div className="p-4 flex items-center justify-center">
                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                             </div>
                                         ) : (
                                             voices.map((voice) => (
-                                                <SelectItem key={voice.id} value={voice.id} className="focus:bg-primary/20">
+                                                <SelectItem key={voice.id} value={voice.id} className="focus:bg-primary/10">
                                                     {voice.name}
                                                 </SelectItem>
                                             ))
@@ -107,7 +107,7 @@ export default function VoiceSettings({
                                     <Button
                                         variant="outline"
                                         size="icon"
-                                        className="h-12 w-12 rounded-xl shrink-0"
+                                        className="h-10 w-10 rounded-xl shrink-0"
                                         onClick={() => {
                                             const v = voices.find(v => v.id === selectedVoice)
                                             if (v) playPreview(v.preview_url, v.id)
@@ -124,10 +124,10 @@ export default function VoiceSettings({
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-foreground/5 border border-border/50">
                             <div className="space-y-0.5">
-                                <Label className="text-sm font-bold">Auto-play Response</Label>
-                                <p className="text-[10px] text-muted-foreground uppercase font-mono italic">Voice readout on completion</p>
+                                <Label className="text-sm font-semibold">Auto-play Responses</Label>
+                                <p className="text-[10px] text-muted-foreground uppercase font-semibold">Narrate AI responses automatically</p>
                             </div>
                             <Switch checked={autoPlay} onCheckedChange={onAutoPlayChange} />
                         </div>

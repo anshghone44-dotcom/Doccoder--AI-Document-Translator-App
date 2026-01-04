@@ -36,10 +36,10 @@ export default function ModelSelector({ value, onChange }: ModelSelectorProps) {
   }
 
   return (
-    <div className="rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300">
-      <label className="mb-3 block text-sm font-semibold text-foreground flex items-center gap-2">
+    <div className="rounded-xl border border-border/50 bg-background/50 p-4 transition-all duration-300">
+      <label className="mb-3 block text-xs font-bold text-foreground flex items-center gap-2 uppercase tracking-wider">
         <Sparkles className="h-4 w-4 text-primary" />
-        AI Model Selection
+        AI Model
       </label>
       <Select value={value} onValueChange={(v) => onChange(v as AIModel)}>
         <SelectTrigger className="w-full border-border/50 bg-background/50 transition-all duration-300 hover:bg-background hover:border-primary/50">

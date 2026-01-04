@@ -25,7 +25,7 @@ export default function DocChatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "Interface initialized. Advanced document synthesis and high-fidelity translation protocols are active. Optimized for complex technical documentation and structural integrity.",
+            content: "Hello. I'm your AI document assistant. Upload your documents or enter a request below to get started with translation, analysis, or content generation.",
         },
     ])
     const [input, setInput] = useState("")
@@ -154,7 +154,7 @@ export default function DocChatbot() {
 
                 setMessages(prev => [...prev, {
                     role: "assistant",
-                    content: `Processing complete. Document(s) synthesized successfully using ${selectedModel}. Integrity verification passed.`,
+                    content: `Document processing complete. The output has been generated using ${selectedModel}.`,
                     downloadUrl: objectUrl,
                     filename
                 }])
@@ -178,7 +178,7 @@ export default function DocChatbot() {
         } catch (error) {
             setMessages(prev => [
                 ...prev,
-                { role: "assistant", content: "Connection disrupted. Failed to process request. Please check your network and retry." },
+                { role: "assistant", content: "I encountered an error while processing your request. Please check your connection and try again." },
             ])
         } finally {
             setIsLoading(false)
@@ -217,8 +217,8 @@ export default function DocChatbot() {
                     >
                         <div className="flex items-center gap-2 mb-2 opacity-50">
                             <div className={cn("h-1.5 w-1.5 rounded-full", m.role === "user" ? "bg-primary" : "bg-foreground")} />
-                            <span className="text-[10px] font-mono uppercase tracking-tighter">
-                                {m.role === "user" ? "Authorized User" : m.role.toUpperCase()}
+                            <span className="text-[10px] font-semibold uppercase tracking-wider">
+                                {m.role === "user" ? "You" : "Assistant"}
                             </span>
                         </div>
 
@@ -226,8 +226,8 @@ export default function DocChatbot() {
                             className={cn(
                                 "px-8 py-5 rounded-[2rem] text-sm leading-relaxed relative group shadow-lg transition-all duration-300",
                                 m.role === "user"
-                                    ? "bg-foreground text-background font-medium hover:scale-[1.01]"
-                                    : "glass border border-white/10 text-foreground hover:bg-white/5"
+                                    ? "bg-foreground text-background font-medium hover:shadow-xl"
+                                    : "bg-background/80 backdrop-blur-md border border-border/50 text-foreground hover:bg-background/90"
                             )}
                         >
                             <div className="whitespace-pre-wrap">{m.content}</div>
@@ -252,7 +252,7 @@ export default function DocChatbot() {
                                             </div>
                                             <div>
                                                 <div className="text-xs font-bold">{m.filename}</div>
-                                                <div className="text-[10px] text-muted-foreground uppercase">Neural Output Alpha</div>
+                                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Processed Document</div>
                                             </div>
                                         </div>
                                         <a
@@ -299,7 +299,7 @@ export default function DocChatbot() {
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
                                 <div className="absolute inset-0 bg-primary/20 blur-lg" />
                             </div>
-                            <span className="text-sm text-foreground/70 font-mono italic tracking-tight">ENGINE PROCESSING...</span>
+                            <span className="text-sm text-foreground/70 font-medium tracking-tight">Processing request...</span>
                         </div>
                     </div>
                 )}
@@ -345,7 +345,7 @@ export default function DocChatbot() {
                         </Button>
 
                         <textarea
-                            placeholder="Input directives or upload files for neural processing..."
+                            placeholder="Send a message or upload files..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => {
@@ -369,11 +369,11 @@ export default function DocChatbot() {
                 </form>
 
                 <div className="mt-4 flex items-center justify-center gap-8 opacity-20 hover:opacity-40 transition-opacity duration-1000">
-                    <div className="flex items-center gap-2 text-[8px] font-mono tracking-[0.2em] uppercase">
-                        SECURE_LINK: ACTIVE
+                    <div className="flex items-center gap-2 text-[8px] font-semibold tracking-widest uppercase">
+                        Secure Connection
                     </div>
-                    <div className="flex items-center gap-2 text-[8px] font-mono tracking-[0.2em] uppercase text-green-500">
-                        <div className="h-1 w-1 rounded-full bg-current animate-pulse" /> SYSTEM: OPTIMIZED
+                    <div className="flex items-center gap-2 text-[8px] font-semibold tracking-widest uppercase text-green-600">
+                        <div className="h-1 w-1 rounded-full bg-current" /> System Ready
                     </div>
                 </div>
             </div>

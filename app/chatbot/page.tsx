@@ -21,28 +21,28 @@ export default function ChatbotPage() {
             <div className="relative pt-32 pb-20 px-6 z-10">
                 <div className="mx-auto max-w-7xl">
                     <div className="flex flex-col items-center text-center space-y-6 mb-12">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/5 border border-white/10 text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-[10px] font-bold tracking-widest uppercase text-foreground/70 animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <Zap className="h-3 w-3 fill-current text-primary" />
-                            Neural Interface Active
+                            Professional Assistant
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                            Neural Context <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/70 to-foreground/30 italic">Engine</span>
+                        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                            AI Document <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/80 to-foreground/40">Assistant</span>
                         </h1>
 
-                        <p className="max-w-3xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-                            High-fidelity document transformation engineered for professional business architectures. Translate and synthesize complex documentation with absolute contextual integrity and technical precision.
+                        <p className="max-w-3xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500 font-medium">
+                            Analyze, translate, and interact with your documents using advanced AI models. Optimized for professional accuracy and contextual integrity across multiple file formats.
                         </p>
 
-                        <div className="flex items-center gap-8 pt-4 animate-in fade-in duration-1000 delay-700 opacity-40">
-                            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest">
-                                <Shield className="h-4 w-4" /> Secure Pipeline
+                        <div className="flex flex-wrap justify-center items-center gap-6 pt-4 animate-in fade-in duration-1000 delay-700 opacity-60">
+                            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                                <Shield className="h-4 w-4" /> Enterprise Security
                             </div>
-                            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest">
-                                <Bot className="h-4 w-4" /> Technical Accuracy
+                            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                                <Bot className="h-4 w-4" /> Contextual Accuracy
                             </div>
-                            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest">
-                                <Sparkles className="h-4 w-4" /> Multi-LLM Support
+                            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                                <Sparkles className="h-4 w-4" /> Multi-Model Intelligence
                             </div>
                         </div>
                     </div>
