@@ -35,7 +35,7 @@ export default function SignUpSuccessPage() {
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Verification Email Sent</p>
                   <p className="text-sm text-muted-foreground">
-                    We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.
+                    We&apos;ve sent a verification link to your email address. Please click the link to activate your account.
                   </p>
                 </div>
               </div>
@@ -56,7 +56,8 @@ export default function SignUpSuccessPage() {
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
-                Didn't receive the email?{" "}
+                Didn&apos;t receive the email?
+                {" "}
                 <button className="text-primary hover:underline font-medium">
                   Resend verification
                 </button>
