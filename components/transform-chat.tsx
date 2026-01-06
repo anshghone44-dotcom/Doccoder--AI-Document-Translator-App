@@ -12,6 +12,7 @@ import { Paperclip, Send, X, Volume2, Loader2, Bot } from "lucide-react"
 import VoiceSettings from "@/components/voice-settings"
 import LanguagePicker from "@/components/language-picker"
 import { useCallback } from "react"
+import { useTranslation } from "@/components/language-context"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -22,6 +23,7 @@ type ChatMessage = {
 }
 
 export default function TransformChat() {
+  const { t, language, setLanguage } = useTranslation()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [files, setFiles] = useState<File[]>([])
   const [prompt, setPrompt] = useState("")
@@ -39,7 +41,12 @@ export default function TransformChat() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
-  const [targetLang, setTargetLang] = useState("en")
+  const [targetLang, setTargetLang] = useState(language)
+
+  // Sync with global language
+  useEffect(() => {
+    setTargetLang(language)
+  }, [language])
 
   useEffect(() => {
     return () => {
@@ -160,7 +167,7 @@ export default function TransformChat() {
     e?.preventDefault()
     if (files.length === 0 && !prompt.trim()) return
 
-    const userMessage = prompt.trim() || "Transform files to PDF"
+    const userMessage = prompt.trim() || t.chatbot.transformDefaultPrompt
     setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setPrompt("")
 
@@ -203,7 +210,7 @@ export default function TransformChat() {
         ...prev,
         {
           role: "assistant",
-          content: files.length > 1 ? "Your PDFs are ready. Download the ZIP." : "Your PDF is ready. Download below.",
+          content: files.length > 1 ? t.chatbot.transformSuccessMulti : t.chatbot.transformSuccessSingle,
           downloadUrl: objectUrl,
           filename,
         },
@@ -213,7 +220,7 @@ export default function TransformChat() {
     } catch (err: any) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: `There was an error: ${err?.message || "Unknown error"}` },
+        { role: "assistant", content: `${t.chatbot.error}: ${err?.message || t.chatbot.unknownError}` },
       ])
     } finally {
       setIsLoading(false)
@@ -235,7 +242,7 @@ export default function TransformChat() {
   }
 
   return (
-    <section aria-label="AI transformer chat" className="flex h-[700px] flex-col bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 shadow-xl overflow-hidden group/chatbot">
+    <section aria-label={t.chatbot.ariaLabels.pdfTransformer} className="flex h-[700px] flex-col bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 shadow-xl overflow-hidden group/chatbot">
       {/* Header Area */}
       <div className="p-4 border-b border-border/10 bg-background/20 backdrop-blur-xl flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -243,12 +250,18 @@ export default function TransformChat() {
             <Bot className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Enterprise AI Document Architect</h2>
+            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">{t.chatbot.architect}</h2>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-          <LanguagePicker value={targetLang} onChange={setTargetLang} />
+          <LanguagePicker
+            value={targetLang}
+            onChange={(code) => {
+              setTargetLang(code as any)
+              setLanguage(code as any)
+            }}
+          />
           <VoiceSettings
             selectedVoice={selectedVoice}
             onVoiceChange={setSelectedVoice}
@@ -262,7 +275,7 @@ export default function TransformChat() {
 
         <div className="mb-4 rounded-lg border bg-card p-3">
           <details className="cursor-pointer">
-            <summary className="text-sm font-medium">Template Settings</summary>
+            <summary className="text-sm font-medium">{t.chatbot.templateSettings}</summary>
             <div className="mt-3">
               <TemplatePicker value={template} onChange={setTemplate} />
             </div>
@@ -282,7 +295,7 @@ export default function TransformChat() {
               ) : (
                 <div className={cn("rounded-lg p-3", m.role === "user" ? "bg-muted" : "bg-card border")}>
                   <div className="text-sm">
-                    <strong className="mr-2">{m.role === "user" ? "You" : "Assistant"}:</strong>
+                    <strong className="mr-2">{m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}:</strong>
                     <span className="whitespace-pre-wrap">{m.content}</span>
                   </div>
                   {m.role === "assistant" && (
@@ -294,18 +307,18 @@ export default function TransformChat() {
                         className="flex items-center gap-1"
                       >
                         <Volume2 className={cn("h-4 w-4", playingMessageIndex === idx ? "text-primary" : "")} />
-                        {playingMessageIndex === idx ? "Stop" : "Play Voice"}
+                        {playingMessageIndex === idx ? t.chatbot.stop : t.chatbot.playVoice}
                       </Button>
                     </div>
                   )}
                   {m.downloadUrl && (
                     <div className="mt-2 flex gap-2">
                       <a href={m.downloadUrl} download={m.filename} className="underline">
-                        Download {m.filename}
+                        {t.chatbot.download} {m.filename}
                       </a>
                       {m.editableContent && (
                         <Button variant="outline" size="sm" onClick={() => setEditingMessageIndex(idx)}>
-                          Edit Before Download
+                          {t.chatbot.editBeforeDownload}
                         </Button>
                       )}
                     </div>
@@ -325,7 +338,7 @@ export default function TransformChat() {
                   <button
                     onClick={() => removeFileAt(i)}
                     className="rounded-full p-0.5 hover:bg-muted-foreground/20"
-                    aria-label={`Remove ${f.name}`}
+                    aria-label={t.chatbot.ariaLabels.remove}
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -348,7 +361,7 @@ export default function TransformChat() {
               size="icon"
               onClick={() => inputRef.current?.click()}
               className="shrink-0"
-              aria-label="Upload files"
+              aria-label={t.chatbot.ariaLabels.upload}
             >
               <Paperclip className="h-5 w-5" />
             </Button>
@@ -358,7 +371,7 @@ export default function TransformChat() {
               value={prompt}
               onChange={handleTextareaChange}
               onKeyDown={handleKeyDown}
-              placeholder="Enter instructions or upload files..."
+              placeholder={t.chatbot.placeholder}
               className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none"
               rows={1}
             />
@@ -373,7 +386,7 @@ export default function TransformChat() {
               onClick={() => onSubmit()}
               disabled={isLoading || (files.length === 0 && !prompt.trim())}
               className="shrink-0"
-              aria-label="Send message"
+              aria-label={t.chatbot.ariaLabels.send}
             >
               <Send className="h-5 w-5" />
             </Button>

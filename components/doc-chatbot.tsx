@@ -21,17 +21,33 @@ type Message = {
 
 
 export default function DocChatbot() {
-    const { t } = useTranslation()
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            role: "assistant",
-            content: "Hello. I'm your AI document assistant. Upload your documents or enter a request below to get started with translation, analysis, or content generation.",
-        },
-    ])
+    const { t, language, setLanguage } = useTranslation()
+    const [messages, setMessages] = useState<Message[]>([])
+
+    // Update initial message when language changes and only welcome message exists
+    useEffect(() => {
+        if (messages.length === 0) {
+            setMessages([{
+                role: "assistant",
+                content: t.chatbot.welcome,
+            }])
+        } else if (messages.length === 1 && messages[0].role === "assistant") {
+            // Update the single welcome message if it's the only one
+            setMessages([{
+                role: "assistant",
+                content: t.chatbot.welcome,
+            }])
+        }
+    }, [language, t.chatbot.welcome])
     const [input, setInput] = useState("")
     const [files, setFiles] = useState<File[]>([])
     const [isLoading, setIsLoading] = useState(false)
-    const [targetLang, setTargetLang] = useState("en")
+    const [targetLang, setTargetLang] = useState(language)
+
+    // Sync local targetLang with global language
+    useEffect(() => {
+        setTargetLang(language)
+    }, [language])
     const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
     const [autoPlay, setAutoPlay] = useState(false)
@@ -114,7 +130,7 @@ export default function DocChatbot() {
         e?.preventDefault()
         if ((!input.trim() && files.length === 0) || isLoading) return
 
-        const userMessage = input.trim() || (files.length > 0 ? `Process and translate ${files.length} document(s)` : "")
+        const userMessage = input.trim() || (files.length > 0 ? t.chatbot.processAndTranslate : "")
         const currentFiles = [...files]
 
         setMessages(prev => [...prev, {
@@ -155,7 +171,7 @@ export default function DocChatbot() {
 
                 setMessages(prev => [...prev, {
                     role: "assistant",
-                    content: `Document processing complete. The output has been generated using ${selectedModel}.`,
+                    content: t.chatbot.processingComplete,
                     downloadUrl: objectUrl,
                     filename
                 }])
@@ -179,7 +195,7 @@ export default function DocChatbot() {
         } catch (error) {
             setMessages(prev => [
                 ...prev,
-                { role: "assistant", content: "I'm sorry, I encountered an internal error while processing your request. Please try again in a moment or check your file format." },
+                { role: "assistant", content: t.chatbot.error },
             ])
         } finally {
             setIsLoading(false)
@@ -195,7 +211,7 @@ export default function DocChatbot() {
                         <Bot className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Enterprise AI Document Architect</h2>
+                        <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">{t.chatbot.architect}</h2>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -210,7 +226,10 @@ export default function DocChatbot() {
 
                     <LanguagePicker
                         value={targetLang}
-                        onChange={setTargetLang}
+                        onChange={(code) => {
+                            setTargetLang(code as any)
+                            setLanguage(code as any)
+                        }}
                     />
                 </div>
             </div>
@@ -228,7 +247,7 @@ export default function DocChatbot() {
                         <div className="flex items-center gap-2 mb-2 opacity-50">
                             <div className={cn("h-1.5 w-1.5 rounded-full", m.role === "user" ? "bg-primary" : "bg-foreground")} />
                             <span className="text-[10px] font-semibold uppercase tracking-wider">
-                                {m.role === "user" ? "You" : "Assistant"}
+                                {m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}
                             </span>
                         </div>
 
@@ -262,7 +281,7 @@ export default function DocChatbot() {
                                             </div>
                                             <div>
                                                 <div className="text-xs font-bold">{m.filename}</div>
-                                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Processed Document</div>
+                                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">{t.chatbot.processedDocument}</div>
                                             </div>
                                         </div>
                                         <a
@@ -271,7 +290,7 @@ export default function DocChatbot() {
                                             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500 text-white font-bold text-xs hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20"
                                         >
                                             <Download className="h-3.5 w-3.5" />
-                                            DOWNLOAD
+                                            {t.chatbot.download}
                                         </a>
                                     </div>
                                 </div>
@@ -309,7 +328,7 @@ export default function DocChatbot() {
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
                                 <div className="absolute inset-0 bg-primary/20 blur-lg" />
                             </div>
-                            <span className="text-sm text-foreground/70 font-medium tracking-tight">Processing request...</span>
+                            <span className="text-sm text-foreground/70 font-medium tracking-tight">{t.chatbot.processing}</span>
                         </div>
                     </div>
                 )}
@@ -326,6 +345,7 @@ export default function DocChatbot() {
                                 <button
                                     onClick={() => removeFile(i)}
                                     className="p-1 rounded-full hover:bg-red-500/20 hover:text-red-500 transition-colors"
+                                    aria-label={t.chatbot.ariaLabels.remove}
                                 >
                                     <X className="h-3 w-3" />
                                 </button>
@@ -350,12 +370,13 @@ export default function DocChatbot() {
                             size="icon"
                             onClick={() => fileInputRef.current?.click()}
                             className="h-12 w-12 rounded-2xl hover:bg-foreground/5 hover:text-primary transition-all active:scale-95 group/upload"
+                            aria-label={t.chatbot.ariaLabels.upload}
                         >
                             <Paperclip className="h-5 w-5 transition-transform group-hover/upload:rotate-12" />
                         </Button>
 
                         <textarea
-                            placeholder="Send a message or upload files..."
+                            placeholder={t.chatbot.placeholder}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => {
@@ -372,6 +393,7 @@ export default function DocChatbot() {
                             type="submit"
                             disabled={(!input.trim() && files.length === 0) || isLoading}
                             className="h-12 w-12 rounded-2xl bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0 group/send disabled:opacity-30"
+                            aria-label={t.chatbot.ariaLabels.send}
                         >
                             <Send className="h-5 w-5 group-hover/send:translate-x-0.5 group-hover/send:-translate-y-0.5 transition-transform" />
                         </Button>
@@ -380,10 +402,10 @@ export default function DocChatbot() {
 
                 <div className="mt-4 flex items-center justify-center gap-8 opacity-20 hover:opacity-40 transition-opacity duration-1000">
                     <div className="flex items-center gap-2 text-[8px] font-semibold tracking-widest uppercase">
-                        Secure Connection
+                        {t.chatbot.secureConnection}
                     </div>
                     <div className="flex items-center gap-2 text-[8px] font-semibold tracking-widest uppercase text-green-600">
-                        <div className="h-1 w-1 rounded-full bg-current" /> System Ready
+                        <div className="h-1 w-1 rounded-full bg-current" /> {t.chatbot.systemReady}
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Paperclip, Send, X, Sparkles, Volume2, Loader2, Globe, Bot } from "lucide-react"
 import VoiceSettings from "@/components/voice-settings"
 import LanguagePicker from "@/components/language-picker"
+import { useTranslation } from "@/components/language-context"
 
 type ChatMessage = {
   role: "user" | "assistant"
@@ -23,6 +24,7 @@ type ChatMessage = {
 type ToneOption = "formal" | "casual" | "legal" | "academic"
 
 export default function ReverseTransformChat() {
+  const { t, language, setLanguage } = useTranslation()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [files, setFiles] = useState<File[]>([])
   const [prompt, setPrompt] = useState("")
@@ -37,7 +39,12 @@ export default function ReverseTransformChat() {
   const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
   const [autoPlay, setAutoPlay] = useState(false)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
-  const [targetLang, setTargetLang] = useState("en")
+  const [targetLang, setTargetLang] = useState(language)
+
+  // Sync with global language
+  useEffect(() => {
+    setTargetLang(language)
+  }, [language])
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -51,21 +58,9 @@ export default function ReverseTransformChat() {
     }
   }, [])
 
-  const recommendations = [
-    "Convert to professional format",
-    "Extract text only",
-    "Preserve formatting",
-    "Optimize for readability",
-    "Remove sensitive data",
-    "Compress file size",
-  ]
+  const recommendations = t.chatbot.recommendations
 
-  const toneDescriptions: Record<ToneOption, string> = {
-    formal: "Professional and structured",
-    casual: "Friendly and conversational",
-    legal: "Precise and legally compliant",
-    academic: "Scholarly and well-researched",
-  }
+  const toneDescriptions: Record<ToneOption, string> = t.chatbot.tones
 
   function removeFileAt(index: number) {
     setFiles((prev) => prev.filter((_, i) => i !== index))
@@ -118,7 +113,7 @@ export default function ReverseTransformChat() {
     })
 
     if (pdfFiles.length !== incoming.length) {
-      alert("Only PDF files are supported for reverse transformation.")
+      alert(t.chatbot.pdfOnly)
     }
 
     setFiles((prev) => [...prev, ...pdfFiles])
@@ -152,7 +147,7 @@ export default function ReverseTransformChat() {
     e?.preventDefault()
     if (files.length === 0) return
 
-    const userMessage = prompt.trim() || `Convert PDF to ${targetFormat.toUpperCase()}`
+    const userMessage = prompt.trim() || t.chatbot.processAndTranslate
     setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setPrompt("")
     setShowRecommendations(true)
@@ -177,7 +172,7 @@ export default function ReverseTransformChat() {
       })
 
       if (!res.ok) {
-        const errText = await res.text().catch(() => "Unknown error")
+        const errText = await res.text().catch(() => t.chatbot.unknownError)
         throw new Error(errText || `Request failed with status ${res.status}`)
       }
 
@@ -202,10 +197,7 @@ export default function ReverseTransformChat() {
         ...prev,
         {
           role: "assistant",
-          content:
-            files.length > 1
-              ? `Your ${targetFormat.toUpperCase()} files are ready (${selectedTone} tone). Download the ZIP.`
-              : `Your ${targetFormat.toUpperCase()} file is ready (${selectedTone} tone). Download below.`,
+          content: t.chatbot.reverseTransformSuccess,
           downloadUrl: objectUrl,
           filename,
           editableContent,
@@ -216,7 +208,7 @@ export default function ReverseTransformChat() {
     } catch (err: any) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: `There was an error: ${err?.message || "Unknown error"}` },
+        { role: "assistant", content: `${t.chatbot.error}: ${err?.message || t.chatbot.unknownError}` },
       ])
     } finally {
       setIsLoading(false)
@@ -239,7 +231,7 @@ export default function ReverseTransformChat() {
   }
 
   return (
-    <section aria-label="PDF reverse transformer" className="flex h-[700px] flex-col bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 shadow-xl overflow-hidden group/chatbot">
+    <section aria-label={t.chatbot.ariaLabels.pdfTransformer} className="flex h-[700px] flex-col bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 shadow-xl overflow-hidden group/chatbot">
       {/* Header Area */}
       <div className="p-4 border-b border-border/10 bg-background/20 backdrop-blur-xl flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -247,12 +239,18 @@ export default function ReverseTransformChat() {
             <Bot className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">Enterprise AI Document Architect</h2>
+            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">{t.chatbot.architect}</h2>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-          <LanguagePicker value={targetLang} onChange={setTargetLang} />
+          <LanguagePicker
+            value={targetLang}
+            onChange={(code) => {
+              setTargetLang(code as any)
+              setLanguage(code as any)
+            }}
+          />
           <VoiceSettings
             selectedVoice={selectedVoice}
             onVoiceChange={setSelectedVoice}
@@ -265,7 +263,7 @@ export default function ReverseTransformChat() {
       <div className="flex-1 p-6 flex flex-col overflow-hidden">
 
         <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(85,_100,_200,_0.3)]">
-          <label className="mb-3 block text-sm font-semibold text-foreground">Target Format</label>
+          <label className="mb-3 block text-sm font-semibold text-foreground">{t.chatbot.targetFormat}</label>
           <Select value={targetFormat} onValueChange={(v) => setTargetFormat(v as any)}>
             <SelectTrigger className="w-full border-border/50 bg-background/50 transition-all duration-300 hover:bg-background hover:border-primary/50">
               <SelectValue />
@@ -290,7 +288,7 @@ export default function ReverseTransformChat() {
         <div className="mb-6 rounded-xl border border-border/50 bg-gradient-to-br from-secondary to-background p-4 transition-all duration-300">
           <label className="mb-3 block text-sm font-semibold text-foreground flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            Translation Tone
+            {t.chatbot.tone}
           </label>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {(["formal", "casual", "legal", "academic"] as ToneOption[]).map((tone) => (
@@ -332,7 +330,7 @@ export default function ReverseTransformChat() {
                   )}
                 >
                   <div className="text-sm">
-                    <strong className="mr-2 text-foreground">{m.role === "user" ? "You" : "Assistant"}:</strong>
+                    <strong className="mr-2 text-foreground">{m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}:</strong>
                     <span className="whitespace-pre-wrap text-muted-foreground">{m.content}</span>
                   </div>
                   {m.role === "assistant" && (
@@ -347,7 +345,7 @@ export default function ReverseTransformChat() {
                         )}
                       >
                         <Volume2 className={cn("h-4 w-4", playingMessageIndex === idx ? "text-primary" : "")} />
-                        {playingMessageIndex === idx ? "Stop Voice" : "Play Voice"}
+                        {playingMessageIndex === idx ? t.chatbot.stop : t.chatbot.playVoice}
                       </Button>
                     </div>
                   )}
@@ -358,7 +356,7 @@ export default function ReverseTransformChat() {
                         download={m.filename}
                         className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
                       >
-                        Download {m.filename}
+                        {t.chatbot.download} {m.filename}
                       </a>
                       {m.editableContent && (
                         <Button
@@ -367,7 +365,7 @@ export default function ReverseTransformChat() {
                           onClick={() => setEditingMessageIndex(idx)}
                           className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                         >
-                          Edit Before Download
+                          {t.chatbot.editBeforeDownload}
                         </Button>
                       )}
                     </div>
@@ -390,7 +388,7 @@ export default function ReverseTransformChat() {
                   <button
                     onClick={() => removeFileAt(i)}
                     className="rounded-full p-0.5 hover:bg-destructive/20 transition-all duration-300"
-                    aria-label={`Remove ${f.name}`}
+                    aria-label={t.chatbot.ariaLabels.remove}
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -401,7 +399,7 @@ export default function ReverseTransformChat() {
 
           {showRecommendations && prompt.length === 0 && (
             <div className="mb-3 rounded-lg border border-border/50 bg-card/50 p-3 backdrop-blur">
-              <p className="mb-2 text-xs font-medium text-muted-foreground">Suggested actions:</p>
+              <p className="mb-2 text-xs font-medium text-muted-foreground">{t.chatbot.suggestedActions}:</p>
               <div className="flex flex-wrap gap-2">
                 {recommendations.map((rec, idx) => (
                   <button
@@ -431,7 +429,7 @@ export default function ReverseTransformChat() {
               size="icon"
               onClick={() => inputRef.current?.click()}
               className="shrink-0 transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-              aria-label="Upload PDF files"
+              aria-label={t.chatbot.ariaLabels.upload}
             >
               <Paperclip className="h-5 w-5" />
             </Button>
@@ -441,7 +439,7 @@ export default function ReverseTransformChat() {
               value={prompt}
               onChange={handleTextareaChange}
               onKeyDown={handleKeyDown}
-              placeholder="Enter instructions or upload PDF files..."
+              placeholder={t.chatbot.reverseTransformPlaceholder}
               className="max-h-[200px] min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 outline-none text-foreground placeholder:text-muted-foreground"
               rows={1}
             />
@@ -456,7 +454,7 @@ export default function ReverseTransformChat() {
               onClick={() => onSubmit()}
               disabled={isLoading || files.length === 0}
               className="shrink-0 bg-gradient-to-br from-primary to-accent text-primary-foreground transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 pulse-cta"
-              aria-label="Send message"
+              aria-label={t.chatbot.ariaLabels.send}
             >
               <Send className="h-5 w-5" />
             </Button>
