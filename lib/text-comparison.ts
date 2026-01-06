@@ -1,4 +1,5 @@
 import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
 
 export interface DiffSegment {
   type: "added" | "removed" | "unchanged" | "modified"
@@ -95,7 +96,7 @@ function segmentTexts(original: string, translated: string): DiffSegment[] {
 async function analyzeChangedMeanings(original: string, translated: string, targetLanguage: string): Promise<string[]> {
   try {
     const { text: analysis } = await generateText({
-      model: "openai/gpt-4-mini",
+      model: openai("gpt-4o-mini"),
       prompt: `Analyze the following original text and its ${targetLanguage} translation.
       Identify any significant changes in meaning, tone, or emphasis.
       List each change as a separate point:
@@ -135,7 +136,7 @@ async function findSynonymAlternatives(
 
     for (const term of keyTerms) {
       const { text: synonymsText } = await generateText({
-        model: "openai/gpt-4-mini",
+        model: openai("gpt-4o-mini"),
         prompt: `Provide 3 alternative ${targetLanguage} translations for the word "${term}".
         Return them as a comma-separated list:`,
         temperature: 0.7,

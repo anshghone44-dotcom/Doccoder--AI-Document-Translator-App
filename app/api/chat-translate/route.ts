@@ -1,4 +1,6 @@
 import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { anthropic } from "@ai-sdk/anthropic"
 import { type NextRequest, NextResponse } from "next/server"
 
 const LANGUAGE_MAP: Record<string, string> = {
@@ -71,10 +73,10 @@ export async function POST(request: NextRequest) {
 
         const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
         const mappedModel = modelMapping[model] || modelId
-        const finalModel = model && model.startsWith('anthropic') ? `anthropic:${mappedModel}` : `openai:${mappedModel}`
+        const finalModel = model && model.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
 
         const response = await generateText({
-            model: finalModel as any,
+            model: finalModel,
             system: systemPrompt,
             prompt: lastUserMessage,
             temperature: 0.7,

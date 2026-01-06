@@ -1,4 +1,5 @@
 import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
 
 export type TranslationTone = "formal" | "casual" | "legal" | "academic"
 export type RewriteStyle = "professional" | "simple" | "creative"
@@ -22,7 +23,7 @@ export async function explainParagraph(
 ): Promise<string> {
   try {
     const { text: explanation } = await generateText({
-      model: "openai/gpt-4-mini",
+      model: openai("gpt-4o-mini"),
       prompt: `Explain the following text in a ${tone} tone for translation to ${targetLanguage}.
       Provide a clear, concise explanation that helps understand the context and nuances:
 
@@ -45,7 +46,7 @@ export async function explainParagraph(
 export async function summarizeDocument(text: string, maxLength = 200): Promise<string> {
   try {
     const { text: summary } = await generateText({
-      model: "openai/gpt-4-mini",
+      model: openai("gpt-4o-mini"),
       prompt: `Summarize the following document in approximately ${maxLength} words. 
       Focus on key points and main ideas:
       
@@ -68,7 +69,7 @@ export async function summarizeDocument(text: string, maxLength = 200): Promise<
 export async function extractKeyPoints(text: string, maxPoints = 5): Promise<string[]> {
   try {
     const { text: response } = await generateText({
-      model: "openai/gpt-4-mini",
+      model: openai("gpt-4o-mini"),
       prompt: `Extract the ${maxPoints} most important key points from the following text.
       Return them as a numbered list:
       
@@ -100,7 +101,7 @@ export async function rewriteInStyle(text: string, style: RewriteStyle, targetLa
 
   try {
     const { text: rewritten } = await generateText({
-      model: "openai/gpt-4-mini",
+      model: openai("gpt-4o-mini"),
       prompt: `Rewrite the following text in ${styleDescriptions[style]} for translation to ${targetLanguage}.
       Maintain the original meaning while adapting the tone and style:
       
@@ -135,7 +136,7 @@ export async function applyToneToTranslation(
 
   try {
     const { text: tonedTranslation } = await generateText({
-      model: "openai/gpt-4-mini",
+      model: openai("gpt-4o-mini"),
       prompt: `Adjust the following ${targetLanguage} translation to be ${toneDescriptions[tone]}.
       Keep the meaning intact but adjust the tone and word choice:
       

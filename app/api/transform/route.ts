@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server"
 import JSZip from "jszip"
 import { convertAnyToPdf } from "@/lib/convert-to-pdf"
 import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { anthropic } from "@ai-sdk/anthropic"
 
 export const maxDuration = 60
 
@@ -91,10 +93,10 @@ export async function POST(req: NextRequest) {
 
       const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
       const mappedModel = modelMapping[aiModel] || modelId
-      const finalModel = aiModel && aiModel.startsWith('anthropic') ? `anthropic:${mappedModel}` : `openai:${mappedModel}`
+      const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
 
       const { text } = await generateText({
-        model: finalModel as any,
+        model: finalModel,
         prompt: `Create a technically precise, concise one-line title for the document "${filename}".
 
 User's goal for this document: ${prompt}
