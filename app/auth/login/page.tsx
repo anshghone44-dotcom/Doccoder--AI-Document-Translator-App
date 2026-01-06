@@ -203,6 +203,14 @@ export default function LoginPage() {
                   {lt.create}
                 </Link>
               </div>
+              <div className="mt-4 text-center text-xs text-muted-foreground">
+                <Link
+                  href="/privacy"
+                  className="text-primary hover:text-primary/80 font-medium transition-colors hover:underline"
+                >
+                  Privacy Policy
+                </Link>
+              </div>
             </form>
           </CardContent>
         </Card>

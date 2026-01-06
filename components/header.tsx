@@ -59,15 +59,15 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                         </h1>
                     </Link>
                     <nav className="hidden gap-8 md:flex items-center ml-8">
-                        {["features", "pricing"].map((item) => (
-                            <a
+                        {["features", "pricing", "privacy"].map((item) => (
+                            <Link
                                 key={item}
-                                href={`/#${item}`}
+                                href={item === "privacy" ? "/privacy" : `/#${item}`}
                                 className="relative text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group/link"
                             >
                                 {t.nav[item as keyof typeof t.nav]}
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover/link:w-full" />
-                            </a>
+                            </Link>
                         ))}
                     </nav>
                 </div>

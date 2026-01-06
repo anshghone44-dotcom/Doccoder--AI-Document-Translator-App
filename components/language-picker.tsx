@@ -153,24 +153,6 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                     </button>
                 </DialogHeader>
 
-<<<<<<< HEAD
-                <div className="flex flex-col h-[600px] relative overflow-hidden">
-                    {/* Data Grid Pattern Background */}
-                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                        style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-
-                    <ScrollArea className="flex-1">
-                        <div className="p-4 space-y-6">
-                            {["Popular", "Europe", "Asia-Pacific", "Americas", "Middle East"].map((cat) => {
-                                const catLangs = filteredLanguages.filter(l => l.category === cat)
-                                if (catLangs.length === 0) return null
-
-                                return (
-                                    <div key={cat} className="space-y-3">
-                                        <div className="flex items-center gap-3 px-2">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/50 font-mono">
-                                                [{cat === 'Popular' ? 'Priority_Nodes' : cat.replace('-', '_').toUpperCase()}]
-=======
                 <div className="flex flex-col h-[600px]">
                     {/* Terminal-style search */}
                     <div className="p-6 border-b border-white/5 bg-black/20">
@@ -201,18 +183,12 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                                             <div className="flex-1 h-px bg-gradient-to-r from-primary/20 to-transparent" />
                                             <span className="text-xs text-muted-foreground font-mono">
                                                 {languages.length}
->>>>>>> 6994bee (feat: Upgrade LanguagePicker to professional AI interface)
                                             </span>
                                             <div className="h-[1px] flex-1 bg-white/5" />
                                         </div>
 
-<<<<<<< HEAD
-                                        <div className="grid grid-cols-1 gap-1">
-                                            {catLangs.map((lang) => (
-=======
                                         <div className="grid gap-1">
                                             {languages.map((lang) => (
->>>>>>> 6994bee (feat: Upgrade LanguagePicker to professional AI interface)
                                                 <button
                                                     key={lang.code}
                                                     onClick={() => {
@@ -220,29 +196,6 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                                                         setOpen(false)
                                                     }}
                                                     className={cn(
-<<<<<<< HEAD
-                                                        "w-full flex items-center justify-between p-4 rounded-xl transition-all group relative border border-transparent",
-                                                        value === lang.code
-                                                            ? "bg-white/5 border-white/10 shadow-lg"
-                                                            : "hover:bg-white/5 hover:border-white/5"
-                                                    )}
-                                                >
-                                                    <div className="flex flex-col items-start gap-1">
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="font-bold text-[17px] text-foreground tracking-tight">
-                                                                {lang.nativeName}
-                                                            </span>
-                                                            <span className="text-[10px] font-mono opacity-20 uppercase tracking-widest bg-white/10 px-1.5 py-0.5 rounded leading-none">
-                                                                {lang.code}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-bold uppercase tracking-[0.05em] opacity-40 font-mono">
-                                                            <span>{lang.name}</span>
-                                                            {lang.region && (
-                                                                <>
-                                                                    <span className="opacity-30 self-center">|</span>
-                                                                    <span>{lang.region}</span>
-=======
                                                         "w-full flex items-center justify-between p-4 rounded-xl transition-all group relative overflow-hidden",
                                                         "hover:bg-white/5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",
                                                         "border border-transparent",
@@ -272,21 +225,14 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                                                                 <>
                                                                     <span className="h-1 w-1 rounded-full bg-current opacity-30" />
                                                                     <span className="opacity-60">{highlightText(lang.region, searchQuery)}</span>
->>>>>>> 6994bee (feat: Upgrade LanguagePicker to professional AI interface)
                                                                 </>
                                                             )}
                                                         </div>
                                                     </div>
-<<<<<<< HEAD
-                                                    {value === lang.code && (
-                                                        <div className="h-6 w-6 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary),0.3)]">
-                                                            <Check className="h-3.5 w-3.5 text-primary stroke-[3px]" />
-=======
 
                                                     {value === lang.code && (
                                                         <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30 relative z-10">
                                                             <Check className="h-3.5 w-3.5 text-primary-foreground stroke-[3px]" />
->>>>>>> 6994bee (feat: Upgrade LanguagePicker to professional AI interface)
                                                         </div>
                                                     )}
                                                 </button>
@@ -298,12 +244,6 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
 
                             {filteredLanguages.length === 0 && (
                                 <div className="py-20 text-center space-y-4">
-<<<<<<< HEAD
-                                    <div className="inline-flex p-4 rounded-full bg-white/5 animate-pulse">
-                                        <Search className="h-8 w-8 text-muted-foreground/20" />
-                                    </div>
-                                    <p className="text-sm font-mono uppercase tracking-widest text-muted-foreground/40">No matching nodes found</p>
-=======
                                     <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 mx-auto">
                                         <Terminal className="h-8 w-8 text-primary/60" />
                                     </div>
@@ -315,26 +255,11 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                                             Try adjusting your search query
                                         </p>
                                     </div>
->>>>>>> 6994bee (feat: Upgrade LanguagePicker to professional AI interface)
                                 </div>
                             )}
                         </div>
                     </ScrollArea>
 
-<<<<<<< HEAD
-                    <div className="p-6 border-t border-white/5 bg-black/40 backdrop-blur-md relative overflow-hidden">
-                        {/* Terminal Scanning Effect */}
-                        <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/20 animate-scan pointer-events-none" />
-
-                        <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50 group-focus-within:text-primary transition-colors duration-500" />
-                            <Input
-                                placeholder="PROTOCOL SEARCH / ENTER QUERY"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-11 bg-white/5 border-white/5 rounded-xl h-12 focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:border-primary/20 transition-all duration-500 placeholder:text-muted-foreground/20 text-xs font-mono tracking-widest"
-                            />
-=======
                     {/* Protocol Status Footer */}
                     <div className="p-4 border-t border-white/5 bg-gradient-to-r from-background/60 to-background/40">
                         <div className="flex items-center justify-between text-[10px] font-mono tracking-wider">
@@ -346,7 +271,6 @@ export default function LanguagePicker({ value, onChange, className }: LanguageP
                             <div className="text-muted-foreground/50">
                                 PROTOCOL v4.2 • {filteredLanguages.length} LANGUAGES
                             </div>
->>>>>>> 6994bee (feat: Upgrade LanguagePicker to professional AI interface)
                         </div>
 
                         <div className="mt-4 flex items-center justify-between opacity-30">

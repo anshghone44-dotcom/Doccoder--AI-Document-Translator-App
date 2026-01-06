@@ -250,9 +250,9 @@ export default function Home() {
               </p>
 
               <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 order-1 md:order-2 md:w-1/3">
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t.footer.privacy}
-                </a>
+                </Link>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t.footer.terms}
                 </a>

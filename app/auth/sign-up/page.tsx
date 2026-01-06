@@ -345,7 +345,24 @@ export default function SignUpPage() {
                     </Button>
                   </div>
                 </form>
-
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-muted-foreground">
+                    By creating an account, you agree to our{" "}
+                    <Link
+                      href="/privacy"
+                      className="text-primary hover:text-primary/80 font-medium transition-colors hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="#"
+                      className="text-primary hover:text-primary/80 font-medium transition-colors hover:underline"
+                    >
+                      Terms of Service
+                    </Link>
+                  </p>
+                </div>
                 <div className="mt-8 text-center">
                   <p className="text-sm text-muted-foreground">
                     Already have an account?{" "}

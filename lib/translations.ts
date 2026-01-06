@@ -3,6 +3,7 @@ export const translations = {
         nav: {
             features: "Features",
             pricing: "Pricing",
+            privacy: "Privacy",
             signIn: "Sign In",
             selectLanguage: "Select Language",
         },
