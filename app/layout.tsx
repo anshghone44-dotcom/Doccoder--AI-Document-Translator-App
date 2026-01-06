@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Manrope, Bodoni_Moda } from "next/font/google"
+import { Manrope, Playfair_Display, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Suspense } from "react"
@@ -13,11 +13,18 @@ const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 })
 
-const bodoniModa = Bodoni_Moda({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-bodoni",
   display: "swap",
   weight: ["400", "500", "600", "700", "800", "900"],
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 })
 
 export const metadata: Metadata = {
@@ -35,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans ${manrope.variable} ${bodoniModa.variable}`}>
+      <body className={`font-sans ${manrope.variable} ${playfairDisplay.variable} ${jetbrainsMono.variable}`}>
         <LanguageProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Suspense>

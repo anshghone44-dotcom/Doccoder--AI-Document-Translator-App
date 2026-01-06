@@ -76,7 +76,7 @@
 
 @theme inline {
   --font-sans: var(--font-manrope);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
