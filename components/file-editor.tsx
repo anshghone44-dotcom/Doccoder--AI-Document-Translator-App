@@ -43,7 +43,7 @@ export default function FileEditor({ content, filename, onSave, onCancel }: File
         />
       </div>
       <div className="rounded-md bg-muted p-3 text-xs text-muted-foreground">
-        <strong>Tip:</strong> Make your changes above and click "Save & Download" to update the file. Your edits will be
+        <strong>Tip:</strong> Make your changes above and click &quot;Save &amp; Download&quot; to update the file. Your edits will be
         applied to the downloaded file.
       </div>
     </div>
