@@ -179,9 +179,13 @@ export default function DocChatbot() {
                     filename = decodeURIComponent(match[1] || match[2])
                 }
 
+                // Try to get dynamic assistant message from header
+                const headerMsg = res.headers.get("X-Assistant-Message")
+                const assistantMessage = headerMsg ? decodeURIComponent(headerMsg) : t.chatbot.processingComplete
+
                 setMessages(prev => [...prev, {
                     role: "assistant",
-                    content: t.chatbot.processingComplete,
+                    content: assistantMessage,
                     downloadUrl: objectUrl,
                     filename
                 }])
@@ -254,7 +258,10 @@ export default function DocChatbot() {
                             m.role === "user" ? "ml-auto items-end" : "items-start"
                         )}
                     >
-                        <div className="flex items-center gap-2 mb-2 opacity-50">
+                        <div className={cn(
+                            "flex items-center gap-2 mb-2 opacity-50 px-2",
+                            m.role === "user" ? "flex-row-reverse" : "flex-row"
+                        )}>
                             <div className={cn("h-1.5 w-1.5 rounded-full", m.role === "user" ? "bg-primary" : "bg-foreground")} />
                             <span className="text-[10px] font-semibold uppercase tracking-wider">
                                 {m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}

@@ -4,6 +4,8 @@ import { convertAnyToPdf } from "@/lib/convert-to-pdf"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
+import mammoth from "mammoth"
+import * as XLSX from "xlsx"
 
 export const maxDuration = 60
 
@@ -121,26 +123,125 @@ Title:`,
     }
   }
 
+  async function translateContent(text: string, targetLanguage: string) {
+    if (!text || !text.trim() || targetLanguage === "en") return text
+
+    const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
+
+    try {
+      console.log("[v0] Translating content to:", languageFull)
+
+      const modelMapping: Record<string, string> = {
+        "openai/gpt-5": "gpt-4o",
+        "xai/grok-4": "gpt-4o",
+        "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+        "openai/gpt-4-mini": "gpt-4o-mini",
+        "xai/grok-3": "gpt-4o",
+        "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
+      }
+
+      const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
+      const mappedModel = modelMapping[aiModel] || modelId
+      const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
+
+      const { text: translated } = await generateText({
+        model: finalModel,
+        prompt: `You are a professional enterprise translator. Translate the following text into ${languageFull}.
+        Return ONLY the translated text. Maintain formatting and technical accuracy.
+
+        TEXT TO TRANSLATE:
+        ${text.slice(0, 15000)} // Safety limit for now
+
+        TRANSLATION:`,
+        temperature: 0.3,
+      })
+
+      return translated
+    } catch (err) {
+      console.error("[v0] Translation failed:", err)
+      return text
+    }
+  }
+
   // Convert all files
   const results = []
   for (const f of files) {
     try {
-      console.log("[v0] Converting file:", f.name)
+      console.log("[v0] Processing file:", f.name)
+      const ext = (f.name.split(".").pop() || "").toLowerCase()
+      const arrayBuffer = await f.arrayBuffer()
+      const u8 = new Uint8Array(arrayBuffer)
+
+      let processedContent: string | undefined
+      let type: "text" | "pdf" | "image" = "text"
+
+      // Handle translation before PDF generation
+      if (ext === "docx") {
+        const { value: rawText } = await mammoth.extractRawText({ arrayBuffer })
+        processedContent = await translateContent(rawText, targetLanguage)
+      } else if (ext === "xlsx" || ext === "xls" || ext === "csv") {
+        const wb = XLSX.read(u8, { type: "array" })
+        let combined = ""
+        wb.SheetNames.forEach((sheetName, idx) => {
+          const sheet = wb.Sheets[sheetName]
+          const csv = XLSX.utils.sheet_to_csv(sheet)
+          combined += `Sheet ${idx + 1}: ${sheetName}\n\n${csv}\n\n`
+        })
+        processedContent = await translateContent(combined, targetLanguage)
+      } else if (["txt", "md", "markdown", "html"].includes(ext)) {
+        const text = new TextDecoder("utf-8").decode(u8)
+        processedContent = await translateContent(text, targetLanguage)
+      }
+
       const coverLine = await getCoverLineFor(f.name, targetLanguage)
-      // Pass through template options
-      const { bytes, suggestedName } = await convertAnyToPdf(f, {
+
+      // Conversion with translated content if available
+      const { bytes, suggestedName } = await convertAnyToPdf({
+        ...f,
+        arrayBuffer: async () => arrayBuffer, // original for image/pdf
+        contentOverride: processedContent // new field for translated text
+      } as any, {
         coverLine,
         templateId: template.id,
         orientation: template.orientation,
         margin: typeof template.margin === "number" ? template.margin : undefined,
       })
-      results.push({ name: suggestedName, bytes })
-      console.log("[v0] File converted successfully:", suggestedName)
+
+      const langSuffix = targetLanguage !== "en" ? ` (${LANGUAGE_MAP[targetLanguage] || targetLanguage})` : ""
+      const finalName = suggestedName.replace(".pdf", `${langSuffix}.pdf`)
+
+      results.push({ name: finalName, bytes })
+      console.log("[v0] File processed successfully:", finalName)
     } catch (err: any) {
-      console.error("[v0] Conversion error for", f.name, ":", err?.message || err)
-      return new Response(`Error converting ${f.name}: ${err?.message || "Unknown error"}`, { status: 500 })
+      console.error("[v0] processing error for", f.name, ":", err?.message || err)
+      return new Response(`Error processing ${f.name}: ${err?.message || "Unknown error"}`, { status: 500 })
     }
   }
+
+  async function generateSuccessMessage(targetLanguage: string) {
+    const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
+    try {
+      const modelMapping: Record<string, string> = {
+        "openai/gpt-5": "gpt-4o",
+        "openai/gpt-4-mini": "gpt-4o-mini",
+      }
+      const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
+      const mappedModel = modelMapping[aiModel] || modelId
+      const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
+
+      const { text } = await generateText({
+        model: finalModel,
+        prompt: `Generate a concise, professional success message in ${languageFull} confirming that the user's document has been successfully processed and translated.
+        Keep it under 150 characters. Return ONLY the message text.`,
+        temperature: 0.7,
+      })
+      return text.trim()
+    } catch {
+      return `Document processing complete. The output has been generated.`
+    }
+  }
+
+  const assistantMessage = await generateSuccessMessage(targetLanguage)
 
   // If single file, return PDF directly
   if (results.length === 1) {
@@ -149,6 +250,7 @@ Title:`,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
+        "X-Assistant-Message": encodeURIComponent(assistantMessage),
       },
     })
   }
@@ -163,6 +265,7 @@ Title:`,
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${encodeRFC5987("transformed-pdfs.zip")}"`,
+      "X-Assistant-Message": encodeURIComponent(assistantMessage),
     },
   })
 }

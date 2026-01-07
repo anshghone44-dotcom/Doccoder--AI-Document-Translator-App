@@ -30,7 +30,7 @@ function pageSize(orientation?: "portrait" | "landscape") {
 }
 
 export async function convertAnyToPdf(
-  file: { name: string; type?: string; arrayBuffer: () => Promise<ArrayBuffer> },
+  file: { name: string; type?: string; arrayBuffer: () => Promise<ArrayBuffer>; contentOverride?: string },
   cover?: CoverOptions,
 ): Promise<{ bytes: Uint8Array; suggestedName: string }> {
   const filename = file.name || "document"
@@ -55,20 +55,23 @@ export async function convertAnyToPdf(
 
   // DOCX -> text
   if (ext === "docx") {
-    const { value: rawText } = await mammoth.extractRawText({ arrayBuffer })
+    const rawText = file.contentOverride || (await mammoth.extractRawText({ arrayBuffer })).value
     const doc = await createPdfFromText(rawText || "(empty document)", filename, cover)
     return { bytes: await doc.save(), suggestedName: stripExt(filename) + ".pdf" }
   }
 
   // XLSX/XLS/CSV -> text
   if (ext === "xlsx" || ext === "xls" || ext === "csv") {
-    const wb = XLSX.read(u8, { type: "array" })
-    let combined = ""
-    wb.SheetNames.forEach((sheetName, idx) => {
-      const sheet = wb.Sheets[sheetName]
-      const csv = XLSX.utils.sheet_to_csv(sheet)
-      combined += `Sheet ${idx + 1}: ${sheetName}\n\n${csv}\n\n`
-    })
+    let combined = file.contentOverride
+    if (!combined) {
+      const wb = XLSX.read(u8, { type: "array" })
+      combined = ""
+      wb.SheetNames.forEach((sheetName, idx) => {
+        const sheet = wb.Sheets[sheetName]
+        const csv = XLSX.utils.sheet_to_csv(sheet)
+        combined += `Sheet ${idx + 1}: ${sheetName}\n\n${csv}\n\n`
+      })
+    }
     // default to landscape for spreadsheets if not explicitly set
     const doc = await createPdfFromText(combined || "(empty spreadsheet)", filename, {
       ...cover,
@@ -85,9 +88,12 @@ export async function convertAnyToPdf(
 
   // Plain text / markdown fallback -> text
   if (mime.startsWith("text/") || ["txt", "md", "markdown"].includes(ext)) {
-    const text = new TextDecoder("utf-8").decode(u8)
-    const clean = ext === "html" || ext === "htm" ? stripHtml(text) : text
-    const doc = await createPdfFromText(clean || "(empty)", filename, cover)
+    let text = file.contentOverride
+    if (!text) {
+      const decoded = new TextDecoder("utf-8").decode(u8)
+      text = ext === "html" || ext === "htm" ? stripHtml(decoded) : decoded
+    }
+    const doc = await createPdfFromText(text || "(empty)", filename, cover)
     return { bytes: await doc.save(), suggestedName: stripExt(filename) + ".pdf" }
   }
 
