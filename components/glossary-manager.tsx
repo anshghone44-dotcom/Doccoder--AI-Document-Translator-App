@@ -28,15 +28,14 @@ export function GlossaryManager({ userId, languagePair = "en-es" }: GlossaryMana
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    const loadGlossary = async () => {
+      setLoading(true)
+      const data = await getGlossaryEntries(userId, languagePair)
+      setEntries(data)
+      setLoading(false)
+    }
     loadGlossary()
   }, [userId, languagePair])
-
-  const loadGlossary = async () => {
-    setLoading(true)
-    const data = await getGlossaryEntries(userId, languagePair)
-    setEntries(data)
-    setLoading(false)
-  }
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value

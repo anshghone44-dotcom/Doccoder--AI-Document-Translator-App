@@ -38,7 +38,7 @@ export default function DocChatbot() {
                 content: t.chatbot.welcome,
             }])
         }
-    }, [language, t.chatbot.welcome])
+    }, [language, t.chatbot.welcome, messages])
     const [input, setInput] = useState("")
     const [files, setFiles] = useState<File[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -81,7 +81,7 @@ export default function DocChatbot() {
         }
     }
 
-    const handlePlayTTS = async (text: string, index: number) => {
+    const handlePlayTTS = useCallback(async (text: string, index: number) => {
         if (playingMessageIndex === index) {
             audioRef.current?.pause()
             setPlayingMessageIndex(null)
@@ -115,7 +115,7 @@ export default function DocChatbot() {
             console.error("TTS Error:", err)
             setPlayingMessageIndex(null)
         }
-    }
+    }, [selectedVoice, playingMessageIndex])
 
     useEffect(() => {
         if (autoPlay && messages.length > 0) {
@@ -124,7 +124,7 @@ export default function DocChatbot() {
                 handlePlayTTS(lastMessage.content, messages.length - 1)
             }
         }
-    }, [messages.length, isLoading])
+    }, [autoPlay, handlePlayTTS, isLoading, messages.length, messages])
 
     const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault()
