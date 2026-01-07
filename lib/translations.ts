@@ -91,16 +91,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "Hello. I'm your AI document assistant. Upload your documents or enter a request below to get started with translation, analysis, or content generation.",
-            processingComplete: "Document processing complete. The output has been generated.",
-            error: "I'm sorry, I encountered an internal error while processing your request. Please try again in a moment or check your file format.",
-            userLabel: "You",
-            assistantLabel: "Assistant",
-            processedDocument: "Processed Document",
-            download: "DOWNLOAD",
-            processing: "Processing request...",
-            placeholder: "Send a message or upload files...",
-            architect: "Enterprise AI Document Architect",
+            welcome: "System initialized. Multimodal cognitive node ready for document synchronization, contextual analysis, and data extraction.",
+            processingComplete: "Instruction execution successful. Output buffer synchronized.",
+            error: "System fault detected. Unexpected interrupt during document processing. Re-initialize request.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "Executing instruction set...",
+            placeholder: "Input command or upload data objects...",
+            architect: "System Intelligence Core",
             transformDefaultPrompt: "Transform files to PDF",
             transformSuccessSingle: "Your PDF is ready. Download below.",
             transformSuccessMulti: "Your PDFs are ready. Download the ZIP.",
@@ -231,16 +231,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "नमस्ते। मैं आपका एआई दस्तावेज़ सहायक हूँ। अनुवाद, विश्लेषण या सामग्री निर्माण शुरू करने के लिए अपने दस्तावेज़ अपलोड करें या नीचे एक अनुरोध दर्ज करें।",
-            processingComplete: "दस्तावेज़ प्रसंस्करण पूर्ण। आउटपुट उत्पन्न हो गया है।",
-            error: "क्षमा करें, आपके अनुरोध को संसाधित करते समय मुझे एक आंतरिक त्रुटि का सामना करना पड़ा। कृपया कुछ क्षणों में पुनः प्रयास करें या अपने फ़ाइल स्वरूप की जाँच करें।",
-            userLabel: "आप",
-            assistantLabel: "सहायक",
-            processedDocument: "संसाधित दस्तावेज़",
-            download: "डाउनलोड",
-            processing: "अनुरोध संसाधित किया जा रहा है...",
-            placeholder: "संदेश भेजें या फ़ाइलें अपलोड करें...",
-            architect: "एंटरप्राइज एआई दस्तावेज़ आर्किटेक्ट",
+            welcome: "सिस्टम इनिशियलाइज्ड। दस्तावेज़ सिंक्रनाइज़ेशन, प्रासंगिक विश्लेषण और डेटा निष्कर्षण के लिए मल्टीमॉडल कॉग्निटिव नोड तैयार है।",
+            processingComplete: "निर्देश निष्पादन सफल। आउटपुट बफ़र सिंक्रनाइज़।",
+            error: "सिस्टम दोष का पता चला। दस्तावेज़ प्रसंस्करण के दौरान अप्रत्याशित व्यवधान। अनुरोध को पुनः आरंभ करें।",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "निर्देश सेट निष्पादित किया जा रहा है...",
+            placeholder: "कमांड इनपुट करें या डेटा ऑब्जेक्ट अपलोड करें...",
+            architect: "सिस्टम इंटेलिजेंस कोर",
             transformDefaultPrompt: "फ़ाइलों को पीडीएफ में बदलें",
             transformSuccessSingle: "आपकी पीडीएफ तैयार है। नीचे डाउनलोड करें।",
             transformSuccessMulti: "आपकी पीडीएफ तैयार हैं। ज़िप फ़ाइल डाउनलोड करें।",
@@ -276,7 +276,7 @@ export const translations = {
                 upload: "फाइलें अपलोड करें",
                 send: "संदेश भेजें",
                 remove: "हटाएं",
-                pdfTransformer: "पीडीएफ दस्तावेज आर्किटेक्ट"
+                pdfTransformer: "सिस्टम इंटेलिजेंस कोर"
             }
         }
     },
@@ -371,16 +371,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "नमस्कार. मी तुमचा AI दस्तऐवज सहाय्यक आहे. भाषांतर, विश्लेषण किंवा सामग्री निर्मिती सुरू करण्यासाठी तुमचे दस्तऐवज अपलोड करा किंवा खाली विनंती प्रविष्ट करा.",
-            processingComplete: "दस्तऐवज प्रक्रिया पूर्ण झाली. आउटपुट व्युत्पन्न झाले आहे.",
-            error: "क्षमस्व, तुमची विनंती प्रक्रिया करताना मला अंतर्गत त्रुटी आली. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा किंवा तुमचे फाइल स्वरूप तपासा.",
-            userLabel: "तुम्ही",
-            assistantLabel: "सहाय्यक",
-            processedDocument: "प्रक्रिया केलेला दस्तऐवज",
-            download: "डाउनलोड",
-            processing: "विनंतीवर प्रक्रिया होत आहे...",
-            placeholder: "संदेश पाठवा किंवा फायली अपलोड करा...",
-            architect: "एंटरप्राइझ एआय दस्तऐवज आर्किटेक्ट",
+            welcome: "सिस्टम इनिशियलाइज्ड। दस्तऐवज सिंक्रोनाइझेशन, संदर्भीय विश्लेषण आणि डेटा एक्स्ट्रॅक्शनसाठी मल्टीमॉडल कॉग्निटिव्ह नोड तयार आहे.",
+            processingComplete: "सूचना अंमलबजावणी यशस्वी. आउटपुट बफर सिंक्रोनाइझ.",
+            error: "सिस्टम दोष आढळला. दस्तऐवज प्रक्रियेदरम्यान अनपेक्षित व्यत्यय. विनंती पुन्हा सुरू करा.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "सूचना संच अंमलात आणला जात आहे...",
+            placeholder: "कमांड इनपुट करा किंवा डेटा ऑब्जेक्ट अपलोड करा...",
+            architect: "सिस्टम इंटेलिजेंस कोर",
             transformDefaultPrompt: "फायली पीडीएफ मध्ये रूपांतरित करा",
             transformSuccessSingle: "तुमची पीडीएफ तयार आहे. खाली डाउनलोड करा.",
             transformSuccessMulti: "तुमच्या पीडीएफ तयार आहेत. ZIP डाउनलोड करा.",
@@ -416,7 +416,7 @@ export const translations = {
                 upload: "फायली अपलोड करा",
                 send: "संदेश पाठवा",
                 remove: "काढून टाका",
-                pdfTransformer: "पीडीएफ दस्तऐवज आर्किटेक्ट"
+                pdfTransformer: "सिस्टम इंटेलिजेंस कोर"
             }
         }
     },
@@ -511,16 +511,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "হ্যালো। আমি আপনার এআই ডকুমেন্ট সহকারী। অনুবাদ, বিশ্লেষণ বা কন্টেন্ট জেনারেশন শুরু করতে আপনার ডকুমেন্ট আপলোড করুন বা নিচে একটি অনুরোধ লিখুন।",
-            processingComplete: "ডকুমেন্ট প্রসেসিং সম্পন্ন হয়েছে। আউটপুট জেনারেট করা হয়েছে।",
-            error: "আমি দুঃখিত, আপনার অনুরোধ প্রসেস করার সময় আমি একটি অভ্যন্তরীণ ত্রুটির সম্মুখীন হয়েছি। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন বা আপনার ফাইলের ফরম্যাট চেক করুন।",
-            userLabel: "আপনি",
-            assistantLabel: "সহকারী",
-            processedDocument: "প্রসেস করা ডকুমেন্ট",
-            download: "ডাউনলোড",
-            processing: "অনুরোধ প্রসেস করা হচ্ছে...",
-            placeholder: "একটি বার্তা পাঠান বা ফাইল আপলোড করুন...",
-            architect: "এন্টারপ্রাইজ এআই ডকুমেন্ট আর্কিটেক্ট",
+            welcome: "সিস্টেম ইনিশিয়ালাইজড। ডকুমেন্ট সিনক্রোনাইজেশন, কনটেক্সটুয়াল অ্যানালিসিস এবং ডেটা এক্সট্রাকশনের জন্য মাল্টিমোডাল কগনিটিভ নোড প্রস্তুত।",
+            processingComplete: "ইন্সট্রাকশন এক্সিকিউশন সফল। আউটপুট বাফার সিনক্রোনাইজড।",
+            error: "সিস্টেম ফল্ট সনাক্ত করা হয়েছে। ডকুমেন্ট প্রসেসিং এর সময় অপ্রত্যাশিত ইন্টারাপ্ট। রিকোয়েস্ট পুনরায় ইনিশিয়ালাইজ করুন।",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "ইন্সট্রাকশন সেট এক্সিকিউট করা হচ্ছে...",
+            placeholder: "কমান্ড ইনপুট করুন বা ডেটা অবজেক্ট আপলোড করুন...",
+            architect: "সিস্টেম ইন্টেলিজেন্স কোর",
             transformDefaultPrompt: "ফাইলগুলিকে পিডিএফ-এ রূপান্তর করুন",
             transformSuccessSingle: "আপনার পিডিএফ তৈরি। নিচে ডাউনলোড করুন।",
             transformSuccessMulti: "আপনার পিডিএফগুলি তৈরি। জিপ ফাইলটি ডাউনলোড করুন।",
@@ -556,7 +556,7 @@ export const translations = {
                 upload: "ফাইল আপলোড করুন",
                 send: "বার্তা পাঠান",
                 remove: "সরান",
-                pdfTransformer: "পিডিএফ ডকুমেন্ট আর্কিটেক্ট"
+                pdfTransformer: "সিস্টেম ইন্টেলিজেন্স কোর"
             }
         }
     },
@@ -651,16 +651,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "નમસ્તે. હું તમારો AI દસ્તાવેજ સહાયક છું. અનુવાદ, વિશ્લેષણ અથવા સામગ્રી નિર્માણ શરૂ કરવા માટે તમારા દસ્તાવેજો અપલોડ કરો અથવા નીચે વિનંતી દાખલ કરો.",
-            processingComplete: "દસ્તાવેજ પ્રક્રિયા પૂર્ણ થઈ. આઉટપુટ જનરેટ કરવામાં આવ્યું છે.",
-            error: "માફ કરશો, તમારી વિનંતી પર પ્રક્રિયા કરતી વખતે મને આંતરિક ભૂલનો સામનો કરવો પડ્યો છે. કૃપા કરીને થોડીવારમાં ફરી પ્રયાસ કરો અથવા તમારા ફાઇલ ફોર્મેટની તપાસ કરો.",
-            userLabel: "તમે",
-            assistantLabel: "સહાયક",
-            processedDocument: "પ્રોસેસ્ડ દસ્તાવેજ",
-            download: "ડાઉનલોડ કરો",
-            processing: "વિનંતી પર પ્રક્રિયા થઈ રહી છે...",
-            placeholder: "સંદેશ મોકલો અથવા ફાઇલો અપલોડ કરો...",
-            architect: "એન્ટરપ્રાઇઝ AI દસ્તાવેજ આર્કિટેક્ટ",
+            welcome: "સિસ્ટમ ઇનિશિયલાઇઝ્ડ। દસ્તાવેજ સિંક્રનાઇઝેશન, પ્રાસંગિક વિશ્લેષણ અને ડેટા નિષ્કર્ષણ માટે મલ્ટિમોડલ કોગ્નિટીવ નોડ તૈયાર છે.",
+            processingComplete: "સૂચના અમલીકરણ સફળ। આઉટપુટ બફર સિંક્રનાઇઝ.",
+            error: "સિસ્ટમ ખામી મળી. દસ્તાવેજ પ્રક્રિયા દરમિયાન અણધારી વિક્ષેપ. વિનંતી ફરીથી ઇનિશિયલાઇઝ કરો.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "સૂચના સમૂહ એક્ઝિક્યુટ કરવામાં આવી રહ્યો છે...",
+            placeholder: "કમાન્ડ ઇનપુટ કરો અથવા ડેટા ઓબ્જેક્ટ અપલોડ કરો...",
+            architect: "સિસ્ટમ ઇન્ટેલિજન્સ કોરો",
             transformDefaultPrompt: "ફાઇલોને PDF માં રૂપાંતરિત કરો",
             transformSuccessSingle: "તમારી PDF તૈયાર છે. નીચે ડાઉનલોડ કરો.",
             transformSuccessMulti: "તમારી PDF તૈયાર છે. ZIP ફાઇલ ડાઉનલોડ કરો.",
@@ -669,9 +669,9 @@ export const translations = {
             playVoice: "અવાજ સાંભળો",
             editBeforeDownload: "ડાઉનલોડ કરતા પહેલા ફેરફાર કરો",
             reverseTransformPlaceholder: "સૂચનાઓ દાખલ કરો અથવા નિષ્કર્ષણ ટોન પસંદ કરો...",
-            reverseTransformSuccess: "ડેટા નિષ્કર્ષણ પૂર્ણ. સમીક્ષા માટે આઉટપુટ તૈયાર.",
+            reverseTransformSuccess: " ડેટા નિષ્કર્ષણ પૂર્ણ. સમીક્ષા માટે આઉટપુટ તૈયાર.",
             recommendations: [
-                "વ્યાવસાયિક ફોર્મેટમાં રૂપાંતરિત કરો",
+                "வ્યાવસાયિક ફોર્મેટમાં રૂપાંતરિત કરો",
                 "માત્ર ટેક્સ્ટ કાઢો",
                 "ફોર્મેટિંગ જાળવી રાખો",
                 "વાંચનક્ષમતા માટે ઑપ્ટિમાઇઝ કરો",
@@ -696,7 +696,7 @@ export const translations = {
                 upload: "ફાઇલો અપલોડ કરો",
                 send: "સંદેશ મોકલો",
                 remove: "દૂર કરો",
-                pdfTransformer: "પીડીએફ દસ્તાવેજ આર્કિটেક્ટ"
+                pdfTransformer: "સિસ્ટમ ઇન્ટેલિજન્સ કોરો"
             }
         }
     },
@@ -791,16 +791,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "Bonjour. Je suis votre assistant documentaire IA. Téléchargez vos documents ou saisissez une requête ci-dessous pour commencer la traduction, l'analyse ou la génération de contenu.",
-            processingComplete: "Traitement du document terminé. Le résultat a été généré.",
-            error: "Je suis désolé, j'ai rencontré une erreur interne lors du traitement de votre demande. Veuillez réessayer dans un instant ou vérifier le format de votre fichier.",
-            userLabel: "Vous",
-            assistantLabel: "Assistant",
-            processedDocument: "Document traité",
-            download: "TÉLÉCHARGER",
-            processing: "Traitement de la demande...",
-            placeholder: "Envoyez un message ou téléchargez des fichiers...",
-            architect: "Enterprise AI Document Architect",
+            welcome: "Système initialisé. Nœud cognitif multimodal prêt pour la synchronisation documentaire, l'analyse contextuelle et l'extraction de données.",
+            processingComplete: "Exécution de l'instruction réussie. Tampon de sortie synchronisé.",
+            error: "Défaut système détecté. Interruption inattendue pendant le traitement du document. Ré-initialisez la requête.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "Exécution du jeu d'instructions...",
+            placeholder: "Saisissez une commande ou téléchargez des objets de données...",
+            architect: "Cœur d'Intelligence Système",
             transformDefaultPrompt: "Transformer les fichiers en PDF",
             transformSuccessSingle: "Votre PDF est prêt. Téléchargez-le ci-dessous.",
             transformSuccessMulti: "Vos PDF sont prêts. Téléchargez le ZIP.",
@@ -836,7 +836,7 @@ export const translations = {
                 upload: "Télécharger des fichiers",
                 send: "Envoyer le message",
                 remove: "Supprimer",
-                pdfTransformer: "Architecte de documents PDF"
+                pdfTransformer: "Cœur d'Intelligence Système"
             }
         }
     },
@@ -931,16 +931,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "您好。我是您的 AI 文档助手。上传您的文档或在下面输入请求，开始翻译、分析或内容生成。",
-            processingComplete: "文档处理完成。输出已生成。",
-            error: "抱歉，处理您的请求时遇到了内部错误。请稍后重试或检查您的文件格式。",
-            userLabel: "您",
-            assistantLabel: "助手",
-            processedDocument: "处理完成的文档",
-            download: "下载",
-            processing: "正在处理请求...",
-            placeholder: "发送消息或上传文件...",
-            architect: "企业级 AI 文档架构师",
+            welcome: "系统初始化。多模态认知节点已就绪，可进行文档同步、上下文分析和数据提取。",
+            processingComplete: "指令执行成功。输出缓冲区已同步。",
+            error: "检测到系统故障。文档处理过程中出现意外中断。请重新初始化请求。",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "系统正在执行指令集...",
+            placeholder: "输入指令或上传数据对象...",
+            architect: "系统智能核心",
             transformDefaultPrompt: "将文件转换为 PDF",
             transformSuccessSingle: "您的 PDF 已准备就绪。请在下方下载。",
             transformSuccessMulti: "您的 PDF 已准备就绪。请下载 ZIP 文件。",
@@ -976,7 +976,7 @@ export const translations = {
                 upload: "上传文件",
                 send: "发送消息",
                 remove: "删除",
-                pdfTransformer: "企业级 AI 文档架构师"
+                pdfTransformer: "系统智能核心"
             }
         }
     },
@@ -1071,16 +1071,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "こんにちは。私はあなたのAIドキュメントアシスタントです。ドキュメントをアップロードするか、以下にリクエストを入力して、翻訳、分析、またはコンテンツ生成を開始してください。",
-            processingComplete: "ドキュメントの処理が完了しました。出力が生成されました。",
-            error: "申し訳ありません。リクエストの処理中に内部エラーが発生しました。しばらくしてからもう一度お試しいただくか、ファイル形式を確認してください。",
-            userLabel: "あなた",
-            assistantLabel: "アシスタント",
-            processedDocument: "処理済みドキュメント",
-            download: "ダウンロード",
-            processing: "リクエストを処理中...",
-            placeholder: "メッセージを送信するかファイルをアップロードしてください...",
-            architect: "エンタープライズAIドキュメントアーキテクト",
+            welcome: "システム初期化中。マルチモーダル認知ノードがドキュメントの同期、文脈分析、データ抽出の準備を完了しました。",
+            processingComplete: "命令実行成功。出力バッファを同期しました。",
+            error: "システム障害を検出。ドキュメント処理中に予期しない中断が発生。リクエストを再初期化してください。",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "命令セットを実行中...",
+            placeholder: "コマンドを入力するか、データオブジェクトをアップロードしてください...",
+            architect: "システム・インテリジェンス・コア",
             transformDefaultPrompt: "ファイルをPDFに変換",
             transformSuccessSingle: "PDFの準備ができました。以下からダウンロードしてください。",
             transformSuccessMulti: "PDFの準備ができました。ZIPファイルをダウンロードしてください。",
@@ -1099,10 +1099,10 @@ export const translations = {
                 "ファイルサイズを圧縮",
             ],
             tones: {
-                formal: "専門的で構造化された",
-                casual: "フレンドリーで会話的な",
-                legal: "正確で法的遵守",
-                academic: "学術的で十分に研究された",
+                formal: "プロフェッショナルかつ構造化",
+                casual: "フレンドリーかつ会話的",
+                legal: "正確かつ法的遵守",
+                academic: "学術的かつ十分に研究された",
             },
             pdfOnly: "リバース変換はPDFファイルのみをサポートしています。",
             secureConnection: "安全な接続",
@@ -1116,7 +1116,7 @@ export const translations = {
                 upload: "ファイルをアップロード",
                 send: "メッセージを送信",
                 remove: "削除",
-                pdfTransformer: "エンタープライズAIドキュメントアーキテクト"
+                pdfTransformer: "システム・インテリジェンス・コア"
             }
         }
     },
@@ -1211,16 +1211,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "Hallo. Ich bin Ihr KI-Dokumentenassistent. Laden Sie Ihre Dokumente hoch oder geben Sie unten eine Anfrage ein, um mit der Übersetzung, Analyse oder Content-Erstellung zu beginnen.",
-            processingComplete: "Dokumentverarbeitung abgeschlossen. Die Ausgabe wurde generiert.",
-            error: "Es tut mir leid, bei der Verarbeitung Ihrer Anfrage ist ein interner Fehler aufgetreten. Bitte versuchen Sie es in einem Augenblick erneut oder überprüfen Sie Ihr Dateiformat.",
-            userLabel: "Sie",
-            assistantLabel: "Assistent",
-            processedDocument: "Verarbeitetes Dokument",
-            download: "HERUNTERLADEN",
-            processing: "Anfrage wird verarbeitet...",
-            placeholder: "Nachricht senden oder Dateien hochladen...",
-            architect: "Enterprise KI-Dokumentenarchitekt",
+            welcome: "System initialisiert. Multimodaler kognitiver Knoten bereit für Dokumentensynchronisation, Kontextanalyse und Datenextraktion.",
+            processingComplete: "Befehlsausführung erfolgreich. Ausgabepuffer synchronisiert.",
+            error: "Systemfehler erkannt. Unerwartete Unterbrechung während der Dokumentenverarbeitung. Anfrage neu initialisieren.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "Befehlssatz wird ausgeführt...",
+            placeholder: "Befehl eingeben oder Datenobjekt hochladen...",
+            architect: "System-Intelligenz-Kern",
             transformDefaultPrompt: "Dateien in PDF umwandeln",
             transformSuccessSingle: "Ihr PDF ist bereit. Laden Sie es unten herunter.",
             transformSuccessMulti: "Ihre PDFs sind bereit. Laden Sie die ZIP-Datei herunter.",
@@ -1256,7 +1256,7 @@ export const translations = {
                 upload: "Dateien hochladen",
                 send: "Nachricht senden",
                 remove: "Entfernen",
-                pdfTransformer: "Enterprise KI-Dokumentenarchitekt"
+                pdfTransformer: "System-Intelligenz-Kern"
             }
         }
     },
@@ -1351,16 +1351,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "Hola. Soy su asistente de documentos IA. Suba sus documentos o ingrese una solicitud a continuación para comenzar con la traducción, el análisis o la generación de contenido.",
-            processingComplete: "Procesamiento de documentos completo. El resultado ha sido generado.",
-            error: "Lo siento, encontré un error interno al procesar su solicitud. Por favor, inténtelo de nuevo en un momento o verifique el formato de su archivo.",
-            userLabel: "Usted",
-            assistantLabel: "Asistente",
-            processedDocument: "Documento procesado",
-            download: "DESCARGAR",
-            processing: "Procesando solicitud...",
-            placeholder: "Envíe un mensaje o suba archivos...",
-            architect: "Arquitecto de Documentos IA Enterprise",
+            welcome: "Sistema inicializado. Nodo cognitivo multimodal listo para la sincronización de documentos, el análisis contextual y la extracción de datos.",
+            processingComplete: "Ejecución de instrucción exitosa. Búfer de salida sincronizado.",
+            error: "Falla del sistema detectada. Interrupción inesperada durante el procesamiento del documento. Reinicialice la solicitud.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "Ejecutando conjunto de instrucciones...",
+            placeholder: "Ingrese comando o cargue objetos de datos...",
+            architect: "Núcleo de Inteligencia del Sistema",
             transformDefaultPrompt: "Transformar archivos a PDF",
             transformSuccessSingle: "Su PDF está listo. Descárguelo a continuación.",
             transformSuccessMulti: "Sus PDF están listos. Descargue el archivo ZIP.",
@@ -1374,7 +1374,7 @@ export const translations = {
                 "Convertir a formato profesional",
                 "Extraer solo texto",
                 "Preservar formato",
-                "Optimizar para legibilidad",
+                "Optimiser para legibilidad",
                 "Eliminar datos sensibles",
                 "Comprimir tamaño de archivo",
             ],
@@ -1396,7 +1396,7 @@ export const translations = {
                 upload: "Subir archivos",
                 send: "Enviar mensaje",
                 remove: "Eliminar",
-                pdfTransformer: "Arquitecto de Documentos IA Enterprise"
+                pdfTransformer: "Núcleo de Inteligencia del Sistema"
             }
         }
     },
@@ -1491,16 +1491,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "안녕하세요. 저는 AI 문서 비서입니다. 문서를 업로드하거나 아래에 요청을 입력하여 번역, 분석 또는 콘텐츠 생성을 시작하세요.",
-            processingComplete: "문서 처리가 완료되었습니다. 결과물이 생성되었습니다.",
-            error: "죄송합니다. 요청을 처리하는 동안 내부 오류가 발생했습니다. 잠시 후 다시 시도하거나 파일 형식을 확인해 주세요.",
-            userLabel: "사용자",
-            assistantLabel: "비서",
-            processedDocument: "처리된 문서",
-            download: "다운로드",
-            processing: "요청 처리 중...",
-            placeholder: "메시지를 보내거나 파일을 업로드하세요...",
-            architect: "엔터프라이즈 AI 문서 설계자",
+            welcome: "시스템 초기화됨. 문서 동기화, 문맥 분석 및 데이터 추출을 위한 멀티모달 인지 노드가 준비되었습니다.",
+            processingComplete: "지침 실행 성공. 출력 버퍼가 동기화되었습니다.",
+            error: "시스템 장애 감지. 문서 처리 중 예기치 않은 중단 발생. 요청을 재초기화하십시오.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "지침 세트 실행 중...",
+            placeholder: "명령어를 입력하거나 데이터 객체를 업로드하십시오...",
+            architect: "시스템 인텔리전스 코어",
             transformDefaultPrompt: "파일을 PDF로 변환",
             transformSuccessSingle: "PDF가 준비되었습니다. 아래에서 다운로드하세요.",
             transformSuccessMulti: "PDF가 준비되었습니다. ZIP 파일을 다운로드하세요.",
@@ -1536,7 +1536,7 @@ export const translations = {
                 upload: "파일 업로드",
                 send: "메시지 전송",
                 remove: "제거",
-                pdfTransformer: "엔터프라이즈 AI 문서 설계자"
+                pdfTransformer: "시스템 인텔리전스 코어"
             }
         }
     },
@@ -1631,16 +1631,16 @@ export const translations = {
             }
         },
         chatbot: {
-            welcome: "வணக்கம். நான் உங்கள் AI ஆவண உதவியாளர். மொழிபெயர்ப்பு, பகுப்பாய்வு அல்லது உள்ளடக்க உருவாக்கத்தைத் தொடங்க உங்கள் ஆவணங்களைப் பதிவேற்றவும் அல்லது கீழே ஒரு கோரிக்கையை உள்ளிடவும்.",
-            processingComplete: "ஆவணச் செயலாக்கம் முடிந்தது. வெளியீடு உருவாக்கப்பட்டது.",
-            error: "மன்னிக்கவும், உங்கள் கோரிக்கையைச் செயலாக்கும்போது எனக்கு ஒரு உள் பிழை ஏற்பட்டது. சிறிது நேரத்தில் மீண்டும் முயற்சிக்கவும் அல்லது உங்கள் கோப்பு வடிவமைப்பைச் சரிபார்க்கவும்.",
-            userLabel: "நீங்கள்",
-            assistantLabel: "உதவியாளர்",
-            processedDocument: "செயலாக்கப்பட்ட ஆவணம்",
-            download: "பதிவிறக்கம்",
-            processing: "கோரிக்கை செயலாக்கப்படுகிறது...",
-            placeholder: "செய்தியை அனுப்பவும் அல்லது கோப்புகளைப் பதிவேற்றவும்...",
-            architect: "எண்டர்பிரைஸ் AI ஆவணக் கலைஞர்",
+            welcome: "சிஸ்டம் துவக்கப்பட்டது. ஆவண ஒத்திசைவு, சூழல் பகுப்பாய்வு மற்றும் தரவு பிரித்தெடுத்தலுக்கு மல்டிமாடல் அறிவாற்றல் முனை தயாராக உள்ளது.",
+            processingComplete: "அறிவுறுத்தல் செயல்படுத்தல் வெற்றி. வெளியீட்டு தாங்கல் ஒத்திசைக்கப்பட்டது.",
+            error: "சிஸ்டம் பிழை கண்டறியப்பட்டது. ஆவணச் செயலாக்கத்தின் போது எதிர்பாராத இடையூறு. கோரிக்கையை மீண்டும் தொடங்கவும்.",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
+            processing: "அறிவுறுத்தல் தொகுப்பு செயல்படுத்தப்படுகிறது...",
+            placeholder: "கட்டளையை உள்ளிடவும் அல்லது தரவு பொருட்களை பதிவேற்றவும்...",
+            architect: "சிஸ்டம் நுண்ணறிவு கோர்",
             transformDefaultPrompt: "கோப்புகளை PDF ஆக மாற்றவும்",
             transformSuccessSingle: "உங்கள் PDF தயாராக உள்ளது. கீழே பதிவிறக்கவும்.",
             transformSuccessMulti: "உங்கள் PDFகள் தயாராக உள்ளன. ZIP கோப்பைப் பதிவேற்றவும்.",
@@ -1676,7 +1676,7 @@ export const translations = {
                 upload: "கோப்புகளைப் பதிவேற்றவும்",
                 send: "செய்தி அனுப்பவும்",
                 remove: "அகற்று",
-                pdfTransformer: "எண்டர்பிரைஸ் AI ஆவணக் கலைஞர்"
+                pdfTransformer: "சிஸ்டம் நுண்ணறிவு கோர்"
             }
         }
     },
@@ -1774,13 +1774,13 @@ export const translations = {
             welcome: "నమస్కారం. నేను మీ AI డాక్యుమెంట్ అసిస్టెంట్. అనువాదం, విశ్లేషణ లేదా కంటెంట్ జనరేషన్ ప్రారంభించడానికి మీ డాక్యుమెంట్లను అప్‌లోడ్ చేయండి లేదా కింద అభ్యర్థనను నమోదు చేయండి.",
             processingComplete: "డాక్యుమెంట్ ప్రాసెసింగ్ పూర్తయింది. అవుట్‌పుట్ జనరేట్ చేయబడింది.",
             error: "క్షమించండి, మీ అభ్యర్థనను ప్రాసెస్ చేస్తున్నప్పుడు నాకు అంతర్గత లోపం ఏర్పడింది. దయచేసి కాసేపటి తర్వాత మళ్ళీ ప్రయత్నించండి లేదా మీ ఫైల్ ఫార్మాట్‌ను తనిఖీ చేయండి.",
-            userLabel: "మీరు",
-            assistantLabel: "అసిస్టెంట్",
-            processedDocument: "ప్రాసెస్ చేయబడిన డాక్యుమెంట్",
-            download: "డౌన్‌లోడ్",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
             processing: "అభ్యర్థన ప్రాసెస్ చేయబడుతోంది...",
             placeholder: "సందేశాన్ని పంపండి లేదా ఫైళ్లను అప్‌లోడ్ చేయండి...",
-            architect: "ఎంటర్‌ప్రైజ్ AI డాక్యుమెంట్ ఆర్కిటెక్ట్",
+            architect: "సిస్టమ్ ఇంటెలిజెన్స్ కోర్",
             transformDefaultPrompt: "ఫైళ్లను PDF కి మార్చండి",
             transformSuccessSingle: "మీ PDF సిద్ధంగా ఉంది. కింద డౌన్‌లోడ్ చేసుకోండి.",
             transformSuccessMulti: "మీ PDFలు సిద్ధంగా ఉన్నాయి. ZIP ఫైల్‌ను డౌన్‌లోడ్ చేసుకోండి.",
@@ -1816,7 +1816,7 @@ export const translations = {
                 upload: "ఫైళ్ళను అప్‌లోడ్ చేయండి",
                 send: "సందేశాన్ని పంపండి",
                 remove: "తొలగించండి",
-                pdfTransformer: "ఎంటర్‌ప్రైజ్ AI డాక్యుమెంట్ ఆర్కిటెక్ట్"
+                pdfTransformer: "సిస్టమ్ ఇంటెలిజెన్స్ కోర్"
             }
         }
     },
@@ -1914,13 +1914,13 @@ export const translations = {
             welcome: "ನಮಸ್ಕಾರ. ನಾನು ನಿಮ್ಮ AI ದಾಖಲೆ ಸಹಾಯಕ. ಅನುವಾದ, ವಿಶ್ಲೇಷಣೆ ಅಥವಾ ವಿಷಯ ರಚನೆಯನ್ನು ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ದಾಖಲೆಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಅಥವಾ ಕೆಳಗೆ ವಿನಂತಿಯನ್ನು ನಮೂದಿಸಿ.",
             processingComplete: "ದಾಖಲೆ ಪ್ರಕ್ರಿಯೆ ಪೂರ್ಣಗೊಂಡಿದೆ. ಔಟ್‌ಪುಟ್ ರಚಿಸಲಾಗಿದೆ.",
             error: "ಕ್ಷಮಿಸಿ, ನಿಮ್ಮ ವಿನಂತಿಯನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವಾಗ ನನಗೆ ಆಂತರಿಕ ದೋಷ ಉಂಟಾಗಿದೆ. ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ನಿಮ್ಮ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ.",
-            userLabel: "ನೀವು",
-            assistantLabel: "ಸಹಾಯಕ",
-            processedDocument: "ಸಂಸ್ಕರಿಸಿದ ದಾಖಲೆ",
-            download: "ಡೌನ್‌ಲೋಡ್",
+            userLabel: "USER",
+            assistantLabel: "SYSTEM",
+            processedDocument: "SYNC_DATA_OBJECT",
+            download: "FETCH_OUTPUT",
             processing: "ವಿನಂತಿಯನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
             placeholder: "ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಿ ಅಥವಾ ಫೈಲ್‌ಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ...",
-            architect: "ಎಂಟರ್‌ಪ್ರೈಸ್ AI ಡಾಕ್ಯುಮೆಂಟ್ ಆರ್ಕಿಟೆಕ್ಟ್",
+            architect: "ಸಿಸ್ಟಮ್ ಇಂಟೆಲಿಜೆನ್ಸ್ ಕೋರ್",
             transformDefaultPrompt: "ಫೈಲ್‌ಗಳನ್ನು PDF ಗೆ ಪರಿವರ್ತಿಸಿ",
             transformSuccessSingle: "ನಿಮ್ಮ PDF ಸಿದ್ಧವಾಗಿದೆ. ಕೆಳಗೆ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ.",
             transformSuccessMulti: "ನಿಮ್ಮ PDF ಗಳು ಸಿದ್ಧವಾಗಿವೆ. ZIP ಫೈಲ್ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ.",
@@ -1956,7 +1956,7 @@ export const translations = {
                 upload: "ಫೈಲ್‌ಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
                 send: "ಸಂದೇಶ ಕಳುಹಿಸಿ",
                 remove: "ತೆಗೆದುಹಾಕಿ",
-                pdfTransformer: "ಎಂಟರ್‌ಪ್ರೈಸ್ AI ಡಾಕ್ಯುಮೆಂಟ್ ಆರ್ಕಿಟೆಕ್ಟ್"
+                pdfTransformer: "ಸಿಸ್ಟಮ್ ಇಂಟೆಲಿಜೆನ್ಸ್ ಕೋರ್"
             }
         }
     }

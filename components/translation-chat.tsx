@@ -159,7 +159,7 @@ export default function TranslationChat() {
                     </div>
                     <div>
                         <h3 className="text-sm font-bold tracking-tight text-foreground uppercase">Translation Engine</h3>
-                        <p className="text-[10px] text-muted-foreground/60 font-medium uppercase tracking-widest">Enterprise Protocol v4.2</p>
+                        <p className="text-[10px] text-muted-foreground/60 font-medium uppercase tracking-widest">Cognitive Protocol v4.2</p>
                     </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
@@ -232,7 +232,7 @@ export default function TranslationChat() {
                         <div className="flex items-start max-w-[80%]">
                             <div className="glass px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-3">
                                 <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                                <span className="text-sm text-muted-foreground font-medium">Doccoder is thinking...</span>
+                                <span className="text-sm text-muted-foreground font-medium">SYSTEM is processing...</span>
                             </div>
                         </div>
                     )

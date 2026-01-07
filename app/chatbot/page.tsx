@@ -23,26 +23,26 @@ export default function ChatbotPage() {
                     <div className="flex flex-col items-center text-center space-y-6 mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-[10px] font-bold tracking-widest uppercase text-foreground/70 animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <Bot className="h-3 w-3 text-primary" />
-                            Enterprise AI Assistant
+                            Advanced Intelligence Node
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                            Enterprise <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/80 to-foreground/40">Context Engine</span>
+                            Multimodal <span className="text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground/80 to-foreground/40">Cognitive Engine</span>
                         </h1>
 
                         <p className="max-w-3xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500 font-medium">
-                            Analyze, translate, and interact with your documents using advanced AI models. Optimized for professional accuracy and contextual integrity across multiple file formats.
+                            High-throughput document processing system with contextual neural mapping. Optimized for high-fidelity data extraction and cross-format linguistic synchronization.
                         </p>
 
                         <div className="flex flex-wrap justify-center items-center gap-6 pt-4 animate-in fade-in duration-1000 delay-700 opacity-60">
                             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
-                                <Shield className="h-4 w-4" /> Secure Pipeline
+                                <Shield className="h-4 w-4" /> Secure Protocol
                             </div>
                             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
-                                <Bot className="h-4 w-4" /> Technical Accuracy
+                                <Bot className="h-4 w-4" /> Neural Accuracy
                             </div>
                             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
-                                <Sparkles className="h-4 w-4" /> Multi-LLM Support
+                                <Sparkles className="h-4 w-4" /> Multimodal Ops
                             </div>
                         </div>
                     </div>

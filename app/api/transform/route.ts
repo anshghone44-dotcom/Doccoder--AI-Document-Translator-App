@@ -76,6 +76,25 @@ export async function POST(req: NextRequest) {
     return new Response("No files provided.", { status: 400 })
   }
 
+  function getFinalModel(requestedModel: string) {
+    const modelMapping: Record<string, string> = {
+      "openai/gpt-5": "gpt-4o",
+      "xai/grok-4": "gpt-4o",
+      "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+      "openai/gpt-4-mini": "gpt-4o-mini",
+      "xai/grok-3": "gpt-4o",
+      "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
+    }
+
+    const modelId = requestedModel && requestedModel.includes('/') ? requestedModel.split('/')[1] : (requestedModel || "gpt-4o-mini")
+    const mappedModel = modelMapping[requestedModel] || modelId
+
+    if (requestedModel && (requestedModel.startsWith('anthropic') || requestedModel.startsWith('claude'))) {
+      return anthropic(mappedModel)
+    }
+    return openai(mappedModel)
+  }
+
   async function getCoverLineFor(filename: string, languageCode: string) {
     if (!prompt.trim()) return undefined
 
@@ -84,30 +103,16 @@ export async function POST(req: NextRequest) {
     try {
       console.log("[v0] Generating AI title for:", filename, "using model:", aiModel)
 
-      const modelMapping: Record<string, string> = {
-        "openai/gpt-5": "gpt-4o",
-        "xai/grok-4": "gpt-4o",
-        "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-        "openai/gpt-4-mini": "gpt-4o-mini",
-        "xai/grok-3": "gpt-4o",
-        "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
-      }
-
-      const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
-      const mappedModel = modelMapping[aiModel] || modelId
-      const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
-
       const { text } = await generateText({
-        model: finalModel,
+        model: getFinalModel(aiModel),
         prompt: `Create a technically precise, concise one-line title for the document "${filename}".
 
-User's goal for this document: ${prompt}
+User's requested transformation goal: ${prompt}
 
-CRITICAL: Return the title ENTIRELY in ${languageFull}.
+CRITICAL: If the user explicitly mentions a target language in their goal (e.g. "translate to Marathi"), prioritize that language. Otherwise, return the title in ${languageFull}.
 
 Guidelines:
-- Analyze the document purpose and content architecture.
-- Use professional, enterprise-grade terminology.
+- Use professional, system-grade technical terminology.
 - Keep the title descriptive yet under 60 characters.
 - Return ONLY the title text. No quotes.
 
@@ -124,33 +129,26 @@ Title:`,
   }
 
   async function translateContent(text: string, targetLanguage: string) {
-    if (!text || !text.trim() || targetLanguage === "en") return text
-
-    const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
+    if (!text || !text.trim()) return text
 
     try {
-      console.log("[v0] Translating content to:", languageFull)
+      const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
-      const modelMapping: Record<string, string> = {
-        "openai/gpt-5": "gpt-4o",
-        "xai/grok-4": "gpt-4o",
-        "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-        "openai/gpt-4-mini": "gpt-4o-mini",
-        "xai/grok-3": "gpt-4o",
-        "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
-      }
-
-      const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
-      const mappedModel = modelMapping[aiModel] || modelId
-      const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
+      console.log("[v0] Translating content. Preferred lang:", languageFull)
 
       const { text: translated } = await generateText({
-        model: finalModel,
-        prompt: `You are a professional enterprise translator. Translate the following text into ${languageFull}.
+        model: getFinalModel(aiModel),
+        prompt: `You are a high-performance technical translation node. Translate the following data.
+        
+        USER GOAL: ${prompt}
+        TARGET LANGUAGE PREFERENCE: ${languageFull}
+
+        CRITICAL: If the user's goal specifies a language (e.g. "translate to Marathi"), use that. Otherwise use the preference: ${languageFull}.
+
         Return ONLY the translated text. Maintain formatting and technical accuracy.
 
         TEXT TO TRANSLATE:
-        ${text.slice(0, 15000)} // Safety limit for now
+        ${text.slice(0, 15000)}
 
         TRANSLATION:`,
         temperature: 0.3,
@@ -197,10 +195,11 @@ Title:`,
 
       // Conversion with translated content if available
       const { bytes, suggestedName } = await convertAnyToPdf({
-        ...f,
-        arrayBuffer: async () => arrayBuffer, // original for image/pdf
-        contentOverride: processedContent // new field for translated text
-      } as any, {
+        name: f.name,
+        type: f.type,
+        arrayBuffer: async () => arrayBuffer,
+        contentOverride: processedContent
+      }, {
         coverLine,
         templateId: template.id,
         orientation: template.orientation,
@@ -221,17 +220,12 @@ Title:`,
   async function generateSuccessMessage(targetLanguage: string) {
     const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
     try {
-      const modelMapping: Record<string, string> = {
-        "openai/gpt-5": "gpt-4o",
-        "openai/gpt-4-mini": "gpt-4o-mini",
-      }
-      const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
-      const mappedModel = modelMapping[aiModel] || modelId
-      const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
-
       const { text } = await generateText({
-        model: finalModel,
-        prompt: `Generate a concise, professional success message in ${languageFull} confirming that the user's document has been successfully processed and translated.
+        model: getFinalModel(aiModel),
+        prompt: `Generate a concise, technical success confirmation in ${languageFull} verifying that the data object has been successfully synchronized and processed.
+        
+        CRITICAL: If the user's prompt "${prompt}" asked for a specific language translation, provide this confirmation in that language.
+        
         Keep it under 150 characters. Return ONLY the message text.`,
         temperature: 0.7,
       })

@@ -234,7 +234,7 @@ export default function PrivacyPage() {
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• GDPR compliance assistance</li>
                     <li>• Regular security audits</li>
-                    <li>• Enterprise-grade data handling</li>
+                    <li>• System-grade data handling</li>
                     <li>• Custom security requirements</li>
                   </ul>
                 </div>
@@ -242,7 +242,7 @@ export default function PrivacyPage() {
 
               <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg">
                 <p className="text-sm text-purple-800 dark:text-purple-200">
-                  <strong>For Businesses:</strong> Contact our enterprise team at enterprise@doccoder.com for special business privacy arrangements.
+                  <strong>For Organizations:</strong> Contact our systems team at systems@doccoder.com for special organizational privacy arrangements.
                 </p>
               </div>
             </CardContent>
@@ -345,7 +345,7 @@ export default function PrivacyPage() {
 
               <div className="bg-primary/5 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <strong>Business Users:</strong> For enterprise privacy questions or custom agreements, email enterprise@doccoder.com
+                  <strong>Organization Users:</strong> For systems privacy questions or custom agreements, email systems@doccoder.com
                 </p>
               </div>
             </CardContent>

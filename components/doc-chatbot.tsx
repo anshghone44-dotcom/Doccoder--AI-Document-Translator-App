@@ -218,14 +218,27 @@ export default function DocChatbot() {
 
     return (
         <div className="flex flex-col h-[700px] w-full max-w-5xl mx-auto bg-card/60 backdrop-blur-3xl rounded-3xl overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] relative group/chatbot">
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0" />
+
             {/* Header / Control Bar */}
-            <div className="p-4 border-b border-border/10 bg-background/40 backdrop-blur-xl flex items-center justify-between">
+            <div className="p-4 border-b border-border/10 bg-background/40 backdrop-blur-xl flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
                         <Bot className="h-4 w-4 text-primary" />
                     </div>
-                    <div>
+                    <div className="flex items-center gap-3">
                         <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">{t.chatbot.architect}</h2>
+                        <div className="hidden md:flex items-center gap-3 text-[9px] font-mono text-muted-foreground/40 border-l border-border/10 pl-3">
+                            <div className="flex items-center gap-1">
+                                <span className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
+                                NODE_01: ACTIVE
+                            </div>
+                            <div className="flex gap-2">
+                                <span>LATENCY: 14MS</span>
+                                <span>UPTIME: 99.9%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -249,7 +262,7 @@ export default function DocChatbot() {
             </div>
 
             {/* Messages Area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar scroll-smooth">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar scroll-smooth relative z-10">
                 {messages.map((m, idx) => (
                     <div
                         key={idx}
@@ -272,8 +285,8 @@ export default function DocChatbot() {
                             className={cn(
                                 "px-8 py-5 rounded-2xl text-sm leading-relaxed relative group transition-all duration-300",
                                 m.role === "user"
-                                    ? "bg-foreground text-background font-medium"
-                                    : "bg-background/80 backdrop-blur-md border border-border/50 text-foreground"
+                                    ? "bg-foreground text-background font-medium shadow-2xl"
+                                    : "bg-background/80 backdrop-blur-md border border-border/50 text-foreground shadow-sm hover:border-primary/30"
                             )}
                         >
                             <div className="whitespace-pre-wrap">{m.content}</div>
@@ -352,7 +365,7 @@ export default function DocChatbot() {
             </div>
 
             {/* Input / Upload Area */}
-            <div className="p-8 border-t border-white/5 bg-background/40 backdrop-blur-xl">
+            <div className="p-8 border-t border-white/5 bg-background/40 backdrop-blur-xl relative z-10">
                 {files.length > 0 && (
                     <div className="mb-4 flex flex-wrap gap-2 animate-in slide-in-from-bottom-2 duration-300">
                         {files.map((file, i) => (
