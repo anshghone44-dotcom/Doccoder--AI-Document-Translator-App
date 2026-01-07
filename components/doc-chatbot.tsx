@@ -26,19 +26,22 @@ export default function DocChatbot() {
 
     // Update initial message when language changes and only welcome message exists
     useEffect(() => {
-        if (messages.length === 0) {
-            setMessages([{
-                role: "assistant",
-                content: t.chatbot.welcome,
-            }])
-        } else if (messages.length === 1 && messages[0].role === "assistant") {
-            // Update the single welcome message if it's the only one
-            setMessages([{
-                role: "assistant",
-                content: t.chatbot.welcome,
-            }])
-        }
-    }, [language, t.chatbot.welcome, messages])
+        setMessages(prev => {
+            if (prev.length === 0) {
+                return [{
+                    role: "assistant",
+                    content: t.chatbot.welcome,
+                }]
+            }
+            if (prev.length === 1 && prev[0].role === "assistant" && prev[0].content !== t.chatbot.welcome) {
+                return [{
+                    role: "assistant",
+                    content: t.chatbot.welcome,
+                }]
+            }
+            return prev
+        })
+    }, [t.chatbot.welcome])
     const [input, setInput] = useState("")
     const [files, setFiles] = useState<File[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -55,6 +58,12 @@ export default function DocChatbot() {
     const scrollRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const audioRef = useRef<HTMLAudioElement | null>(null)
+    const playingMessageIndexRef = useRef<number | null>(null)
+
+    // Sync ref with state
+    useEffect(() => {
+        playingMessageIndexRef.current = playingMessageIndex
+    }, [playingMessageIndex])
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -82,7 +91,7 @@ export default function DocChatbot() {
     }
 
     const handlePlayTTS = useCallback(async (text: string, index: number) => {
-        if (playingMessageIndex === index) {
+        if (playingMessageIndexRef.current === index) {
             audioRef.current?.pause()
             setPlayingMessageIndex(null)
             return
@@ -115,7 +124,7 @@ export default function DocChatbot() {
             console.error("TTS Error:", err)
             setPlayingMessageIndex(null)
         }
-    }, [selectedVoice, playingMessageIndex])
+    }, [selectedVoice])
 
     useEffect(() => {
         if (autoPlay && messages.length > 0) {
@@ -124,7 +133,8 @@ export default function DocChatbot() {
                 handlePlayTTS(lastMessage.content, messages.length - 1)
             }
         }
-    }, [autoPlay, handlePlayTTS, isLoading, messages.length, messages])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [autoPlay, handlePlayTTS, isLoading, messages.length])
 
     const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault()

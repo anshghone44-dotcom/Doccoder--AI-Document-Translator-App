@@ -22,7 +22,7 @@ export default function PrivacyPage() {
             Your Privacy Matters
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            We built Doccoder to help you translate documents quickly and easily. Here's everything you need to know about how we protect your information.
+            We built Doccoder to help you translate documents quickly and easily. Here&apos;s everything you need to know about how we protect your information.
           </p>
         </div>
 
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Doccoder is an AI-powered tool that translates documents between different languages. We use advanced artificial intelligence to understand and translate your text while keeping your document's original formatting.
+                Doccoder is an AI-powered tool that translates documents between different languages. We use advanced artificial intelligence to understand and translate your text while keeping your document&apos;s original formatting.
               </p>
               <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border-l-4 border-blue-500">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Your data security is extremely important to us. Here's how we protect it:
+                Your data security is extremely important to us. Here&apos;s how we protect it:
               </p>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -192,7 +192,7 @@ export default function PrivacyPage() {
                 <div className="p-4 bg-muted/50 rounded-lg">
                   <h4 className="font-semibold mb-2">🔄 Temporary Processing</h4>
                   <p className="text-sm text-muted-foreground">
-                    Your documents are processed only when you request a translation. We don't keep them longer than necessary to complete your request.
+                    Your documents are processed only when you request a translation. We don&apos;t keep them longer than necessary to complete your request.
                   </p>
                 </div>
 
@@ -323,7 +323,7 @@ export default function PrivacyPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Have questions about your privacy or want to exercise your rights? We're here to help!
+                Have questions about your privacy or want to exercise your rights? We&apos;re here to help!
               </p>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -358,7 +358,7 @@ export default function PrivacyPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                We may update this policy occasionally to reflect changes in our service or laws. When we make important changes, we'll:
+                We may update this policy occasionally to reflect changes in our service or laws. When we make important changes, we&apos;ll:
               </p>
               <ul className="space-y-2 text-muted-foreground ml-4">
                 <li>• Send you an email notification</li>
