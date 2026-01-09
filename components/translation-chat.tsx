@@ -31,7 +31,7 @@ export default function TranslationChat() {
     const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
     const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
-    const [autoPlay, setAutoPlay] = useState(false)
+    const [autoPlay, setAutoPlay] = useState(true)
     const scrollRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef<HTMLAudioElement | null>(null)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -257,7 +257,7 @@ export default function TranslationChat() {
                     <form onSubmit={handleSend} className="relative group">
                         <div className="relative flex items-end gap-2 bg-card border border-border/50 rounded-[2.5rem] p-2 shadow-2xl transition-all duration-500 focus-within:border-primary/50 focus-within:shadow-primary/5">
                             <textarea
-                                placeholder="Type text to translate..."
+                                placeholder="Voice mode active. Speak or type your request..."
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => {

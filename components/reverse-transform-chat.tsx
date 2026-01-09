@@ -36,7 +36,7 @@ export default function ReverseTransformChat() {
   const [selectedTone, setSelectedTone] = useState<ToneOption>("formal")
   const [showRecommendations, setShowRecommendations] = useState(true)
   const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
-  const [autoPlay, setAutoPlay] = useState(false)
+  const [autoPlay, setAutoPlay] = useState(true)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
   const [targetLang, setTargetLang] = useState(language)
 
@@ -475,7 +475,7 @@ export default function ReverseTransformChat() {
                 value={prompt}
                 onChange={handleTextareaChange}
                 onKeyDown={handleKeyDown}
-                placeholder={t.chatbot.reverseTransformPlaceholder}
+                placeholder={language === "en" ? "Voice mode active. Speak or type your request..." : t.chatbot.reverseTransformPlaceholder}
                 className="flex-1 bg-transparent min-h-[52px] max-h-[200px] py-4 px-4 outline-none text-base resize-none no-scrollbar placeholder:text-muted-foreground/30 font-medium"
                 rows={1}
               />

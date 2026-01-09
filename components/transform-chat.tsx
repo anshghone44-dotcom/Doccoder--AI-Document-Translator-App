@@ -473,7 +473,7 @@ export default function TransformChat() {
                 value={prompt}
                 onChange={handleTextareaChange}
                 onKeyDown={handleKeyDown}
-                placeholder={t.chatbot.placeholder}
+                placeholder={language === "en" ? "Voice mode active. Speak or type your request..." : t.chatbot.placeholder}
                 className="flex-1 bg-transparent min-h-[52px] max-h-[200px] py-4 px-4 outline-none text-base resize-none no-scrollbar placeholder:text-muted-foreground/30 font-medium"
                 rows={1}
               />
