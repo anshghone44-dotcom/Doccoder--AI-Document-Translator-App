@@ -154,8 +154,6 @@ export default function TranslationChat() {
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
-                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
                         <LanguagePicker
                             value={targetLang}
                             onChange={setTargetLang}
@@ -289,12 +287,17 @@ export default function TranslationChat() {
                         </div>
                     </form>
 
-                    <div className="mt-4 flex items-center justify-center gap-6 opacity-30">
-                        <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
-                            <Shield className="h-3 w-3" /> Secure Connection
+                    <div className="mt-4 flex items-center justify-between px-2">
+                        <div className="flex items-center gap-2 scale-90 origin-left">
+                            <ModelSelector value={selectedModel} onChange={setSelectedModel} className="bg-transparent border-none hover:bg-foreground/5" />
                         </div>
-                        <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
-                            <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> System Ready
+                        <div className="flex items-center gap-6 opacity-30">
+                            <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
+                                <Shield className="h-3 w-3" /> Secure Connection
+                            </div>
+                            <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
+                                <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> System Ready
+                            </div>
                         </div>
                     </div>
                 </div>

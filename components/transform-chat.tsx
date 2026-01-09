@@ -290,8 +290,6 @@ export default function TransformChat() {
         </div>
         <div className="flex items-center gap-2">
           <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
-            <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-            <div className="h-4 w-[1px] bg-border/50 mx-1" />
             <LanguagePicker
               value={targetLang}
               onChange={(code) => {
@@ -327,14 +325,19 @@ export default function TransformChat() {
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
               <div className="relative">
-                <div className="h-20 w-20 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10">
-                  <Bot className="h-10 w-10 text-primary" />
+                <div className="px-8 py-4 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10 transition-transform duration-500 hover:scale-105 group/logo">
+                  <h1
+                    className="text-4xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
+                    style={{ fontFamily: "var(--font-bodoni)" }}
+                  >
+                    Doccoder
+                  </h1>
                 </div>
                 <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
               </div>
               <div className="space-y-4 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-                  {language === "en" ? "Ready to transform?" : t.transformer.hero.title}
+                  {language === "en" ? "How can i help you today?" : t.transformer.hero.title}
                 </h1>
                 <p className="text-muted-foreground text-lg font-medium leading-relaxed">
                   {t.transformer.hero.subtitle}
@@ -522,12 +525,17 @@ export default function TransformChat() {
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-center gap-6 opacity-30">
-            <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
-              <Shield className="h-3 w-3" /> {t.chatbot.secureConnection}
+          <div className="mt-4 flex items-center justify-between px-2">
+            <div className="flex items-center gap-2 scale-90 origin-left">
+              <ModelSelector value={selectedModel} onChange={setSelectedModel} className="bg-transparent border-none hover:bg-foreground/5" />
             </div>
-            <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
-              <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> {t.chatbot.systemReady}
+            <div className="flex items-center gap-6 opacity-30">
+              <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
+                <Shield className="h-3 w-3" /> {t.chatbot.secureConnection}
+              </div>
+              <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
+                <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> {t.chatbot.systemReady}
+              </div>
             </div>
           </div>
         </div>
