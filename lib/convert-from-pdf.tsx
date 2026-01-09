@@ -5,6 +5,7 @@ import { extractPdfContent, formatExtractedContent } from "./pdf-ocr-processor"
 export type ReverseConversionOptions = {
   targetFormat: "docx" | "txt" | "images" | "csv" | "xlsx" | "jpg" | "png" | "pptx" | "json" | "xml" | "md" | "rtf"
   prompt?: string
+  textOverride?: string
 }
 
 export async function convertPdfToFormat(
@@ -16,22 +17,32 @@ export async function convertPdfToFormat(
   const arrayBuffer = await pdfFile.arrayBuffer()
   const filename = stripExt(pdfFile.name)
 
-  let extractedText = ""
+  let extractedText = options.textOverride || ""
   let pageCount = 0
 
-  try {
-    const pdfDoc = await PDFDocument.load(arrayBuffer)
-    pageCount = pdfDoc.getPageCount()
-    console.log("[v0] PDF loaded successfully, pages:", pageCount)
+  if (!extractedText) {
+    try {
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+      pageCount = pdfDoc.getPageCount()
+      console.log("[v0] PDF loaded successfully, pages:", pageCount)
 
-    // Extract content with table preservation
-    const content = await extractPdfContent(arrayBuffer, filename)
-    extractedText = formatExtractedContent(content)
+      // Extract content with table preservation
+      const content = await extractPdfContent(arrayBuffer, filename)
+      extractedText = formatExtractedContent(content)
 
-    console.log("[v0] Text extraction completed with table detection, length:", extractedText.length)
-  } catch (err: any) {
-    console.error("[v0] PDF processing error:", err?.message || err)
-    throw new Error(`Failed to process PDF: ${err?.message || "The file may be corrupted or encrypted"}`)
+      console.log("[v0] Text extraction completed with table detection, length:", extractedText.length)
+    } catch (err: any) {
+      console.error("[v0] PDF processing error:", err?.message || err)
+      throw new Error(`Failed to process PDF: ${err?.message || "The file may be corrupted or encrypted"}`)
+    }
+  } else {
+    console.log("[v0] Using text override for conversion, length:", extractedText.length)
+    try {
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+      pageCount = pdfDoc.getPageCount()
+    } catch {
+      pageCount = 1
+    }
   }
 
   try {
@@ -422,14 +433,14 @@ async function convertToImages(
   zip.file(
     "README.txt",
     `PDF Image Extraction Information\n\n` +
-      `Original PDF: ${filename}.pdf\n` +
-      `Total Pages: ${pageCount}\n\n` +
-      `Note: Full image extraction from PDFs requires specialized server-side tools like:\n` +
-      `- pdf2pic\n` +
-      `- ImageMagick\n` +
-      `- Poppler\n\n` +
-      `These tools are not available in browser-based environments.\n` +
-      `For complete image extraction, please use desktop PDF software or specialized services.`,
+    `Original PDF: ${filename}.pdf\n` +
+    `Total Pages: ${pageCount}\n\n` +
+    `Note: Full image extraction from PDFs requires specialized server-side tools like:\n` +
+    `- pdf2pic\n` +
+    `- ImageMagick\n` +
+    `- Poppler\n\n` +
+    `These tools are not available in browser-based environments.\n` +
+    `For complete image extraction, please use desktop PDF software or specialized services.`,
   )
 
   const zipBytes = await zip.generateAsync({ type: "uint8array" })

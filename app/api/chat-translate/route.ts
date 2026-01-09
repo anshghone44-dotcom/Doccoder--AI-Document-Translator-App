@@ -94,6 +94,17 @@ export async function POST(request: NextRequest) {
         - Execute document synchronization, analysis, and generation tasks.
         - Maintain structural integrity across multimodal data objects.
         - Provide structured, actionable insights verbally.
+        
+        RULES:
+        - Translation is supported for all requested high-fidelity languages.
+        - Translate content BEFORE formatting or exporting multimodal objects.
+        - Never modify or return the original source document.
+
+        WORKFLOW:
+        1. Detect source language automatically via contextual analysis.
+        2. Translate content into the requested target language(s).
+        3. Preserve structural integrity and semantic meaning.
+        4. Pass synchronized content to the output generation core.
 
         Output Buffer Language: ${targetLanguageFull}`
 

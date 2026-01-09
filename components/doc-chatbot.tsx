@@ -55,6 +55,7 @@ export default function DocChatbot() {
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
     const [autoPlay, setAutoPlay] = useState(true)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
+    const [showRecommendations, setShowRecommendations] = useState(true)
     const scrollRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -162,6 +163,7 @@ export default function DocChatbot() {
 
         setInput("")
         setFiles([])
+        setShowRecommendations(false)
         setIsLoading(true)
 
         try {
@@ -178,7 +180,10 @@ export default function DocChatbot() {
                     body: form,
                 })
 
-                if (!res.ok) throw new Error("Processing failed")
+                if (!res.ok) {
+                    const errBody = await res.json().catch(() => ({}))
+                    throw new Error(errBody.message || "Transformation failed. Check system logs.")
+                }
 
                 const blob = await res.blob()
                 const objectUrl = URL.createObjectURL(blob)
@@ -207,20 +212,23 @@ export default function DocChatbot() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         messages: [...messages, { role: "user", content: userMessage }],
-                        targetLanguage: targetLang, // Passing the code directly, or could map if needed
+                        targetLanguage: targetLang,
                         model: selectedModel,
                     }),
                 })
 
-                if (!res.ok) throw new Error("Translation failed")
+                if (!res.ok) {
+                    const errBody = await res.json().catch(() => ({}))
+                    throw new Error(errBody.message || "Linguistic synchronization failed.")
+                }
 
                 const data = await res.json()
                 setMessages(prev => [...prev, data])
             }
-        } catch (error) {
+        } catch (error: any) {
             setMessages(prev => [
                 ...prev,
-                { role: "assistant", content: t.chatbot.error },
+                { role: "assistant", content: `${t.chatbot.error}: ${error.message || "Unknown interrupt detected."}` },
             ])
         } finally {
             setIsLoading(false)
@@ -402,6 +410,23 @@ export default function DocChatbot() {
                                         <X className="h-3 w-3" />
                                     </button>
                                 </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {showRecommendations && !input && (
+                        <div className="mb-6 flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+                            {t.chatbot.recommendations.map((rec: string, i: number) => (
+                                <button
+                                    key={i}
+                                    onClick={() => {
+                                        setInput(rec)
+                                        // setShowRecommendations(false)
+                                    }}
+                                    className="px-4 py-2 rounded-full bg-foreground/5 border border-border/50 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all active:scale-95 whitespace-nowrap"
+                                >
+                                    {rec}
+                                </button>
                             ))}
                         </div>
                     )}

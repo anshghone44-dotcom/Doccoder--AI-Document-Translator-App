@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server"
 import { convertPdfToFormat } from "@/lib/convert-from-pdf"
+import { extractPdfContent, formatExtractedContent } from "@/lib/pdf-ocr-processor"
 import JSZip from "jszip"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
@@ -100,68 +101,70 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Optional: Use AI to enhance the conversion based on prompt
-    let conversionInstructions = ""
-    if (prompt.trim()) {
+    // AI Logic for individual file transformation
+    const getFinalModel = (model: string) => {
       try {
-        const getFinalModel = (model: string) => {
-          try {
-            const modelMapping: Record<string, string> = {
-              "openai/gpt-5": "gpt-4o",
-              "xai/grok-4": "gpt-4o",
-              "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-              "openai/gpt-4-mini": "gpt-4o-mini",
-            }
-
-            const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
-            const mappedModel = modelMapping[model] || modelId
-
-            Logger.info("Selecting AI model for reverse directives", { requestId, requestedModel: model, mappedModel })
-
-            if (model && (model.startsWith('anthropic') || model.startsWith('claude'))) {
-              return anthropic(mappedModel)
-            }
-            return openai(mappedModel)
-          } catch (err) {
-            Logger.error("Failed to initialize model for reverse directives", err, { requestId, requestedModel: model })
-            return openai("gpt-4o-mini")
-          }
+        const modelMapping: Record<string, string> = {
+          "openai/gpt-5": "gpt-4o",
+          "xai/grok-4": "gpt-4o",
+          "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+          "openai/gpt-4-mini": "gpt-4o-mini",
         }
 
-        const finalModel = getFinalModel(aiModel)
+        const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
+        const mappedModel = modelMapping[model] || modelId
 
-        Logger.info("Requesting AI conversion instructions", { requestId })
-        const { text } = await generateText({
-          model: finalModel,
-          prompt: `You are the System Intelligence Core, a voice-enabled assistant. The user wants to convert PDF files to ${targetFormat} format.
-
-User's technical goal: ${prompt}
-
-VOICE MODE PROTOCOLS:
-- Prioritize audio-friendly, conversational interaction.
-- Generate natural speech patterns for ElevenLabs synthesis.
-- CRITICAL: If the document contains text, ensure it is optimized for ${languageFull} linguistic patterns. If specific instructions are given, follow them with technical precision.
-
-Provide a brief one-line technical directive for optimal architecture of the output.
-
-Directive:`,
-          temperature: 0.7,
-        })
-        conversionInstructions = text.trim()
-        Logger.info("AI instructions generated successfully", { requestId, instructions: conversionInstructions })
-      } catch (err: any) {
-        Logger.error("AI instruction generation failed", err, { requestId })
+        if (model && (model.startsWith('anthropic') || model.startsWith('claude'))) {
+          return anthropic(mappedModel)
+        }
+        return openai(mappedModel)
+      } catch (err) {
+        return openai("gpt-4o-mini")
       }
     }
+
+    const finalModel = getFinalModel(aiModel)
 
     // Convert all PDF files
     const results = []
     for (const file of files) {
       try {
-        Logger.info("Executing reverse transformation", { requestId, filename: file.name })
+        Logger.info("Executing reverse transformation and synthesis", { requestId, filename: file.name })
+
+        const arrayBuffer = await file.arrayBuffer()
+        const content = await extractPdfContent(arrayBuffer, file.name)
+        let extractedText = formatExtractedContent(content)
+
+        // If a prompt is provided, transform the extracted text using AI
+        if (prompt.trim()) {
+          Logger.info("Applying AI transformation directive", { requestId, prompt })
+          const { text: transformed } = await generateText({
+            model: finalModel,
+            prompt: `You are the System Intelligence Core. Execute a technical transformation on the following extracted document text.
+             
+             USER DIRECTIVE: ${prompt}
+             OUTPUT FORMAT: ${targetFormat}
+             TARGET LANGUAGE: ${languageFull}
+
+             INSTRUCTIONS:
+             1. EXECUTE THE USER DIRECTIVE WITH ABSOLUTE PRIORITY. 
+             2. If the user asks for a summary, extract specific data (like names/dates), or change the tone, do so with precision.
+             3. Deliver the final content in ${languageFull}.
+             4. Preserve any tabular or structured data if compatible with the directive.
+             5. Return ONLY the transformed text. No preamble.
+
+             EXTRACTED TEXT:
+             ${extractedText.slice(0, 20000)}
+
+             TRANSFORMED OUTPUT:`,
+            temperature: 0.3,
+          })
+          extractedText = transformed.trim()
+        }
+
         const { bytes, suggestedName, mimeType } = await convertPdfToFormat(file, {
           targetFormat,
-          prompt: conversionInstructions,
+          textOverride: extractedText,
         })
 
         // SAFE WORKFLOW check: Ensure we didn't just get the same PDF back (if not explicitly requested)

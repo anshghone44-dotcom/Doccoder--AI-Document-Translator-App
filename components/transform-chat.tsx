@@ -40,6 +40,7 @@ export default function TransformChat() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
+  const [showRecommendations, setShowRecommendations] = useState(true)
   const [targetLang, setTargetLang] = useState(language)
 
   // Sync with global language
@@ -180,6 +181,7 @@ export default function TransformChat() {
     const userMessage = prompt.trim() || t.chatbot.transformDefaultPrompt
     setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setPrompt("")
+    setShowRecommendations(false)
 
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto"
@@ -224,8 +226,8 @@ export default function TransformChat() {
         })
 
         if (!res.ok) {
-          const errText = await res.text().catch(() => "Unknown error")
-          throw new Error(errText || `Request failed with status ${res.status}`)
+          const errBody = await res.json().catch(() => ({}))
+          throw new Error(errBody.message || `Request failed with status ${res.status}`)
         }
 
         // Check for custom assistant message in header
@@ -455,6 +457,23 @@ export default function TransformChat() {
                     <X className="h-3 w-3" />
                   </button>
                 </div>
+              ))}
+            </div>
+          )}
+
+          {showRecommendations && !prompt && (
+            <div className="mb-6 flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+              {t.chatbot.recommendations.map((rec: string, i: number) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setPrompt(rec)
+                    // setShowRecommendations(false)
+                  }}
+                  className="px-4 py-2 rounded-full bg-foreground/5 border border-border/50 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all active:scale-95 whitespace-nowrap"
+                >
+                  {rec}
+                </button>
               ))}
             </div>
           )}

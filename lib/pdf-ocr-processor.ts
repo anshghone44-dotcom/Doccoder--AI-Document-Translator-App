@@ -58,11 +58,42 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
  * In production, use pdfjs-dist or similar for actual text extraction
  */
 async function extractPageText(page: PDFPage, pageIndex: number): Promise<string> {
-  // Simulate text extraction - in production, use pdfjs-dist
-  const width = page.getWidth()
-  const height = page.getHeight()
+  // Real text extraction from PDF stream blocks
+  try {
+    // @ts-ignore - accessing internal stream for simple extraction
+    const contentStream = page.node.getContents()
+    if (!contentStream) return ""
 
-  return `[Page ${pageIndex + 1}]\nDimensions: ${width}x${height}\n`
+    let text = ""
+    // Combine all streams if multiple
+    const streams = Array.isArray(contentStream) ? contentStream : [contentStream]
+
+    for (const stream of streams) {
+      const bytes = stream.getContents()
+      const decoded = new TextDecoder("ascii").decode(bytes)
+
+      // Simple scan for (string) patterns
+      let inString = false
+      let current = ""
+      for (let i = 0; i < decoded.length; i++) {
+        const char = decoded[i]
+        if (char === "(" && !inString) {
+          inString = true
+          current = ""
+        } else if (char === ")" && inString) {
+          inString = false
+          if (current.length > 1) text += current + " "
+        } else if (inString) {
+          current += char
+        }
+      }
+    }
+
+    return text.replace(/\\/g, "").trim() || `[Page ${pageIndex + 1} - No readable text detected]`
+  } catch (err) {
+    console.error("Text extraction failed for page", pageIndex, err)
+    return `[Page ${pageIndex + 1} - extraction error]`
+  }
 }
 
 /**

@@ -160,7 +160,7 @@ export default function ReverseTransformChat() {
     const userMessage = prompt.trim() || t.chatbot.processAndTranslate
     setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setPrompt("")
-    setShowRecommendations(true)
+    setShowRecommendations(false)
 
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto"
