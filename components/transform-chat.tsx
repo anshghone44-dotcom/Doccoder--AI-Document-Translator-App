@@ -35,7 +35,7 @@ export default function TransformChat() {
     margin: 36,
   })
   const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
-  const [autoPlay, setAutoPlay] = useState(false)
+  const [autoPlay, setAutoPlay] = useState(true)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)

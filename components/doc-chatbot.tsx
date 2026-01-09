@@ -53,7 +53,7 @@ export default function DocChatbot() {
     }, [language])
     const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
-    const [autoPlay, setAutoPlay] = useState(false)
+    const [autoPlay, setAutoPlay] = useState(true)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
     const scrollRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -416,7 +416,7 @@ export default function DocChatbot() {
                             </Button>
 
                             <textarea
-                                placeholder={t.chatbot.placeholder}
+                                placeholder={language === "en" ? "Voice mode active. Speak or type your request..." : t.chatbot.placeholder}
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => {

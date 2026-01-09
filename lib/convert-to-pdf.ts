@@ -40,7 +40,8 @@ export async function convertAnyToPdf(
   const u8 = new Uint8Array(arrayBuffer)
 
   // If already a PDF, pass through but optionally prepend a cover page.
-  if (mime === "application/pdf" || ext === "pdf") {
+  // CRITICAL: If contentOverride is provided (e.g. translation), we generate a NEW PDF from that text.
+  if ((mime === "application/pdf" || ext === "pdf") && !file.contentOverride) {
     if (!cover?.coverLine && !cover?.orientation) {
       return { bytes: u8, suggestedName: stripExt(filename) + ".pdf" }
     }

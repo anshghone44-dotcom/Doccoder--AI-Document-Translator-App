@@ -6,6 +6,8 @@ import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
+import { generateExcel, generateCsv, generateWord, generateText as generateStructuredText } from "@/lib/document-generators"
+import type { StructuredData } from "@/lib/document-generators"
 
 // Structured Logger Utility
 const Logger = {
@@ -82,30 +84,47 @@ export async function POST(req: NextRequest) {
   const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
   const baseLanguage = (form.get("targetLanguage") || "en").toString()
 
-  // Detect if user explicitly requested a language in the prompt (handles typos like "trabslate")
+  // Detect if user explicitly requested a language or format in the prompt
   let targetLanguage = baseLanguage
+  let targetFormat: "pdf" | "docx" | "xlsx" | "csv" | "txt" = "pdf"
+
   try {
-    const { text: detectedCode } = await generateText({
+    const { text: detectionResult } = await generateText({
       model: getFinalModel(aiModel),
       prompt: `Analyze the user's transformation prompt: "${prompt}"
-      The user's current interface language is set to "${LANGUAGE_MAP[baseLanguage] || baseLanguage}".
+      Current UI Language Context: "${LANGUAGE_MAP[baseLanguage] || baseLanguage}"
       
-      Does the user explicitly request a specific target language for translation in their prompt? 
-      (Example: "translate to Marathi", "convert to French", "trabslate to Spanish")
+      Tasks:
+      1. Identify the requested target language (e.g., "translate to Marathi", "convert to French").
+      2. Identify the requested output format (e.g., "Excel", "Word", "CSV", "Text", ".xlsx", ".docx").
       
-      If yes, return ONLY the ISO 639-1 code for that language.
-      If no, or if they just say "translate" without a language, return "${baseLanguage}".
-      
-      ONLY return the 2-letter code (e.g. 'mr', 'hi', 'fr', 'es'). No other text.`,
+      Output format priority:
+      - "Excel"/.xlsx -> xlsx
+      - "Word"/.docx -> docx
+      - "CSV"/.csv -> csv
+      - "Text"/.txt -> txt
+      - Default to "pdf" if no format is specified.
+
+      Return ONLY a JSON object:
+      {
+        "lang": "iso-code", // Default to "${baseLanguage}"
+        "format": "pdf|docx|xlsx|csv|txt" // Default to "pdf"
+      }`,
       temperature: 0,
     })
-    const cleaned = detectedCode.trim().toLowerCase()
-    if (cleaned.length === 2 && LANGUAGE_MAP[cleaned]) {
-      targetLanguage = cleaned
-      Logger.info("Overriding target language from prompt", { requestId, baseLanguage, targetLanguage })
+
+    const cleaned = detectionResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
+    const parsed = JSON.parse(cleaned)
+    if (parsed.lang && LANGUAGE_MAP[parsed.lang]) {
+      targetLanguage = parsed.lang
     }
+    if (parsed.format && ["pdf", "docx", "xlsx", "csv", "txt"].includes(parsed.format)) {
+      targetFormat = parsed.format as any
+    }
+
+    Logger.info("Detected transformation metadata", { requestId, targetLanguage, targetFormat })
   } catch (err) {
-    Logger.warn("Language detection failed, using base language", { requestId, err: (err as any).message })
+    Logger.warn("Metadata detection failed, using defaults", { requestId, err: (err as any).message })
   }
 
   // Parse template selection
@@ -209,6 +228,55 @@ Title:`,
     }
   }
 
+  async function translateToStructuredData(text: string, lang: string): Promise<StructuredData[]> {
+    if (!text || !text.trim()) return []
+    const startTime = Date.now()
+    const languageFull = LANGUAGE_MAP[lang] || lang || "English"
+
+    try {
+      Logger.info("Requesting structured AI translation", { lang, textSnippet: text.slice(0, 50) })
+
+      const { text: jsonResult } = await generateText({
+        model: getFinalModel(aiModel),
+        prompt: `Analyze the following text and decompose it into a structured JSON array of sections.
+        
+        TARGET LANGUAGE: ${languageFull}
+        USER DIRECTIVE: ${prompt}
+
+        CRITICAL: 
+        - Translate all content accurately into ${languageFull}.
+        - Group related paragraphs into logical sections.
+        - Each section must have a 'title' (in ${languageFull}) and 'content' (in ${languageFull}).
+        
+        OUTPUT FORMAT:
+        [
+          {
+            "title": "Section Title",
+            "content": "Section Content...",
+            "language": "${languageFull}"
+          }
+        ]
+        
+        TEXT TO PROCESS:
+        ${text.slice(0, 10000)}`,
+        temperature: 0.3,
+      })
+
+      const cleaned = jsonResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
+      const data = JSON.parse(cleaned) as StructuredData[]
+
+      Logger.info("Structured translation successful", { count: data.length, durationMs: Date.now() - startTime })
+      return data
+    } catch (err) {
+      Logger.error("Structured translation failed, falling back to simple format", err)
+      return [{
+        title: "Processed Document",
+        content: text,
+        language: languageFull
+      }]
+    }
+  }
+
   async function translateContent(text: string, targetLanguage: string) {
     if (!text || !text.trim()) return text
     const startTime = Date.now()
@@ -256,57 +324,79 @@ Title:`,
   const results = []
   for (const f of files) {
     try {
-      console.log("[v0] Processing file:", f.name)
+      Logger.info("Processing file", { filename: f.name, targetFormat, targetLanguage })
       const ext = (f.name.split(".").pop() || "").toLowerCase()
       const arrayBuffer = await f.arrayBuffer()
       const u8 = new Uint8Array(arrayBuffer)
 
-      let processedContent: string | undefined
-      let type: "text" | "pdf" | "image" = "text"
-
-      // Handle translation before PDF generation
+      let rawText = ""
       if (ext === "docx") {
-        const { value: rawText } = await mammoth.extractRawText({ arrayBuffer })
-        processedContent = await translateContent(rawText, targetLanguage)
+        const { value } = await mammoth.extractRawText({ arrayBuffer })
+        rawText = value
       } else if (ext === "xlsx" || ext === "xls" || ext === "csv") {
         const wb = XLSX.read(u8, { type: "array" })
-        let combined = ""
         wb.SheetNames.forEach((sheetName, idx) => {
           const sheet = wb.Sheets[sheetName]
-          const csv = XLSX.utils.sheet_to_csv(sheet)
-          combined += `Sheet ${idx + 1}: ${sheetName}\n\n${csv}\n\n`
+          rawText += `Sheet ${idx + 1}: ${sheetName}\n\n${XLSX.utils.sheet_to_csv(sheet)}\n\n`
         })
-        processedContent = await translateContent(combined, targetLanguage)
       } else if (["txt", "md", "markdown", "html"].includes(ext)) {
-        const text = new TextDecoder("utf-8").decode(u8)
-        processedContent = await translateContent(text, targetLanguage)
+        rawText = new TextDecoder("utf-8").decode(u8)
       } else if (ext === "pdf") {
-        const text = extractSimplePdfText(u8)
-        if (text) {
-          processedContent = await translateContent(text, targetLanguage)
+        rawText = extractSimplePdfText(u8)
+      }
+
+      let finalBytes: Uint8Array
+      let finalName: string
+
+      if (targetFormat === "pdf") {
+        const processedContent = await translateContent(rawText, targetLanguage)
+        const coverLine = await getCoverLineFor(f.name, targetLanguage)
+        const { bytes, suggestedName } = await convertAnyToPdf({
+          name: f.name,
+          arrayBuffer: async () => arrayBuffer,
+          contentOverride: processedContent
+        }, {
+          coverLine,
+          templateId: template.id,
+          orientation: template.orientation,
+          margin: typeof template.margin === "number" ? template.margin : undefined,
+        })
+        finalBytes = bytes
+        finalName = suggestedName
+      } else {
+        const structuredData = await translateToStructuredData(rawText, targetLanguage)
+        const baseName = f.name.replace(/\.[^/.]+$/, "")
+
+        switch (targetFormat) {
+          case "xlsx":
+            finalBytes = await generateExcel(structuredData, f.name)
+            finalName = `${baseName}.xlsx`
+            break
+          case "csv":
+            finalBytes = await generateCsv(structuredData)
+            finalName = `${baseName}.csv`
+            break
+          case "docx":
+            finalBytes = await generateWord(structuredData, f.name)
+            finalName = `${baseName}.docx`
+            break
+          case "txt":
+            finalBytes = await generateStructuredText(structuredData)
+            finalName = `${baseName}.txt`
+            break
+          default:
+            finalBytes = u8
+            finalName = f.name
         }
       }
 
-      const coverLine = await getCoverLineFor(f.name, targetLanguage)
-
-      // Conversion with translated content if available
-      const { bytes, suggestedName } = await convertAnyToPdf({
-        name: f.name,
-        type: f.type,
-        arrayBuffer: async () => arrayBuffer,
-        contentOverride: processedContent
-      }, {
-        coverLine,
-        templateId: template.id,
-        orientation: template.orientation,
-        margin: typeof template.margin === "number" ? template.margin : undefined,
-      })
-
       const langSuffix = targetLanguage !== "en" ? ` (${LANGUAGE_MAP[targetLanguage] || targetLanguage})` : ""
-      const finalName = suggestedName.replace(".pdf", `${langSuffix}.pdf`)
+      const namedWithLang = finalName.includes(".")
+        ? finalName.replace(/(\.[^.]+)$/, `${langSuffix}$1`)
+        : `${finalName}${langSuffix}`
 
-      results.push({ name: finalName, bytes })
-      Logger.info("File processed successfully", { requestId, filename: finalName })
+      results.push({ name: namedWithLang, bytes: finalBytes, format: targetFormat })
+      Logger.info("File processed successfully", { requestId, finalName: namedWithLang })
     } catch (err: any) {
       Logger.error("Processing error for file", err, { requestId, filename: f.name })
       return new Response(`Error processing ${f.name}: ${err?.message || "Unknown error"}`, { status: 500 })
@@ -349,12 +439,20 @@ Title:`,
 
   const assistantMessage = await generateSuccessMessage(targetLanguage)
 
-  // If single file, return PDF directly
+  // If single file, return it directly
   if (results.length === 1) {
     const single = results[0]
+    const mimeMap: Record<string, string> = {
+      pdf: "application/pdf",
+      xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      csv: "text/csv",
+      docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      txt: "text/plain"
+    }
+
     return new Response(single.bytes as any, {
       headers: {
-        "Content-Type": "application/pdf",
+        "Content-Type": mimeMap[single.format] || "application/octet-stream",
         "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
         "X-Assistant-Message": encodeURIComponent(assistantMessage),
       },
@@ -377,7 +475,7 @@ Title:`,
   return new Response(zipped as any, {
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="${encodeRFC5987("transformed-pdfs.zip")}"`,
+      "Content-Disposition": `attachment; filename="${encodeRFC5987("transformed-data.zip")}"`,
       "X-Assistant-Message": encodeURIComponent(assistantMessage),
     },
   })
