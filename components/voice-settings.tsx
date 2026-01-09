@@ -70,8 +70,8 @@ export default function VoiceSettings({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-foreground/5">
-                    <Settings2 className="h-5 w-5" />
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-border/50 bg-card/50 backdrop-blur-md hover:bg-foreground/5 shadow-sm">
+                    <Settings2 className="h-4 w-4 text-foreground/70" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 glass-dark border-white/10 p-6 rounded-[2rem] shadow-2xl backdrop-blur-2xl">

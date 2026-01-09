@@ -134,13 +134,14 @@ export default function VoiceRecorder({ onTranscript }: VoiceRecorderProps) {
       {!isRecording && !isProcessing && (
         <Button
           type="button"
-          variant={permissionDenied ? "destructive" : "outline"}
+          variant="outline"
           size="icon"
           onClick={startRecording}
           title={permissionDenied ? "Microphone permission denied - click to retry" : "Start voice recording"}
           aria-label="Start voice recording"
+          className="h-10 w-10 rounded-xl border-border/50 bg-card/50 backdrop-blur-md hover:bg-foreground/5 shadow-sm"
         >
-          {permissionDenied ? <AlertCircle className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+          {permissionDenied ? <AlertCircle className="h-4 w-4 text-destructive" /> : <Mic className="h-4 w-4 text-foreground/70" />}
         </Button>
       )}
       {isRecording && (
@@ -151,13 +152,19 @@ export default function VoiceRecorder({ onTranscript }: VoiceRecorderProps) {
           onClick={stopRecording}
           title="Stop recording"
           aria-label="Stop recording"
-          className="animate-pulse"
+          className="h-10 w-10 rounded-xl animate-pulse shadow-lg"
         >
           <MicOff className="h-4 w-4" />
         </Button>
       )}
       {isProcessing && (
-        <Button type="button" variant="outline" size="icon" disabled>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          disabled
+          className="h-10 w-10 rounded-xl border-border/50 bg-card/50"
+        >
           <Loader2 className="h-4 w-4 animate-spin" />
         </Button>
       )}

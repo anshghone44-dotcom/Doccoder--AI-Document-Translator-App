@@ -235,19 +235,17 @@ export default function ReverseTransformChat() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
 
       {/* Header Area - Discrete */}
-      <div className="px-6 py-3 flex items-center justify-between relative z-20">
+      <div className="px-6 py-4 flex items-center justify-between relative z-20">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/5 border border-border/50 backdrop-blur-md">
-            <Bot className="h-4 w-4 text-primary" />
-            <span className="text-[10px] font-bold tracking-widest uppercase text-foreground/70">{t.chatbot.architect}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-card border border-border/50 backdrop-blur-md shadow-sm">
+            <Zap className="h-4 w-4 text-primary" />
+            <span className="text-[10px] font-bold tracking-widest uppercase text-foreground/70">System Intelligence Core</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
+        <div className="flex items-center gap-3">
+          <div className="scale-90 origin-right flex items-center gap-2">
             <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-            <div className="h-4 w-[1px] bg-border/50 mx-1" />
             <VoiceRecorder onTranscript={(text) => setPrompt((prev) => (prev ? `${prev} ${text}` : text))} />
-            <div className="h-4 w-[1px] bg-border/50 mx-1" />
             <VoiceSettings
               selectedVoice={selectedVoice}
               onVoiceChange={setSelectedVoice}
@@ -321,12 +319,14 @@ export default function ReverseTransformChat() {
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
               <div className="relative group/logo transition-transform duration-500 hover:scale-110">
-                <h1
-                  className="text-5xl md:text-6xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
-                  style={{ fontFamily: "var(--font-bodoni)" }}
-                >
-                  Doccoder
-                </h1>
+                <div className="px-12 py-6 rounded-[3rem] bg-card/80 backdrop-blur-xl border border-border/50 shadow-2xl flex items-center justify-center">
+                  <h1
+                    className="text-5xl md:text-6xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
+                    style={{ fontFamily: "var(--font-bodoni)" }}
+                  >
+                    Doccoder
+                  </h1>
+                </div>
               </div>
               <div className="space-y-4 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
