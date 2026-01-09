@@ -168,8 +168,13 @@ export default function TranslationChat() {
                 {messages.length === 1 && messages[0].role === "assistant" && messages[0].content.includes("Interface initialized") && (
                     <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
                         <div className="relative">
-                            <div className="h-20 w-20 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10">
-                                <Languages className="h-10 w-10 text-primary" />
+                            <div className="px-8 py-4 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10 transition-transform duration-500 hover:scale-105 group/logo">
+                                <h1
+                                    className="text-4xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
+                                    style={{ fontFamily: "var(--font-bodoni)" }}
+                                >
+                                    Doccoder
+                                </h1>
                             </div>
                             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
                         </div>

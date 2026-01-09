@@ -317,8 +317,13 @@ export default function ReverseTransformChat() {
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
               <div className="relative">
-                <div className="h-20 w-20 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10">
-                  <Bot className="h-10 w-10 text-primary" />
+                <div className="px-8 py-4 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10 transition-transform duration-500 hover:scale-105 group/logo">
+                  <h1
+                    className="text-4xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
+                    style={{ fontFamily: "var(--font-bodoni)" }}
+                  >
+                    Doccoder
+                  </h1>
                 </div>
                 <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
               </div>
@@ -525,6 +530,6 @@ export default function ReverseTransformChat() {
       {/* Decorative BG Glows */}
       <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10" />
       <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10" />
-    </div>
+    </div >
   )
 }
