@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
 import VoiceSettings from "@/components/voice-settings"
-import LanguagePicker from "@/components/language-picker"
 
 type Message = {
     role: "user" | "assistant"
