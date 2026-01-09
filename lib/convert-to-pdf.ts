@@ -225,6 +225,22 @@ function sanitizeFilename(name: string) {
   return name.replace(/[^\w\-.]+/g, "_")
 }
 
+/**
+ * Ensures text is encodable by standard PDF fonts (WinAnsi).
+ * Characters outside this range are replaced to prevent crashes.
+ */
+function safeText(text: string): string {
+  if (!text) return ""
+  // PDF Standard Fonts use WinAnsiEncoding. 
+  // We'll filter for standard printable characters + some extras.
+  // This is a defensive barrier against 0xfffd and other Unicode interrupts.
+  return text.normalize("NFC").replace(/[^\x00-\x7F\xA0-\xFF]/g, (char) => {
+    // If it's a known common special char, we can try to map it, 
+    // otherwise fallback to a safe placeholder.
+    return "?"
+  })
+}
+
 function stripHtml(html: string) {
   return html
     .replace(/<style[\s\S]*?<\/style>/gi, "")
@@ -268,7 +284,7 @@ async function addCoverPage(doc: PDFDocument, coverLine: string, filename: strin
   const theme = pickTheme(cover?.templateId)
 
   // Title
-  page.drawText(title, {
+  page.drawText(safeText(title), {
     x: margin,
     y: h - margin - 48,
     size: cover?.templateId === "professional" ? 28 : 24,
@@ -277,7 +293,7 @@ async function addCoverPage(doc: PDFDocument, coverLine: string, filename: strin
     maxWidth: w - margin * 2,
   })
   // Subtitle
-  page.drawText(subTitle, {
+  page.drawText(safeText(subTitle), {
     x: margin,
     y: h - margin - 48 - 28,
     size: 12,
@@ -317,7 +333,7 @@ async function addTextPages(doc: PDFDocument, text: string, cover?: CoverOptions
       page = doc.addPage([w, h])
       y = h - margin
     }
-    page.drawText(line, {
+    page.drawText(safeText(line), {
       x: margin,
       y: y - fontSize,
       font: body,
@@ -374,7 +390,7 @@ async function addCodePages(doc: PDFDocument, text: string, cover?: CoverOptions
       page = doc.addPage([w, h])
       y = h - margin
     }
-    page.drawText(line, {
+    page.drawText(safeText(line), {
       x: margin,
       y: y - fontSize,
       font: mono,

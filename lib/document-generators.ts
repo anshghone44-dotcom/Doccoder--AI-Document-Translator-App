@@ -37,7 +37,12 @@ export async function generateCsv(data: StructuredData[]): Promise<Uint8Array> {
         .map(row => row.join(","))
         .join("\n")
 
-    return new TextEncoder().encode(csvContent)
+    const BOM = new Uint8Array([0xEF, 0xBB, 0xBF])
+    const content = new TextEncoder().encode(csvContent)
+    const combined = new Uint8Array(BOM.length + content.length)
+    combined.set(BOM)
+    combined.set(content, BOM.length)
+    return combined
 }
 
 /**
@@ -97,5 +102,10 @@ export async function generateText(data: StructuredData[]): Promise<Uint8Array> 
         return `Title: ${item.title}\nLanguage: ${item.language}\n\n${item.content}\n\n${"=".repeat(50)}\n`
     }).join("\n")
 
-    return new TextEncoder().encode(textContent)
+    const BOM = new Uint8Array([0xEF, 0xBB, 0xBF])
+    const content = new TextEncoder().encode(textContent)
+    const combined = new Uint8Array(BOM.length + content.length)
+    combined.set(BOM)
+    combined.set(content, BOM.length)
+    return combined
 }

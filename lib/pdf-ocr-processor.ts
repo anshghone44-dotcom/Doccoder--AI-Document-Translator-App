@@ -70,7 +70,7 @@ async function extractPageText(page: PDFPage, pageIndex: number): Promise<string
 
     for (const stream of streams) {
       const bytes = stream.getContents()
-      const decoded = new TextDecoder("ascii").decode(bytes)
+      const decoded = new TextDecoder("utf-8").decode(bytes)
 
       // Simple scan for (string) patterns
       let inString = false
@@ -82,7 +82,9 @@ async function extractPageText(page: PDFPage, pageIndex: number): Promise<string
           current = ""
         } else if (char === ")" && inString) {
           inString = false
-          if (current.length > 1) text += current + " "
+          // Sanitize: replace the replacement character (0xfffd) if it leaked from stream
+          const sanitized = current.replace(/\uFFFD/g, "")
+          if (sanitized.length > 1) text += sanitized + " "
         } else if (inString) {
           current += char
         }
