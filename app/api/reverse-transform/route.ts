@@ -4,6 +4,7 @@ import JSZip from "jszip"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
+import { Logger } from "@/lib/logger"
 
 export const maxDuration = 60
 
@@ -39,7 +40,10 @@ const LANGUAGE_MAP: Record<string, string> = {
 }
 
 export async function POST(req: NextRequest) {
-  console.log("[v0] Reverse transform API called")
+  const requestId = Math.random().toString(36).substring(7)
+  const startTime = Date.now()
+
+  Logger.info("Reverse transform API request started", { requestId })
 
   try {
     const form = await req.formData()
@@ -59,7 +63,15 @@ export async function POST(req: NextRequest) {
     console.log("[v0] PDF files received:", files.length)
     console.log("[v0] Target format:", targetFormat)
 
+    Logger.info("Files received for reverse transform", {
+      requestId,
+      fileCount: files.length,
+      targetFormat,
+      aiModel
+    })
+
     if (files.length === 0) {
+      Logger.warn("No PDF files provided", { requestId })
       return new Response("No PDF files provided.", { status: 400 })
     }
 
@@ -75,19 +87,33 @@ export async function POST(req: NextRequest) {
     let conversionInstructions = ""
     if (prompt.trim()) {
       try {
-        console.log("[v0] Generating AI conversion instructions using model:", aiModel)
+        const getFinalModel = (model: string) => {
+          try {
+            const modelMapping: Record<string, string> = {
+              "openai/gpt-5": "gpt-4o",
+              "xai/grok-4": "gpt-4o",
+              "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+              "openai/gpt-4-mini": "gpt-4o-mini",
+            }
 
-        const modelMapping: Record<string, string> = {
-          "openai/gpt-5": "gpt-4o",
-          "xai/grok-4": "gpt-4o",
-          "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-          "openai/gpt-4-mini": "gpt-4o-mini",
+            const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
+            const mappedModel = modelMapping[model] || modelId
+
+            Logger.info("Selecting AI model for reverse directives", { requestId, requestedModel: model, mappedModel })
+
+            if (model && (model.startsWith('anthropic') || model.startsWith('claude'))) {
+              return anthropic(mappedModel)
+            }
+            return openai(mappedModel)
+          } catch (err) {
+            Logger.error("Failed to initialize model for reverse directives", err, { requestId, requestedModel: model })
+            return openai("gpt-4o-mini")
+          }
         }
 
-        const modelId = aiModel && aiModel.includes('/') ? aiModel.split('/')[1] : (aiModel || "gpt-4o-mini")
-        const mappedModel = modelMapping[aiModel] || modelId
-        const finalModel = aiModel && aiModel.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
+        const finalModel = getFinalModel(aiModel)
 
+        Logger.info("Requesting AI conversion instructions", { requestId })
         const { text } = await generateText({
           model: finalModel,
           prompt: `The user wants to convert PDF files to ${targetFormat} format.
@@ -102,9 +128,9 @@ Directive:`,
           temperature: 0.7,
         })
         conversionInstructions = text.trim()
-        console.log("[v0] AI instructions generated:", conversionInstructions)
+        Logger.info("AI instructions generated successfully", { requestId, instructions: conversionInstructions })
       } catch (err: any) {
-        console.error("[v0] AI instruction generation failed:", err?.message || err)
+        Logger.error("AI instruction generation failed", err, { requestId })
       }
     }
 
@@ -112,15 +138,15 @@ Directive:`,
     const results = []
     for (const file of files) {
       try {
-        console.log("[v0] Converting PDF:", file.name)
+        Logger.info("Converting PDF", { requestId, filename: file.name })
         const { bytes, suggestedName, mimeType } = await convertPdfToFormat(file, {
           targetFormat,
           prompt: conversionInstructions,
         })
         results.push({ name: suggestedName, bytes, mimeType })
-        console.log("[v0] PDF converted successfully:", suggestedName)
+        Logger.info("PDF converted successfully", { requestId, filename: suggestedName })
       } catch (err: any) {
-        console.error("[v0] Conversion error for", file.name, ":", err?.message || err)
+        Logger.error("Conversion error for file", err, { requestId, filename: file.name })
         return new Response(
           `Error converting ${file.name}: ${err.message || "Unknown error occurred"}. Please ensure the PDF is not encrypted or corrupted.`,
           { status: 500 },
@@ -145,6 +171,13 @@ Directive:`,
       zip.file(r.name, r.bytes)
     }
     const zipped = await zip.generateAsync({ type: "uint8array" })
+
+    Logger.info("Reverse transform API completed successfully", {
+      requestId,
+      durationMs: Date.now() - startTime,
+      resultCount: results.length
+    })
+
     return new Response(zipped as any, {
       headers: {
         "Content-Type": "application/zip",
@@ -152,7 +185,7 @@ Directive:`,
       },
     })
   } catch (err: any) {
-    console.error("[v0] Reverse transform API error:", err?.message || err)
+    Logger.error("Reverse transform API fatal error", err, { requestId })
     return new Response(`Internal server error: ${err?.message || "Unknown error"}`, { status: 500 })
   }
 }

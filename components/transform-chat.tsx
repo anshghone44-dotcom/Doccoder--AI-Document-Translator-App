@@ -177,50 +177,84 @@ export default function TransformChat() {
 
     setIsLoading(true)
     try {
-      const form = new FormData()
-      form.set("prompt", userMessage)
-      form.set("template", JSON.stringify(template))
-      form.set("aiModel", selectedModel)
-      form.set("targetLanguage", targetLang)
-      files.forEach((f) => form.append("files", f, f.name))
+      if (files.length === 0) {
+        // Chat mode
+        const chatRes = await fetch("/api/chat-translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [...messages, { role: "user", content: userMessage }],
+            targetLanguage: targetLang,
+            model: selectedModel,
+          }),
+        })
 
-      const res = await fetch("/api/transform", {
-        method: "POST",
-        body: form,
-      })
+        if (!chatRes.ok) throw new Error("Chat request failed")
+        const data = await chatRes.json()
 
-      if (!res.ok) {
-        const errText = await res.text().catch(() => "Unknown error")
-        throw new Error(errText || `Request failed with status ${res.status}`)
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: data.content,
+          },
+        ])
+      } else {
+        // Transform mode
+        const form = new FormData()
+        form.set("prompt", userMessage)
+        form.set("template", JSON.stringify(template))
+        form.set("aiModel", selectedModel)
+        form.set("targetLanguage", targetLang)
+        files.forEach((f) => form.append("files", f, f.name))
+
+        const res = await fetch("/api/transform", {
+          method: "POST",
+          body: form,
+        })
+
+        if (!res.ok) {
+          const errText = await res.text().catch(() => "Unknown error")
+          throw new Error(errText || `Request failed with status ${res.status}`)
+        }
+
+        // Check for custom assistant message in header
+        const assistantMessage = res.headers.get("X-Assistant-Message")
+        const decodedMessage = assistantMessage ? decodeURIComponent(assistantMessage) :
+          (files.length > 1 ? t.chatbot.transformSuccessMulti : t.chatbot.transformSuccessSingle)
+
+        const blob = await res.blob()
+        const objectUrl = URL.createObjectURL(blob)
+
+        let filename = "output.pdf"
+        const cd = res.headers.get("Content-Disposition") || ""
+        const match = cd.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i)
+        if (match) {
+          filename = decodeURIComponent(match[1] || match[2])
+        } else if (res.headers.get("Content-Type") === "application/zip") {
+          filename = "transformed-pdfs.zip"
+        }
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: decodedMessage,
+            downloadUrl: objectUrl,
+            filename,
+          },
+        ])
+
+        setFiles([])
       }
-
-      const blob = await res.blob()
-      const objectUrl = URL.createObjectURL(blob)
-
-      let filename = "output.pdf"
-      const cd = res.headers.get("Content-Disposition") || ""
-      const match = cd.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i)
-      if (match) {
-        filename = decodeURIComponent(match[1] || match[2])
-      } else if (res.headers.get("Content-Type") === "application/zip") {
-        filename = "transformed-pdfs.zip"
-      }
-
+    } catch (err: any) {
+      console.error("[TransformChat] AI transformation failed:", err)
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: files.length > 1 ? t.chatbot.transformSuccessMulti : t.chatbot.transformSuccessSingle,
-          downloadUrl: objectUrl,
-          filename,
+          content: `${t.chatbot.error}: ${err?.message || (typeof err === 'string' ? err : t.chatbot.unknownError)}`
         },
-      ])
-
-      setFiles([])
-    } catch (err: any) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: `${t.chatbot.error}: ${err?.message || t.chatbot.unknownError}` },
       ])
     } finally {
       setIsLoading(false)

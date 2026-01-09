@@ -7,6 +7,26 @@ import { anthropic } from "@ai-sdk/anthropic"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
 
+// Structured Logger Utility
+const Logger = {
+  info: (message: string, data?: any) => {
+    console.log(JSON.stringify({ level: "INFO", timestamp: new Date().toISOString(), message, ...data }))
+  },
+  error: (message: string, error?: any, data?: any) => {
+    console.error(JSON.stringify({
+      level: "ERROR",
+      timestamp: new Date().toISOString(),
+      message,
+      error: error?.message || error,
+      stack: error?.stack,
+      ...data
+    }))
+  },
+  warn: (message: string, data?: any) => {
+    console.warn(JSON.stringify({ level: "WARN", timestamp: new Date().toISOString(), message, ...data }))
+  }
+}
+
 export const maxDuration = 60
 
 const LANGUAGE_MAP: Record<string, string> = {
@@ -40,13 +60,53 @@ const LANGUAGE_MAP: Record<string, string> = {
   vi: "Vietnamese",
 }
 
+function extractSimplePdfText(u8: Uint8Array): string {
+  const content = new TextDecoder("ascii").decode(u8)
+  const matches = content.match(/\((.*?)\)/g)
+  if (!matches) return ""
+  return matches
+    .map((m) => m.slice(1, -1))
+    .filter((s) => s.length > 2)
+    .join(" ")
+    .replace(/\\/g, "")
+}
+
 export async function POST(req: NextRequest) {
-  console.log("[v0] Transform API called")
+  const requestId = Math.random().toString(36).substring(7)
+  const startTime = Date.now()
+
+  Logger.info("Transform API request started", { requestId })
 
   const form = await req.formData()
   const prompt = (form.get("prompt") || "").toString()
   const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
-  const targetLanguage = (form.get("targetLanguage") || "en").toString()
+  const baseLanguage = (form.get("targetLanguage") || "en").toString()
+
+  // Detect if user explicitly requested a language in the prompt (handles typos like "trabslate")
+  let targetLanguage = baseLanguage
+  try {
+    const { text: detectedCode } = await generateText({
+      model: getFinalModel(aiModel),
+      prompt: `Analyze the user's transformation prompt: "${prompt}"
+      The user's current interface language is set to "${LANGUAGE_MAP[baseLanguage] || baseLanguage}".
+      
+      Does the user explicitly request a specific target language for translation in their prompt? 
+      (Example: "translate to Marathi", "convert to French", "trabslate to Spanish")
+      
+      If yes, return ONLY the ISO 639-1 code for that language.
+      If no, or if they just say "translate" without a language, return "${baseLanguage}".
+      
+      ONLY return the 2-letter code (e.g. 'mr', 'hi', 'fr', 'es'). No other text.`,
+      temperature: 0,
+    })
+    const cleaned = detectedCode.trim().toLowerCase()
+    if (cleaned.length === 2 && LANGUAGE_MAP[cleaned]) {
+      targetLanguage = cleaned
+      Logger.info("Overriding target language from prompt", { requestId, baseLanguage, targetLanguage })
+    }
+  } catch (err) {
+    Logger.warn("Language detection failed, using base language", { requestId, err: (err as any).message })
+  }
 
   // Parse template selection
   let template: {
@@ -70,38 +130,53 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  console.log("[v0] Files received:", files.length)
+  Logger.info("Files received for processing", {
+    requestId,
+    fileCount: files.length,
+    filenames: files.map(f => f.name),
+    aiModel,
+    targetLanguage
+  })
 
   if (files.length === 0) {
+    Logger.warn("No files provided in request", { requestId })
     return new Response("No files provided.", { status: 400 })
   }
 
   function getFinalModel(requestedModel: string) {
-    const modelMapping: Record<string, string> = {
-      "openai/gpt-5": "gpt-4o",
-      "xai/grok-4": "gpt-4o",
-      "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-      "openai/gpt-4-mini": "gpt-4o-mini",
-      "xai/grok-3": "gpt-4o",
-      "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
-    }
+    try {
+      const modelMapping: Record<string, string> = {
+        "openai/gpt-5": "gpt-4o",
+        "xai/grok-4": "gpt-4o",
+        "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+        "openai/gpt-4-mini": "gpt-4o-mini",
+        "xai/grok-3": "gpt-4o",
+        "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
+      }
 
-    const modelId = requestedModel && requestedModel.includes('/') ? requestedModel.split('/')[1] : (requestedModel || "gpt-4o-mini")
-    const mappedModel = modelMapping[requestedModel] || modelId
+      const modelId = requestedModel && requestedModel.includes('/') ? requestedModel.split('/')[1] : (requestedModel || "gpt-4o-mini")
+      const mappedModel = modelMapping[requestedModel] || modelId
 
-    if (requestedModel && (requestedModel.startsWith('anthropic') || requestedModel.startsWith('claude'))) {
-      return anthropic(mappedModel)
+      Logger.info("Selecting AI model", { requestedModel, mappedModel })
+
+      if (requestedModel && (requestedModel.startsWith('anthropic') || requestedModel.startsWith('claude'))) {
+        return anthropic(mappedModel)
+      }
+      return openai(mappedModel)
+    } catch (err) {
+      Logger.error("Failed to initialize AI model, defaulting to gpt-4o-mini", err, { requestedModel })
+      return openai("gpt-4o-mini")
     }
-    return openai(mappedModel)
   }
 
   async function getCoverLineFor(filename: string, languageCode: string) {
     if (!prompt.trim()) return undefined
 
     const languageFull = LANGUAGE_MAP[languageCode] || languageCode || "English"
+    const startTime = Date.now()
 
     try {
-      console.log("[v0] Generating AI title for:", filename, "using model:", aiModel)
+      Logger.info("Requesting AI title generation", { filename, aiModel, languageFull })
 
       const { text } = await generateText({
         model: getFinalModel(aiModel),
@@ -120,43 +195,59 @@ Title:`,
         temperature: 0.7,
       })
       const single = text.split("\n").filter(Boolean)[0]?.trim()
-      console.log("[v0] AI title generated:", single)
+
+      Logger.info("AI title generated successfully", {
+        filename,
+        durationMs: Date.now() - startTime,
+        title: single
+      })
+
       return single || undefined
     } catch (err: any) {
-      console.error("[v0] AI title generation failed:", err?.message || err)
+      Logger.error("AI title generation failed", err, { filename, aiModel })
       return undefined
     }
   }
 
   async function translateContent(text: string, targetLanguage: string) {
     if (!text || !text.trim()) return text
+    const startTime = Date.now()
 
     try {
       const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
-      console.log("[v0] Translating content. Preferred lang:", languageFull)
+      Logger.info("Requesting AI content translation", {
+        preferredLanguage: languageFull,
+        aiModel,
+        textSnippet: text.slice(0, 50) + "..."
+      })
 
       const { text: translated } = await generateText({
         model: getFinalModel(aiModel),
-        prompt: `You are a high-performance technical translation node. Translate the following data.
+        prompt: `You are the System Intelligence Core. Execute linguistic synchronization.
         
         USER GOAL: ${prompt}
-        TARGET LANGUAGE PREFERENCE: ${languageFull}
+        TARGET LANGUAGE: ${languageFull}
 
-        CRITICAL: If the user's goal specifies a language (e.g. "translate to Marathi"), use that. Otherwise use the preference: ${languageFull}.
+        CRITICAL: Maintain absolute technical precision. If the user's prompt contains typos (e.g. "trabslate"), interpret them correctly as transformation directives.
+        
+        Return ONLY the translated/processed text.
 
-        Return ONLY the translated text. Maintain formatting and technical accuracy.
-
-        TEXT TO TRANSLATE:
+        TEXT OBJECT:
         ${text.slice(0, 15000)}
 
-        TRANSLATION:`,
+        SYNCHRONIZED OUTPUT:`,
         temperature: 0.3,
+      })
+
+      Logger.info("AI content translation successful", {
+        durationMs: Date.now() - startTime,
+        translatedSnippet: translated.slice(0, 50) + "..."
       })
 
       return translated
     } catch (err) {
-      console.error("[v0] Translation failed:", err)
+      Logger.error("AI content translation failed", err, { aiModel, targetLanguage })
       return text
     }
   }
@@ -189,6 +280,11 @@ Title:`,
       } else if (["txt", "md", "markdown", "html"].includes(ext)) {
         const text = new TextDecoder("utf-8").decode(u8)
         processedContent = await translateContent(text, targetLanguage)
+      } else if (ext === "pdf") {
+        const text = extractSimplePdfText(u8)
+        if (text) {
+          processedContent = await translateContent(text, targetLanguage)
+        }
       }
 
       const coverLine = await getCoverLineFor(f.name, targetLanguage)
@@ -210,27 +306,43 @@ Title:`,
       const finalName = suggestedName.replace(".pdf", `${langSuffix}.pdf`)
 
       results.push({ name: finalName, bytes })
-      console.log("[v0] File processed successfully:", finalName)
+      Logger.info("File processed successfully", { requestId, filename: finalName })
     } catch (err: any) {
-      console.error("[v0] processing error for", f.name, ":", err?.message || err)
+      Logger.error("Processing error for file", err, { requestId, filename: f.name })
       return new Response(`Error processing ${f.name}: ${err?.message || "Unknown error"}`, { status: 500 })
     }
   }
 
   async function generateSuccessMessage(targetLanguage: string) {
     const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
+    const startTime = Date.now()
+
     try {
+      Logger.info("Requesting AI success message generation", { targetLanguage, aiModel })
       const { text } = await generateText({
         model: getFinalModel(aiModel),
-        prompt: `Generate a concise, technical success confirmation in ${languageFull} verifying that the data object has been successfully synchronized and processed.
+        prompt: `You are the System Intelligence Core. Generate a concise, technical success confirmation in ${languageFull} verifying that the document transformation and synchronization is complete.
         
-        CRITICAL: If the user's prompt "${prompt}" asked for a specific language translation, provide this confirmation in that language.
+        CONTEXT: 
+        - Target Language: ${languageFull}
+        - User Prompt: "${prompt}"
         
-        Keep it under 150 characters. Return ONLY the message text.`,
+        CRITICAL: You MUST respond EXCLUSIVELY in ${languageFull}. 
+        
+        Style: Sterile, professional, system-grade technical terminology.
+        Length: Under 120 characters. 
+        Return ONLY the message text.`,
         temperature: 0.7,
       })
-      return text.trim()
-    } catch {
+
+      const message = text.trim()
+      Logger.info("AI success message generated successfully", {
+        durationMs: Date.now() - startTime,
+        message
+      })
+      return message
+    } catch (err) {
+      Logger.warn("AI success message generation failed, using default", { err: (err as any).message })
       return `Document processing complete. The output has been generated.`
     }
   }
@@ -255,6 +367,13 @@ Title:`,
     zip.file(r.name, r.bytes)
   }
   const zipped = await zip.generateAsync({ type: "uint8array" })
+
+  Logger.info("Transform API request completed successfully", {
+    requestId,
+    durationMs: Date.now() - startTime,
+    resultCount: results.length
+  })
+
   return new Response(zipped as any, {
     headers: {
       "Content-Type": "application/zip",

@@ -1,5 +1,6 @@
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
+import { Logger } from "@/lib/logger"
 
 export type TranslationTone = "formal" | "casual" | "legal" | "academic"
 export type RewriteStyle = "professional" | "simple" | "creative"
@@ -21,7 +22,9 @@ export async function explainParagraph(
   targetLanguage: string,
   tone: TranslationTone = "formal",
 ): Promise<string> {
+  const startTime = Date.now()
   try {
+    Logger.info("Requesting paragraph explanation", { targetLanguage, tone, textSnippet: text.slice(0, 50) + "..." })
     const { text: explanation } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Explain the following text in a ${tone} tone for translation to ${targetLanguage}.
@@ -33,9 +36,10 @@ export async function explainParagraph(
       temperature: 0.7,
     })
 
+    Logger.info("Paragraph explanation successful", { durationMs: Date.now() - startTime })
     return explanation
   } catch (error) {
-    console.error("[v0] Error explaining paragraph:", error)
+    Logger.error("Error explaining paragraph", error, { targetLanguage, tone })
     throw new Error("Failed to generate explanation")
   }
 }
@@ -44,7 +48,9 @@ export async function explainParagraph(
  * Summarize a document or long text
  */
 export async function summarizeDocument(text: string, maxLength = 200): Promise<string> {
+  const startTime = Date.now()
   try {
+    Logger.info("Requesting document summary", { maxLength, textSnippet: text.slice(0, 50) + "..." })
     const { text: summary } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Summarize the following document in approximately ${maxLength} words. 
@@ -56,9 +62,10 @@ export async function summarizeDocument(text: string, maxLength = 200): Promise<
       temperature: 0.7,
     })
 
+    Logger.info("Document summary successful", { durationMs: Date.now() - startTime })
     return summary
   } catch (error) {
-    console.error("[v0] Error summarizing document:", error)
+    Logger.error("Error summarizing document", error)
     throw new Error("Failed to generate summary")
   }
 }
@@ -67,7 +74,9 @@ export async function summarizeDocument(text: string, maxLength = 200): Promise<
  * Extract key points from text
  */
 export async function extractKeyPoints(text: string, maxPoints = 5): Promise<string[]> {
+  const startTime = Date.now()
   try {
+    Logger.info("Requesting key points extraction", { maxPoints, textSnippet: text.slice(0, 50) + "..." })
     const { text: response } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Extract the ${maxPoints} most important key points from the following text.
@@ -79,12 +88,13 @@ export async function extractKeyPoints(text: string, maxPoints = 5): Promise<str
       temperature: 0.7,
     })
 
+    Logger.info("Key points extraction successful", { durationMs: Date.now() - startTime })
     return response
       .split("\n")
-      .filter((line) => line.trim())
-      .map((line) => line.replace(/^\d+\.\s*/, "").trim())
+      .filter((line: string) => line.trim())
+      .map((line: string) => line.replace(/^\d+\.\s*/, "").trim())
   } catch (error) {
-    console.error("[v0] Error extracting key points:", error)
+    Logger.error("Error extracting key points", error)
     throw new Error("Failed to extract key points")
   }
 }
@@ -99,7 +109,9 @@ export async function rewriteInStyle(text: string, style: RewriteStyle, targetLa
     creative: "creative and engaging language with vivid descriptions",
   }
 
+  const startTime = Date.now()
   try {
+    Logger.info("Requesting text rewrite", { style, targetLanguage, textSnippet: text.slice(0, 50) + "..." })
     const { text: rewritten } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Rewrite the following text in ${styleDescriptions[style]} for translation to ${targetLanguage}.
@@ -111,9 +123,10 @@ export async function rewriteInStyle(text: string, style: RewriteStyle, targetLa
       temperature: 0.8,
     })
 
+    Logger.info("Text rewrite successful", { durationMs: Date.now() - startTime })
     return rewritten
   } catch (error) {
-    console.error("[v0] Error rewriting text:", error)
+    Logger.error("Error rewriting text", error, { style, targetLanguage })
     throw new Error("Failed to rewrite text")
   }
 }
@@ -134,7 +147,9 @@ export async function applyToneToTranslation(
     academic: "academic and scholarly",
   }
 
+  const startTime = Date.now()
   try {
+    Logger.info("Requesting tone adjustment", { tone, targetLanguage })
     const { text: tonedTranslation } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Adjust the following ${targetLanguage} translation to be ${toneDescriptions[tone]}.
@@ -147,9 +162,10 @@ export async function applyToneToTranslation(
       temperature: 0.7,
     })
 
+    Logger.info("Tone adjustment successful", { durationMs: Date.now() - startTime })
     return tonedTranslation
   } catch (error) {
-    console.error("[v0] Error applying tone:", error)
+    Logger.error("Error applying tone", error, { tone, targetLanguage })
     throw new Error("Failed to apply tone to translation")
   }
 }

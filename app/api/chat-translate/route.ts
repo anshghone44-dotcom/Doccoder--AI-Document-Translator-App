@@ -2,6 +2,7 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
 import { type NextRequest, NextResponse } from "next/server"
+import { Logger } from "@/lib/logger"
 
 const LANGUAGE_MAP: Record<string, string> = {
     bn: "Bengali",
@@ -35,19 +36,32 @@ const LANGUAGE_MAP: Record<string, string> = {
 }
 
 export async function POST(request: NextRequest) {
+    const requestId = Math.random().toString(36).substring(7)
+    const startTime = Date.now()
+
     try {
         const { messages, targetLanguage, tone, model, useGlossary } = await request.json()
 
+        Logger.info("Chat translate request started", {
+            requestId,
+            model,
+            targetLanguage,
+            messageCount: messages?.length
+        })
+
         if (!messages || !Array.isArray(messages)) {
+            Logger.warn("Invalid messages format", { requestId })
             return NextResponse.json({ error: "Invalid messages format" }, { status: 400 })
         }
 
         const lastUserMessage = messages[messages.length - 1].content
         const targetLanguageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
-        const systemPrompt = `You are the System Intelligence Core, a high-throughput multimodal processing node optimized for technical data extraction and linguistic synchronization.
-
-        CRITICAL INSTRUCTION: You must respond ENTIRELY in ${targetLanguageFull}. Even if the user asks a question in another language, your response, explanations, and labels MUST be in ${targetLanguageFull}.
+        const systemPrompt = `You are the System Intelligence Core, a high-throughput multimodal processing node. 
+        
+        COMMAND OF LANGUAGE SELECTION: The system is currently locked into ${targetLanguageFull}.
+        
+        CRITICAL INSTRUCTION: You must respond ENTIRELY in ${targetLanguageFull}. This is a system-level override. Even if the user asks a question in another language, your response, explanations, and labels MUST be in ${targetLanguageFull}.
 
         Persona:
         - System-centric, efficiently technical, and architecturally precise.
@@ -62,19 +76,35 @@ export async function POST(request: NextRequest) {
         Output Buffer Language: ${targetLanguageFull}`
 
         // Map future/advanced models to currently available versions
-        const modelMapping: Record<string, string> = {
-            "openai/gpt-5": "gpt-4o",
-            "xai/grok-4": "gpt-4o",
-            "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-            "openai/gpt-4-mini": "gpt-4o-mini",
-            "xai/grok-3": "gpt-4o",
-            "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
+        const getFinalModel = (requestedModel: string) => {
+            try {
+                const modelMapping: Record<string, string> = {
+                    "openai/gpt-5": "gpt-4o",
+                    "xai/grok-4": "gpt-4o",
+                    "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
+                    "openai/gpt-4-mini": "gpt-4o-mini",
+                    "xai/grok-3": "gpt-4o",
+                    "anthropic/claude-3.1": "claude-3-5-haiku-20241022"
+                }
+
+                const modelId = requestedModel && requestedModel.includes('/') ? requestedModel.split('/')[1] : (requestedModel || "gpt-4o-mini")
+                const mappedModel = modelMapping[requestedModel] || modelId
+
+                Logger.info("Selecting AI model for chat", { requestId, requestedModel, mappedModel })
+
+                if (requestedModel && (requestedModel.startsWith('anthropic') || requestedModel.startsWith('claude'))) {
+                    return anthropic(mappedModel)
+                }
+                return openai(mappedModel)
+            } catch (err) {
+                Logger.error("Failed to initialize model for chat", err, { requestId, requestedModel })
+                return openai("gpt-4o-mini")
+            }
         }
 
-        const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
-        const mappedModel = modelMapping[model] || modelId
-        const finalModel = model && model.startsWith('anthropic') ? anthropic(mappedModel) : openai(mappedModel)
+        const finalModel = getFinalModel(model)
 
+        Logger.info("Requesting chat translation", { requestId })
         const response = await generateText({
             model: finalModel,
             system: systemPrompt,
@@ -82,9 +112,14 @@ export async function POST(request: NextRequest) {
             temperature: 0.7,
         })
 
+        Logger.info("Chat translation successful", {
+            requestId,
+            durationMs: Date.now() - startTime
+        })
+
         return NextResponse.json({ role: "assistant", content: response.text })
     } catch (error) {
-        console.error("[v0] Chat translation error:", error)
+        Logger.error("Chat translation failed", error, { requestId })
         return NextResponse.json({ error: "Failed to generate translation" }, { status: 500 })
     }
 }
