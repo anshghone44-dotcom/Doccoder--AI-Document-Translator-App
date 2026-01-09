@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2, Bot } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2, Bot, Shield } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
@@ -217,53 +217,84 @@ export default function DocChatbot() {
     }
 
     return (
-        <div className="flex flex-col h-[700px] w-full max-w-5xl mx-auto bg-card/60 backdrop-blur-3xl rounded-3xl overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] relative group/chatbot">
-            {/* Background Grid Effect */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0" />
+        <div className="flex flex-col h-[800px] w-full max-w-5xl mx-auto relative group/chatbot">
+            {/* Background Grid Effect - Subtle */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
 
-            {/* Header / Control Bar */}
-            <div className="p-4 border-b border-border/10 bg-background/40 backdrop-blur-xl flex items-center justify-between relative z-10">
+            {/* Header / Control Bar - More Discrete */}
+            <div className="px-6 py-3 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/5 border border-border/50 backdrop-blur-md">
                         <Bot className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <h2 className="text-xs font-bold tracking-widest uppercase text-foreground">{t.chatbot.architect}</h2>
-                        <div className="hidden md:flex items-center gap-3 text-[9px] font-mono text-muted-foreground/40 border-l border-border/10 pl-3">
-                            <div className="flex items-center gap-1">
-                                <span className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
-                                NODE_01: ACTIVE
-                            </div>
-                            <div className="flex gap-2">
-                                <span>LATENCY: 14MS</span>
-                                <span>UPTIME: 99.9%</span>
-                            </div>
-                        </div>
+                        <span className="text-[10px] font-bold tracking-widest uppercase text-foreground/70">{t.chatbot.architect}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-
-                    <VoiceSettings
-                        selectedVoice={selectedVoice}
-                        onVoiceChange={setSelectedVoice}
-                        autoPlay={autoPlay}
-                        onAutoPlayChange={setAutoPlay}
-                    />
-
-                    <LanguagePicker
-                        value={targetLang}
-                        onChange={(code) => {
-                            setTargetLang(code as any)
-                            setLanguage(code as any)
-                        }}
-                    />
+                    <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
+                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
+                        <VoiceSettings
+                            selectedVoice={selectedVoice}
+                            onVoiceChange={setSelectedVoice}
+                            autoPlay={autoPlay}
+                            onAutoPlayChange={setAutoPlay}
+                        />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
+                        <LanguagePicker
+                            value={targetLang}
+                            onChange={(code) => {
+                                setTargetLang(code as any)
+                                setLanguage(code as any)
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* Messages Area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar scroll-smooth relative z-10">
-                {messages.map((m, idx) => (
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-12 space-y-10 no-scrollbar scroll-smooth relative z-10">
+                {messages.length === 1 && messages[0].role === "assistant" && messages[0].content === t.chatbot.welcome && (
+                    <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
+                        <div className="relative">
+                            <div className="h-20 w-20 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10">
+                                <Bot className="h-10 w-10 text-primary" />
+                            </div>
+                            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
+                        </div>
+                        <div className="space-y-4 max-w-2xl">
+                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
+                                {language === "en" ? "How can I help you today?" : t.chatbot.welcome}
+                            </h1>
+                            <p className="text-muted-foreground text-lg font-medium leading-relaxed">
+                                {language === "en" ? "I can help you translate documents, sync data, or provide contextual analysis." : ""}
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl pt-8">
+                            {[
+                                { icon: Sparkles, text: t.chatbot.recommendations[0] },
+                                { icon: Languages, text: t.chatbot.recommendations[1] },
+                                { icon: Zap, text: t.chatbot.recommendations[2] },
+                                { icon: FileText, text: t.chatbot.recommendations[3] },
+                            ].map((rec, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => {
+                                        setInput(rec.text)
+                                    }}
+                                    className="flex items-center gap-4 p-4 rounded-2xl border border-border/50 bg-foreground/[0.02] hover:bg-foreground/[0.05] hover:border-primary/30 transition-all text-left group"
+                                >
+                                    <div className="p-2 rounded-xl bg-foreground/5 text-muted-foreground group-hover:text-primary transition-colors">
+                                        <rec.icon className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-sm font-semibold">{rec.text}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {messages.filter(m => !(messages.length === 1 && m.role === "assistant" && m.content === t.chatbot.welcome)).map((m, idx) => (
                     <div
                         key={idx}
                         className={cn(
@@ -271,68 +302,74 @@ export default function DocChatbot() {
                             m.role === "user" ? "ml-auto items-end" : "items-start"
                         )}
                     >
-                        <div className={cn(
-                            "flex items-center gap-2 mb-2 opacity-50 px-2",
-                            m.role === "user" ? "flex-row-reverse" : "flex-row"
-                        )}>
-                            <div className={cn("h-1.5 w-1.5 rounded-full", m.role === "user" ? "bg-primary" : "bg-foreground")} />
-                            <span className="text-[10px] font-semibold uppercase tracking-wider">
-                                {m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}
-                            </span>
-                        </div>
-
                         <div
                             className={cn(
-                                "px-8 py-5 rounded-2xl text-sm leading-relaxed relative group transition-all duration-300",
-                                m.role === "user"
-                                    ? "bg-foreground text-background font-medium shadow-2xl"
-                                    : "bg-background/80 backdrop-blur-md border border-border/50 text-foreground shadow-sm hover:border-primary/30"
+                                "max-w-[85%] relative group transition-all duration-300",
+                                m.role === "user" ? "ml-auto" : "mr-auto"
                             )}
                         >
-                            <div className="whitespace-pre-wrap">{m.content}</div>
+                            <div className={cn(
+                                "flex items-center gap-2 mb-2 px-1",
+                                m.role === "user" ? "justify-end" : "justify-start"
+                            )}>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                    {m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}
+                                </span>
+                            </div>
 
-                            {m.files && m.files.length > 0 && (
-                                <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap gap-2">
-                                    {m.files.map((file, fIdx) => (
-                                        <div key={fIdx} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 border border-white/5 text-xs">
-                                            <FileText className="h-3.5 w-3.5" />
-                                            {file.name}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            <div
+                                className={cn(
+                                    "px-6 py-4 rounded-[2rem] text-sm leading-relaxed shadow-sm transition-all duration-300",
+                                    m.role === "user"
+                                        ? "bg-foreground text-background rounded-tr-sm"
+                                        : "bg-card border border-border/50 text-foreground rounded-tl-sm hover:border-primary/20"
+                                )}
+                            >
+                                <div className="whitespace-pre-wrap leading-7">{m.content}</div>
 
-                            {m.downloadUrl && (
-                                <div className="mt-6 flex flex-col gap-4 p-4 rounded-2xl bg-foreground/5 border border-white/10">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-lg bg-green-500/10">
-                                                <FileText className="h-5 w-5 text-green-500" />
+                                {m.files && m.files.length > 0 && (
+                                    <div className="mt-4 pt-4 border-t border-border/10 flex flex-wrap gap-2">
+                                        {m.files.map((file, fIdx) => (
+                                            <div key={fIdx} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/5 border border-border/10 text-[10px] font-bold uppercase tracking-widest">
+                                                <FileText className="h-3 w-3 text-primary" />
+                                                {file.name}
                                             </div>
-                                            <div>
-                                                <div className="text-xs font-bold">{m.filename}</div>
-                                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">{t.chatbot.processedDocument}</div>
-                                            </div>
-                                        </div>
-                                        <a
-                                            href={m.downloadUrl}
-                                            download={m.filename}
-                                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500 text-white font-bold text-xs hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20"
-                                        >
-                                            <Download className="h-3.5 w-3.5" />
-                                            {t.chatbot.download}
-                                        </a>
+                                        ))}
                                     </div>
-                                </div>
-                            )}
+                                )}
+
+                                {m.downloadUrl && (
+                                    <div className="mt-6 p-4 rounded-2xl bg-primary/5 border border-primary/10">
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 rounded-xl bg-primary/10">
+                                                    <FileText className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <div className="overflow-hidden">
+                                                    <div className="text-xs font-bold truncate">{m.filename}</div>
+                                                    <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{t.chatbot.processedDocument}</div>
+                                                </div>
+                                            </div>
+                                            <a
+                                                href={m.downloadUrl}
+                                                download={m.filename}
+                                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground text-background font-bold text-[10px] tracking-widest uppercase hover:opacity-90 transition-opacity whitespace-nowrap"
+                                            >
+                                                <Download className="h-3 w-3" />
+                                                {t.chatbot.download}
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
                             {m.role === "assistant" && (
-                                <div className="absolute -right-12 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+                                <div className="flex items-center gap-1 mt-2 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button
                                         onClick={() => handlePlayTTS(m.content, idx)}
                                         className={cn(
-                                            "opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 border border-white/10",
-                                            playingMessageIndex === idx && "opacity-100 bg-primary/20 text-primary border-primary/50"
+                                            "p-2 rounded-full hover:bg-foreground/5 transition-all",
+                                            playingMessageIndex === idx && "text-primary bg-primary/5"
                                         )}
                                         title="Play Synthesis"
                                     >
@@ -340,7 +377,7 @@ export default function DocChatbot() {
                                     </button>
                                     <button
                                         onClick={() => copyToClipboard(m.content)}
-                                        className="opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 border border-white/10"
+                                        className="p-2 rounded-full hover:bg-foreground/5 transition-all text-muted-foreground hover:text-foreground"
                                         title="Copy to terminal"
                                     >
                                         <Copy className="h-4 w-4" />
@@ -353,96 +390,96 @@ export default function DocChatbot() {
 
                 {isLoading && (
                     <div className="flex items-start max-w-[80%] animate-in fade-in duration-500">
-                        <div className="glass px-8 py-5 rounded-[2rem] border border-white/10 flex items-center gap-4 bg-white/5">
+                        <div className="px-6 py-4 rounded-[2rem] border border-border/50 flex items-center gap-4 bg-card shadow-sm">
                             <div className="relative">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                                <div className="absolute inset-0 bg-primary/20 blur-lg" />
                             </div>
-                            <span className="text-sm text-foreground/70 font-medium tracking-tight">{t.chatbot.processing}</span>
+                            <span className="text-sm text-foreground/70 font-bold uppercase tracking-widest">{t.chatbot.processing}</span>
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Input / Upload Area */}
-            <div className="p-8 border-t border-white/5 bg-background/40 backdrop-blur-xl relative z-10">
-                {files.length > 0 && (
-                    <div className="mb-4 flex flex-wrap gap-2 animate-in slide-in-from-bottom-2 duration-300">
-                        {files.map((file, i) => (
-                            <div key={i} className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground/5 border border-white/10 text-xs font-medium">
-                                <FileText className="h-3.5 w-3.5 opacity-50" />
-                                <span className="max-w-[150px] truncate">{file.name}</span>
-                                <button
-                                    onClick={() => removeFile(i)}
-                                    className="p-1 rounded-full hover:bg-red-500/20 hover:text-red-500 transition-colors"
-                                    aria-label={t.chatbot.ariaLabels.remove}
-                                >
-                                    <X className="h-3 w-3" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
+            {/* Input / Upload Area - Fixed Pill Design */}
+            <div className="p-6 md:p-10 relative z-20">
+                <div className="max-w-4xl mx-auto w-full">
+                    {files.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2 animate-in slide-in-from-bottom-2 duration-300">
+                            {files.map((file, i) => (
+                                <div key={i} className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground/5 border border-white/10 text-xs font-medium">
+                                    <FileText className="h-3.5 w-3.5 opacity-50" />
+                                    <span className="max-w-[150px] truncate">{file.name}</span>
+                                    <button
+                                        onClick={() => removeFile(i)}
+                                        className="p-1 rounded-full hover:bg-red-500/20 hover:text-red-500 transition-colors"
+                                        aria-label={t.chatbot.ariaLabels.remove}
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-                <form onSubmit={handleSend} className="relative group">
-                    <div className="absolute inset-0 bg-foreground/5 rounded-[2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
-                    <div className="relative flex items-end gap-3 glass-dark border-white/10 rounded-[2rem] p-3 shadow-2xl transition-all duration-500 group-focus-within:border-primary/50 group-focus-within:shadow-primary/5">
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            multiple
-                            className="hidden"
-                            onChange={onFilesSelected}
-                        />
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="h-12 w-12 rounded-2xl hover:bg-foreground/5 hover:text-primary transition-all active:scale-95 group/upload"
-                            aria-label={t.chatbot.ariaLabels.upload}
-                        >
-                            <Paperclip className="h-5 w-5 transition-transform group-hover/upload:rotate-12" />
-                        </Button>
+                    <form onSubmit={handleSend} className="relative group">
+                        <div className="relative flex items-end gap-2 bg-card border border-border/50 rounded-[2.5rem] p-2 shadow-2xl transition-all duration-500 focus-within:border-primary/50 focus-within:shadow-primary/5">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                multiple
+                                className="hidden"
+                                onChange={onFilesSelected}
+                            />
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="h-12 w-12 rounded-full hover:bg-foreground/5 hover:text-primary transition-all active:scale-95 group/upload"
+                                aria-label={t.chatbot.ariaLabels.upload}
+                            >
+                                <Paperclip className="h-5 w-5 transition-transform group-hover/upload:rotate-12" />
+                            </Button>
 
-                        <textarea
-                            placeholder={t.chatbot.placeholder}
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault()
-                                    handleSend()
-                                }
-                            }}
-                            className="flex-1 bg-transparent min-h-[48px] max-h-[200px] py-4 px-2 outline-none text-sm resize-none no-scrollbar placeholder:text-muted-foreground/30"
-                            rows={1}
-                        />
+                            <textarea
+                                placeholder={t.chatbot.placeholder}
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault()
+                                        handleSend()
+                                    }
+                                }}
+                                className="flex-1 bg-transparent min-h-[52px] max-h-[200px] py-4 px-4 outline-none text-base resize-none no-scrollbar placeholder:text-muted-foreground/30 font-medium"
+                                rows={1}
+                            />
 
-                        <Button
-                            type="submit"
-                            disabled={(!input.trim() && files.length === 0) || isLoading}
-                            className="h-12 w-12 rounded-2xl bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0 group/send disabled:opacity-30"
-                            aria-label={t.chatbot.ariaLabels.send}
-                        >
-                            <Send className="h-5 w-5 group-hover/send:translate-x-0.5 group-hover/send:-translate-y-0.5 transition-transform" />
-                        </Button>
-                    </div>
-                </form>
+                            <Button
+                                type="submit"
+                                disabled={(!input.trim() && files.length === 0) || isLoading}
+                                className="h-12 w-12 rounded-full bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0 group/send disabled:opacity-30"
+                                aria-label={t.chatbot.ariaLabels.send}
+                            >
+                                <Send className="h-5 w-5 group-hover/send:translate-x-0.5 group-hover/send:-translate-y-0.5 transition-transform" />
+                            </Button>
+                        </div>
+                    </form>
 
-                <div className="mt-4 flex items-center justify-center gap-8 opacity-20 hover:opacity-40 transition-opacity duration-1000">
-                    <div className="flex items-center gap-2 text-[8px] font-semibold tracking-widest uppercase">
-                        {t.chatbot.secureConnection}
-                    </div>
-                    <div className="flex items-center gap-2 text-[8px] font-semibold tracking-widest uppercase text-green-600">
-                        <div className="h-1 w-1 rounded-full bg-current" /> {t.chatbot.systemReady}
+                    <div className="mt-4 flex items-center justify-center gap-6 opacity-30">
+                        <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
+                            <Shield className="h-3 w-3" /> {t.chatbot.secureConnection}
+                        </div>
+                        <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
+                            <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> {t.chatbot.systemReady}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Decorative BG Glows */}
-            <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -z-10" />
-            <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10" />
+                {/* Decorative BG Glows - More Subtle */}
+                <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10" />
+                <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10" />
+            </div>
         </div>
     )
 }

@@ -4,13 +4,14 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Volume2 } from "lucide-react"
+import { Paperclip, Send, X, Volume2, Loader2, Bot, Shield, Sparkles, Languages, Zap, FileText, Download, Copy, Globe } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import { useSearchParams } from "next/navigation"
 import VoiceRecorder from "./voice-recorder"
 import VoiceSettings from "@/components/voice-settings"
 import LanguagePicker from "@/components/language-picker"
+import ModelSelector, { type AIModel } from "@/components/model-selector"
 
 type Message = {
     role: "user" | "assistant"
@@ -29,7 +30,9 @@ export default function TranslationChat() {
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [targetLang, setTargetLang] = useState(searchParams.get('lang') || "English")
-    const [selectedModel, setSelectedModel] = useState("gpt-4")
+    const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
+    const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM")
+    const [autoPlay, setAutoPlay] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef<HTMLAudioElement | null>(null)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -86,19 +89,6 @@ export default function TranslationChat() {
         }
     }
 
-    const AI_MODELS = [
-        { id: "gpt-5", name: "GPT-5", provider: "OpenAI" },
-        { id: "gpt-4", name: "GPT-4", provider: "OpenAI" },
-        { id: "grok-3", name: "Grok-3", provider: "X.AI" },
-        { id: "grok-4", name: "Grok-4", provider: "X.AI" },
-        { id: "claude-sonnet-4", name: "Claude Sonnet-4", provider: "Anthropic" },
-        { id: "claude-sonnet-4.5", name: "Claude Sonnet-4.5", provider: "Anthropic" },
-        { id: "deepseek-r1", name: "DeepSeek R1", provider: "DeepSeek" },
-        { id: "deepseek-r3", name: "DeepSeek R3", provider: "DeepSeek" },
-        { id: "qwen-3", name: "Qwen 3", provider: "Alibaba" },
-        { id: "gemini-2.5", name: "Gemini-2.5", provider: "Google" },
-        { id: "gemini-3", name: "Gemini-3", provider: "Google" },
-    ]
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -150,122 +140,169 @@ export default function TranslationChat() {
     }
 
     return (
-        <div className="flex flex-col h-[600px] w-full max-w-4xl mx-auto glass-dark rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
-            {/* Header Area */}
-            <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
+        <div className="flex flex-col h-[800px] w-full max-w-5xl mx-auto relative group/chatbot">
+            {/* Background Grid Effect - Subtle */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
+
+            {/* Header Area - Discrete */}
+            <div className="px-6 py-3 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-foreground/5 flex items-center justify-center border border-foreground/10">
-                        <Globe className="h-5 w-5 text-foreground/70" />
-                    </div>
-                    <div>
-                        <h3 className="text-sm font-bold tracking-tight text-foreground uppercase">Translation Engine</h3>
-                        <p className="text-[10px] text-muted-foreground/60 font-medium uppercase tracking-widest">Cognitive Protocol v4.2</p>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-foreground/5 border border-border/50 backdrop-blur-md">
+                        <Globe className="h-4 w-4 text-primary" />
+                        <span className="text-[10px] font-bold tracking-widest uppercase text-foreground/70">Translation Engine</span>
                     </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-foreground/5 px-4 py-2 rounded-xl border border-foreground/10">
-                        <Zap className="h-4 w-4 text-primary" />
-                        <select
-                            value={selectedModel}
-                            onChange={(e) => setSelectedModel(e.target.value)}
-                            className="bg-transparent text-xs font-bold uppercase tracking-wider outline-none cursor-pointer text-foreground"
-                        >
-                            {AI_MODELS.map(model => (
-                                <option key={model.id} value={model.id} className="bg-background">
-                                    {model.name}
-                                </option>
-                            ))}
-                        </select>
+                <div className="flex items-center gap-2">
+                    <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
+                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
+                        <LanguagePicker
+                            value={targetLang}
+                            onChange={setTargetLang}
+                        />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
+                        <VoiceSettings
+                            selectedVoice={selectedVoice}
+                            onVoiceChange={setSelectedVoice}
+                            autoPlay={autoPlay}
+                            onAutoPlayChange={setAutoPlay}
+                        />
                     </div>
-
-                    <LanguagePicker
-                        value={targetLang}
-                        onChange={setTargetLang}
-                    />
                 </div>
             </div>
 
             {/* Messages Area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar" >
-                {
-                    messages.map((m, idx) => (
-                        <div
-                            key={idx}
-                            className={cn(
-                                "flex flex-col max-w-[80%] animate-in fade-in slide-in-from-bottom-2 duration-500",
-                                m.role === "user" ? "ml-auto items-end" : "items-start"
-                            )}
-                        >
-                            <div
-                                className={cn(
-                                    "px-6 py-4 rounded-3xl text-sm leading-relaxed relative group",
-                                    m.role === "user"
-                                        ? "bg-foreground text-background font-medium shadow-lg"
-                                        : "glass border border-white/10 text-foreground"
-                                )}
-                            >
-                                {m.content}
-                                {m.role === "assistant" && (
-                                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button
-                                            onClick={() => playVoiceResponse(m.content, idx)}
-                                            className="p-1 rounded bg-black/20 hover:bg-black/40"
-                                            title="Play voice response"
-                                        >
-                                            <Volume2 className={cn("h-3 w-3", playingMessageIndex === idx ? "text-primary" : "")} />
-                                        </button>
-                                        <button
-                                            onClick={() => copyToClipboard(m.content)}
-                                            className="p-1 rounded bg-black/20 hover:bg-black/40"
-                                            title="Copy translation"
-                                        >
-                                            <Copy className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                )}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-12 space-y-10 no-scrollbar relative z-10" >
+                {messages.length === 1 && messages[0].role === "assistant" && messages[0].content.includes("Interface initialized") && (
+                    <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
+                        <div className="relative">
+                            <div className="h-20 w-20 rounded-[2.5rem] bg-foreground/5 flex items-center justify-center border border-foreground/10 shadow-2xl relative z-10">
+                                <Languages className="h-10 w-10 text-primary" />
                             </div>
+                            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
                         </div>
-                    ))
-                }
-                {
-                    isLoading && (
-                        <div className="flex items-start max-w-[80%]">
-                            <div className="glass px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-3">
-                                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                                <span className="text-sm text-muted-foreground font-medium">SYSTEM is processing...</span>
-                            </div>
-                        </div>
-                    )
-                }
-            </div>
-
-            {/* Input Area */}
-            <form onSubmit={handleSend} className="p-6 border-t border-white/5 bg-white/5" >
-                <div className="relative flex items-center gap-4">
-                    <div className="relative flex-1">
-                        <Input
-                            placeholder="Type text to translate..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            className="bg-black/20 border-white/5 h-14 rounded-2xl pl-6 pr-14 text-sm focus:ring-1 focus:ring-foreground/20 transition-all placeholder:text-muted-foreground/50"
-                        />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                            <Languages className="h-5 w-5 opacity-30" />
+                        <div className="space-y-4 max-w-2xl">
+                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
+                                {t.hero.title}
+                            </h1>
+                            <p className="text-muted-foreground text-lg font-medium leading-relaxed">
+                                {t.hero.description}
+                            </p>
                         </div>
                     </div>
-                    <VoiceRecorder onTranscript={handleVoiceTranscript} />
-                    <Button
-                        type="submit"
-                        disabled={!input.trim() || isLoading}
-                        className="h-14 w-14 rounded-2xl bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0"
-                    >
-                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-                    </Button>
-                </div>
-            </form>
+                )}
 
-            <div className="absolute top-0 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
-            <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+                {messages.filter(m => !(messages.length === 1 && m.role === "assistant" && m.content.includes("Interface initialized"))).map((m, idx) => (
+                    <div
+                        key={idx}
+                        className={cn(
+                            "max-w-[85%] relative group transition-all duration-300",
+                            m.role === "user" ? "ml-auto" : "mr-auto"
+                        )}
+                    >
+                        <div className={cn(
+                            "flex items-center gap-2 mb-2 px-1",
+                            m.role === "user" ? "justify-end" : "justify-start"
+                        )}>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                {m.role === "user" ? t.chatbot.userLabel : t.chatbot.assistantLabel}
+                            </span>
+                        </div>
+
+                        <div
+                            className={cn(
+                                "px-6 py-4 rounded-[2rem] text-sm leading-relaxed shadow-sm transition-all duration-300",
+                                m.role === "user"
+                                    ? "bg-foreground text-background rounded-tr-sm"
+                                    : "bg-card border border-border/50 text-foreground rounded-tl-sm hover:border-primary/20"
+                            )}
+                        >
+                            <div className="whitespace-pre-wrap leading-7">{m.content}</div>
+
+                            {m.role === "assistant" && (
+                                <div className="flex items-center gap-1 mt-2 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => playVoiceResponse(m.content, idx)}
+                                        className={cn(
+                                            "p-2 rounded-full hover:bg-foreground/5 transition-all text-muted-foreground hover:text-foreground",
+                                            playingMessageIndex === idx && "text-primary bg-primary/5"
+                                        )}
+                                        title="Play voice response"
+                                    >
+                                        {playingMessageIndex === idx ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
+                                    </button>
+                                    <button
+                                        onClick={() => copyToClipboard(m.content)}
+                                        className="p-2 rounded-full hover:bg-foreground/5 transition-all text-muted-foreground hover:text-foreground"
+                                        title="Copy translation"
+                                    >
+                                        <Copy className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+                {isLoading && (
+                    <div className="flex items-start max-w-[80%] animate-in fade-in duration-500">
+                        <div className="px-6 py-4 rounded-[2rem] border border-border/50 flex items-center gap-4 bg-card shadow-sm">
+                            <div className="relative">
+                                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                            </div>
+                            <span className="text-sm text-foreground/70 font-bold uppercase tracking-widest">Processing...</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Input area redesign */}
+            <div className="p-6 md:p-10 relative z-20">
+                <div className="max-w-4xl mx-auto w-full">
+                    <form onSubmit={handleSend} className="relative group">
+                        <div className="relative flex items-end gap-2 bg-card border border-border/50 rounded-[2.5rem] p-2 shadow-2xl transition-all duration-500 focus-within:border-primary/50 focus-within:shadow-primary/5">
+                            <textarea
+                                placeholder="Type text to translate..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault()
+                                        handleSend()
+                                    }
+                                }}
+                                className="flex-1 bg-transparent min-h-[52px] max-h-[200px] py-4 px-6 outline-none text-base resize-none no-scrollbar placeholder:text-muted-foreground/30 font-medium"
+                                rows={1}
+                            />
+
+                            <div className="shrink-0 mb-1">
+                                <VoiceRecorder onTranscript={handleVoiceTranscript} />
+                            </div>
+
+                            <Button
+                                type="submit"
+                                disabled={!input.trim() || isLoading}
+                                className="h-12 w-12 rounded-full bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0 group/send disabled:opacity-30"
+                                aria-label={t.chatbot.ariaLabels.send}
+                            >
+                                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5 group-hover/send:translate-x-0.5 group-hover/send:-translate-y-0.5 transition-transform" />}
+                            </Button>
+                        </div>
+                    </form>
+
+                    <div className="mt-4 flex items-center justify-center gap-6 opacity-30">
+                        <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
+                            <Shield className="h-3 w-3" /> Secure Connection
+                        </div>
+                        <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
+                            <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> System Ready
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Decorative BG Glows */}
+            <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10" />
+            <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10" />
         </div>
     )
 }
