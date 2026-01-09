@@ -84,9 +84,13 @@ export async function POST(req: NextRequest) {
   const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
   const baseLanguage = (form.get("targetLanguage") || "en").toString()
 
+  // SAFE WORKFLOW - Step 1: Validate Backend Capabilities
+  const SUPPORTED_FORMATS = ["pdf", "docx", "xlsx", "csv", "txt"]
+  const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_MAP)
+
   // Detect if user explicitly requested a language or format in the prompt
   let targetLanguage = baseLanguage
-  let targetFormat: "pdf" | "docx" | "xlsx" | "csv" | "txt" = "pdf"
+  let targetFormat: string = "pdf"
 
   try {
     const { text: detectionResult } = await generateText({
@@ -95,8 +99,8 @@ export async function POST(req: NextRequest) {
       Current UI Language Context: "${LANGUAGE_MAP[baseLanguage] || baseLanguage}"
       
       Tasks:
-      1. Identify the requested target language (e.g., "translate to Marathi", "convert to French").
-      2. Identify the requested output format (e.g., "Excel", "Word", "CSV", "Text", ".xlsx", ".docx").
+      1. Identify the requested target language (ISO 639-1).
+      2. Identify the requested output format.
       
       Output format priority:
       - "Excel"/.xlsx -> xlsx
@@ -107,24 +111,44 @@ export async function POST(req: NextRequest) {
 
       Return ONLY a JSON object:
       {
-        "lang": "iso-code", // Default to "${baseLanguage}"
-        "format": "pdf|docx|xlsx|csv|txt" // Default to "pdf"
+        "lang": "iso-code", 
+        "format": "pdf|docx|xlsx|csv|txt|other" 
       }`,
       temperature: 0,
     })
 
     const cleaned = detectionResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
     const parsed = JSON.parse(cleaned)
-    if (parsed.lang && LANGUAGE_MAP[parsed.lang]) {
-      targetLanguage = parsed.lang
-    }
-    if (parsed.format && ["pdf", "docx", "xlsx", "csv", "txt"].includes(parsed.format)) {
-      targetFormat = parsed.format as any
-    }
+    targetLanguage = parsed.lang || baseLanguage
+    targetFormat = parsed.format || "pdf"
 
     Logger.info("Detected transformation metadata", { requestId, targetLanguage, targetFormat })
   } catch (err) {
     Logger.warn("Metadata detection failed, using defaults", { requestId, err: (err as any).message })
+  }
+
+  // SAFE WORKFLOW - Step 2: Check for unsupported features
+  const isLanguageSupported = SUPPORTED_LANGUAGES.includes(targetLanguage) || targetLanguage === "en"
+  const isFormatSupported = SUPPORTED_FORMATS.includes(targetFormat)
+
+  if (!isFormatSupported) {
+    Logger.warn("Unsupported format requested", { requestId, targetFormat })
+    return new Response(JSON.stringify({
+      error: "Limitation detected",
+      message: `System capability restricted: The requested output format '${targetFormat}' is not currently supported by the backend transformation engine.`,
+      code: "UNSUPPORTED_FORMAT"
+    }), { status: 400, headers: { "Content-Type": "application/json" } })
+  }
+
+  if (!isLanguageSupported) {
+    Logger.warn("Unsupported language requested", { requestId, targetLanguage })
+    if (prompt.toLowerCase().includes("translate") || prompt.toLowerCase().includes("badlo")) {
+      return new Response(JSON.stringify({
+        error: "Limitation detected",
+        message: `System capability restricted: Linguistic synchronization for '${targetLanguage}' is not available in the current environment.`,
+        code: "UNSUPPORTED_LANGUAGE"
+      }), { status: 400, headers: { "Content-Type": "application/json" } })
+    }
   }
 
   // Parse template selection
@@ -152,14 +176,16 @@ export async function POST(req: NextRequest) {
   Logger.info("Files received for processing", {
     requestId,
     fileCount: files.length,
-    filenames: files.map(f => f.name),
     aiModel,
-    targetLanguage
+    targetLanguage,
+    targetFormat
   })
 
   if (files.length === 0) {
-    Logger.warn("No files provided in request", { requestId })
-    return new Response("No files provided.", { status: 400 })
+    return new Response(JSON.stringify({
+      error: "Invalid Request",
+      message: "No document objects provided for transformation."
+    }), { status: 400, headers: { "Content-Type": "application/json" } })
   }
 
   function getFinalModel(requestedModel: string) {
@@ -292,12 +318,15 @@ Title:`,
 
       const { text: translated } = await generateText({
         model: getFinalModel(aiModel),
-        prompt: `You are the System Intelligence Core. Execute linguistic synchronization.
+        prompt: `You are the System Intelligence Core, a voice-enabled assistant. Execute linguistic synchronization.
         
         USER GOAL: ${prompt}
         TARGET LANGUAGE: ${languageFull}
 
-        CRITICAL: Maintain absolute technical precision. If the user's prompt contains typos (e.g. "trabslate"), interpret them correctly as transformation directives.
+        VOICE MODE ACTIVE:
+        - Prioritize audio-friendly, conversational interaction.
+        - Generate natural speech patterns suitable for ElevenLabs synthesis.
+        - Maintain absolute technical precision.
         
         Return ONLY the translated/processed text.
 
@@ -385,8 +414,8 @@ Title:`,
             finalName = `${baseName}.txt`
             break
           default:
-            finalBytes = u8
-            finalName = f.name
+            // SAFE WORKFLOW Rule: Never return original file.
+            throw new Error(`Technical restriction: Output generator for '${targetFormat}' is not initialized.`)
         }
       }
 
@@ -398,42 +427,33 @@ Title:`,
       results.push({ name: namedWithLang, bytes: finalBytes, format: targetFormat })
       Logger.info("File processed successfully", { requestId, finalName: namedWithLang })
     } catch (err: any) {
-      Logger.error("Processing error for file", err, { requestId, filename: f.name })
-      return new Response(`Error processing ${f.name}: ${err?.message || "Unknown error"}`, { status: 500 })
+      Logger.error("Processing sequence interrupted", err, { requestId, filename: f.name })
+      return new Response(JSON.stringify({
+        error: "Processing Interrupt",
+        message: `System encountered a technical barrier while processing '${f.name}': ${err?.message || "Internal operation failed."}`,
+        code: "PROCESS_INTERRUPT"
+      }), { status: 500, headers: { "Content-Type": "application/json" } })
     }
   }
 
   async function generateSuccessMessage(targetLanguage: string) {
     const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
-    const startTime = Date.now()
-
     try {
-      Logger.info("Requesting AI success message generation", { targetLanguage, aiModel })
       const { text } = await generateText({
         model: getFinalModel(aiModel),
-        prompt: `You are the System Intelligence Core. Generate a concise, technical success confirmation in ${languageFull} verifying that the document transformation and synchronization is complete.
+        prompt: `You are the System Intelligence Core. Generate a technical success confirmation in ${languageFull}.
         
         CONTEXT: 
         - Target Language: ${languageFull}
-        - User Prompt: "${prompt}"
+        - Status: Document synchronization successful.
         
-        CRITICAL: You MUST respond EXCLUSIVELY in ${languageFull}. 
-        
-        Style: Sterile, professional, system-grade technical terminology.
-        Length: Under 120 characters. 
-        Return ONLY the message text.`,
+        Return ONLY the message text (sterile, professional, system-grade).`,
         temperature: 0.7,
       })
 
-      const message = text.trim()
-      Logger.info("AI success message generated successfully", {
-        durationMs: Date.now() - startTime,
-        message
-      })
-      return message
+      return text.trim()
     } catch (err) {
-      Logger.warn("AI success message generation failed, using default", { err: (err as any).message })
-      return `Document processing complete. The output has been generated.`
+      return `Instruction execution successful. Output buffer synchronized.`
     }
   }
 

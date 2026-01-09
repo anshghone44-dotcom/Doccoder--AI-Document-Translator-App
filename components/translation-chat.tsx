@@ -67,7 +67,7 @@ export default function TranslationChat() {
                 body: JSON.stringify({ text: content }),
             })
 
-            if (!res.ok) throw new Error("TTS failed")
+            if (!res.ok) throw new Error("ElevenLabs failure")
 
             const audioBuffer = await res.arrayBuffer()
             const audioBlob = new Blob([audioBuffer], { type: 'audio/mpeg' })
@@ -81,8 +81,20 @@ export default function TranslationChat() {
             audioRef.current.onended = () => setPlayingMessageIndex(null)
             audioRef.current.play()
         } catch (error) {
-            console.error("TTS error:", error)
-            setPlayingMessageIndex(null)
+            console.warn("ElevenLabs TTS failed, falling back to browser synthesis:", error)
+
+            // Native Browser Fallback
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel() // Stop any current speech
+                const utterance = new SpeechSynthesisUtterance(content)
+                // search for target language in SEARCH PARAMS if possible, else default to English
+                utterance.lang = 'en-US'
+                utterance.onend = () => setPlayingMessageIndex(null)
+                utterance.onerror = () => setPlayingMessageIndex(null)
+                window.speechSynthesis.speak(utterance)
+            } else {
+                setPlayingMessageIndex(null)
+            }
         }
     }
 

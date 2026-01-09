@@ -84,7 +84,7 @@ export default function ReverseTransformChat() {
         body: JSON.stringify({ text: content }),
       })
 
-      if (!res.ok) throw new Error("TTS failed")
+      if (!res.ok) throw new Error("ElevenLabs failure")
 
       const audioBlob = await res.blob()
       const audioUrl = URL.createObjectURL(audioBlob)
@@ -97,8 +97,19 @@ export default function ReverseTransformChat() {
       audioRef.current.onended = () => setPlayingMessageIndex(null)
       audioRef.current.play()
     } catch (error) {
-      console.error("TTS error:", error)
-      setPlayingMessageIndex(null)
+      console.warn("ElevenLabs TTS failed, falling back to browser synthesis:", error)
+
+      // Native Browser Fallback
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel() // Stop any current speech
+        const utterance = new SpeechSynthesisUtterance(content)
+        utterance.lang = language // Use current UI language
+        utterance.onend = () => setPlayingMessageIndex(null)
+        utterance.onerror = () => setPlayingMessageIndex(null)
+        window.speechSynthesis.speak(utterance)
+      } else {
+        setPlayingMessageIndex(null)
+      }
     }
   }
 

@@ -105,7 +105,7 @@ export default function DocChatbot() {
                 body: JSON.stringify({ text, voiceId: selectedVoice }),
             })
 
-            if (!res.ok) throw new Error("TTS failed")
+            if (!res.ok) throw new Error("ElevenLabs failure")
 
             const blob = await res.blob()
             const url = URL.createObjectURL(blob)
@@ -121,8 +121,19 @@ export default function DocChatbot() {
                 audio.onended = () => setPlayingMessageIndex(null)
             }
         } catch (err) {
-            console.error("TTS Error:", err)
-            setPlayingMessageIndex(null)
+            console.warn("ElevenLabs TTS failed, falling back to browser synthesis:", err)
+
+            // Native Browser Fallback
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel() // Stop any current speech
+                const utterance = new SpeechSynthesisUtterance(text)
+                utterance.lang = language // Use current UI language
+                utterance.onend = () => setPlayingMessageIndex(null)
+                utterance.onerror = () => setPlayingMessageIndex(null)
+                window.speechSynthesis.speak(utterance)
+            } else {
+                setPlayingMessageIndex(null)
+            }
         }
     }, [selectedVoice])
 

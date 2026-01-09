@@ -48,10 +48,23 @@ export async function POST(req: NextRequest) {
   try {
     const form = await req.formData()
     const prompt = (form.get("prompt") || "").toString()
-    const targetFormat = (form.get("targetFormat") || "txt").toString() as "docx" | "txt" | "images"
+    const rawFormat = (form.get("targetFormat") || "txt").toString()
     const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
     const targetLanguage = (form.get("targetLanguage") || "en").toString()
     const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
+
+    // SAFE WORKFLOW - Step 1: Validate Backend Capabilities
+    const SUPPORTED_FORMATS = ["docx", "txt", "images", "csv", "xlsx", "pptx", "json", "xml", "md", "rtf"]
+    const targetFormat = rawFormat as any
+
+    if (!SUPPORTED_FORMATS.includes(targetFormat)) {
+      Logger.warn("Unsupported reverse transform format requested", { requestId, targetFormat })
+      return new Response(JSON.stringify({
+        error: "Limitation detected",
+        message: `System capability restricted: Decomposition to '${targetFormat}' is not currently available in this environment.`,
+        code: "UNSUPPORTED_FORMAT"
+      }), { status: 400, headers: { "Content-Type": "application/json" } })
+    }
 
     const files: File[] = []
     for (const [key, value] of form.entries()) {
@@ -59,9 +72,6 @@ export async function POST(req: NextRequest) {
         files.push(value)
       }
     }
-
-    console.log("[v0] PDF files received:", files.length)
-    console.log("[v0] Target format:", targetFormat)
 
     Logger.info("Files received for reverse transform", {
       requestId,
@@ -72,14 +82,21 @@ export async function POST(req: NextRequest) {
 
     if (files.length === 0) {
       Logger.warn("No PDF files provided", { requestId })
-      return new Response("No PDF files provided.", { status: 400 })
+      return new Response(JSON.stringify({
+        error: "Invalid Request",
+        message: "No document objects provided for reverse transformation."
+      }), { status: 400, headers: { "Content-Type": "application/json" } })
     }
 
     // Validate that all files are PDFs
     for (const file of files) {
       const ext = file.name.split(".").pop()?.toLowerCase()
       if (ext !== "pdf" && file.type !== "application/pdf") {
-        return new Response(`File ${file.name} is not a PDF.`, { status: 400 })
+        return new Response(JSON.stringify({
+          error: "Invalid Request",
+          message: `Technical restriction: '${file.name}' is not in a format compatible with reverse transformation (PDF required).`,
+          code: "INVALID_SOURCE_FORMAT"
+        }), { status: 400, headers: { "Content-Type": "application/json" } })
       }
     }
 
@@ -116,11 +133,14 @@ export async function POST(req: NextRequest) {
         Logger.info("Requesting AI conversion instructions", { requestId })
         const { text } = await generateText({
           model: finalModel,
-          prompt: `The user wants to convert PDF files to ${targetFormat} format.
+          prompt: `You are the System Intelligence Core, a voice-enabled assistant. The user wants to convert PDF files to ${targetFormat} format.
 
 User's technical goal: ${prompt}
 
-CRITICAL: If the document contains text, ensure it is optimized for ${languageFull} linguistic patterns. If specific instructions are given, follow them with technical precision.
+VOICE MODE PROTOCOLS:
+- Prioritize audio-friendly, conversational interaction.
+- Generate natural speech patterns for ElevenLabs synthesis.
+- CRITICAL: If the document contains text, ensure it is optimized for ${languageFull} linguistic patterns. If specific instructions are given, follow them with technical precision.
 
 Provide a brief one-line technical directive for optimal architecture of the output.
 
@@ -138,19 +158,26 @@ Directive:`,
     const results = []
     for (const file of files) {
       try {
-        Logger.info("Converting PDF", { requestId, filename: file.name })
+        Logger.info("Executing reverse transformation", { requestId, filename: file.name })
         const { bytes, suggestedName, mimeType } = await convertPdfToFormat(file, {
           targetFormat,
           prompt: conversionInstructions,
         })
+
+        // SAFE WORKFLOW check: Ensure we didn't just get the same PDF back (if not explicitly requested)
+        if (mimeType === "application/pdf" && targetFormat !== "pdf") {
+          throw new Error("Transformation engine failed to generate new format buffer.")
+        }
+
         results.push({ name: suggestedName, bytes, mimeType })
-        Logger.info("PDF converted successfully", { requestId, filename: suggestedName })
+        Logger.info("Reverse transformation successful", { requestId, filename: suggestedName })
       } catch (err: any) {
-        Logger.error("Conversion error for file", err, { requestId, filename: file.name })
-        return new Response(
-          `Error converting ${file.name}: ${err.message || "Unknown error occurred"}. Please ensure the PDF is not encrypted or corrupted.`,
-          { status: 500 },
-        )
+        Logger.error("Processing sequence interrupted", err, { requestId, filename: file.name })
+        return new Response(JSON.stringify({
+          error: "Processing Interrupt",
+          message: `System encountered a technical barrier while decomposing '${file.name}': ${err?.message || "Internal operation failed."}`,
+          code: "PROCESS_INTERRUPT"
+        }), { status: 500, headers: { "Content-Type": "application/json" } })
       }
     }
 
@@ -181,12 +208,16 @@ Directive:`,
     return new Response(zipped as any, {
       headers: {
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${encodeRFC5987("converted-files.zip")}"`,
+        "Content-Disposition": `attachment; filename="${encodeRFC5987("converted-data.zip")}"`,
       },
     })
   } catch (err: any) {
     Logger.error("Reverse transform API fatal error", err, { requestId })
-    return new Response(`Internal server error: ${err?.message || "Unknown error"}`, { status: 500 })
+    return new Response(JSON.stringify({
+      error: "System Fault",
+      message: `Critical interrupt in transformation pipe: ${err?.message || "Internal environment breakdown."}`,
+      code: "SYSTEM_FAULT"
+    }), { status: 500, headers: { "Content-Type": "application/json" } })
   }
 }
 

@@ -51,7 +51,22 @@ export async function POST(request: NextRequest) {
 
         if (!messages || !Array.isArray(messages)) {
             Logger.warn("Invalid messages format", { requestId })
-            return NextResponse.json({ error: "Invalid messages format" }, { status: 400 })
+            return NextResponse.json({
+                error: "Invalid Request",
+                message: "System requires a valid message array context for linguistic analysis."
+            }, { status: 400 })
+        }
+
+        const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_MAP)
+        const isLanguageSupported = SUPPORTED_LANGUAGES.includes(targetLanguage) || targetLanguage === "en"
+
+        if (!isLanguageSupported) {
+            Logger.warn("Unsupported language requested in chat", { requestId, targetLanguage })
+            return NextResponse.json({
+                error: "Limitation detected",
+                message: `System capability restricted: Linguistic synchronization for '${targetLanguage}' is not available in the current chat environment.`,
+                code: "UNSUPPORTED_LANGUAGE"
+            }, { status: 400 })
         }
 
         const lastUserMessage = messages[messages.length - 1].content
