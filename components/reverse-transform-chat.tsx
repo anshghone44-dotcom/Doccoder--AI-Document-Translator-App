@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Paperclip, Send, X, Volume2, Loader2, Bot, Shield, Sparkles, Languages, Zap, FileText, Download, Copy } from "lucide-react"
 import VoiceSettings from "@/components/voice-settings"
-import LanguagePicker from "@/components/language-picker"
 import { useTranslation } from "@/components/language-context"
 
 type ChatMessage = {
@@ -245,14 +244,6 @@ export default function ReverseTransformChat() {
         </div>
         <div className="flex items-center gap-2">
           <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
-            <LanguagePicker
-              value={targetLang}
-              onChange={(code) => {
-                setTargetLang(code as any)
-                setLanguage(code as any)
-              }}
-            />
-            <div className="h-4 w-[1px] bg-border/50 mx-1" />
             <VoiceSettings
               selectedVoice={selectedVoice}
               onVoiceChange={setSelectedVoice}

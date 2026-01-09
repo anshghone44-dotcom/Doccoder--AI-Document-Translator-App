@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Paperclip, Send, X, Volume2, Loader2, Bot, Shield, Sparkles, Languages, Zap, FileText, Download } from "lucide-react"
 import VoiceSettings from "@/components/voice-settings"
-import LanguagePicker from "@/components/language-picker"
 import { useCallback } from "react"
 import { useTranslation } from "@/components/language-context"
 
@@ -290,13 +289,7 @@ export default function TransformChat() {
         </div>
         <div className="flex items-center gap-2">
           <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
-            <LanguagePicker
-              value={targetLang}
-              onChange={(code) => {
-                setTargetLang(code as any)
-                setLanguage(code as any)
-              }}
-            />
+            <ModelSelector value={selectedModel} onChange={setSelectedModel} />
             <div className="h-4 w-[1px] bg-border/50 mx-1" />
             <VoiceSettings
               selectedVoice={selectedVoice}
