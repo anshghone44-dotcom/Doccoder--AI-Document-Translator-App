@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
 import VoiceSettings from "@/components/voice-settings"
+import VoiceRecorder from "@/components/voice-recorder"
 
 type Message = {
     role: "user" | "assistant"
@@ -216,7 +217,7 @@ export default function DocChatbot() {
     }
 
     return (
-        <div className="flex flex-col h-[800px] w-full max-w-5xl mx-auto relative group/chatbot">
+        <div className="flex flex-col h-[900px] w-full max-w-5xl mx-auto relative group/chatbot">
             {/* Background Grid Effect - Subtle */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
 
@@ -230,6 +231,10 @@ export default function DocChatbot() {
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
+                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
+                        <VoiceRecorder onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))} />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
                         <VoiceSettings
                             selectedVoice={selectedVoice}
                             onVoiceChange={setSelectedVoice}
@@ -262,28 +267,6 @@ export default function DocChatbot() {
                             <p className="text-muted-foreground text-lg font-medium leading-relaxed">
                                 {language === "en" ? "I can help you translate documents, sync data, or provide contextual analysis." : ""}
                             </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl pt-8">
-                            {[
-                                { icon: Sparkles, text: t.chatbot.recommendations[0] },
-                                { icon: Languages, text: t.chatbot.recommendations[1] },
-                                { icon: Zap, text: t.chatbot.recommendations[2] },
-                                { icon: FileText, text: t.chatbot.recommendations[3] },
-                            ].map((rec, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => {
-                                        setInput(rec.text)
-                                    }}
-                                    className="flex items-center gap-4 p-4 rounded-2xl border border-border/50 bg-foreground/[0.02] hover:bg-foreground/[0.05] hover:border-primary/30 transition-all text-left group"
-                                >
-                                    <div className="p-2 rounded-xl bg-foreground/5 text-muted-foreground group-hover:text-primary transition-colors">
-                                        <rec.icon className="h-5 w-5" />
-                                    </div>
-                                    <span className="text-sm font-semibold">{rec.text}</span>
-                                </button>
-                            ))}
                         </div>
                     </div>
                 )}
@@ -459,20 +442,6 @@ export default function DocChatbot() {
                             </Button>
                         </div>
                     </form>
-
-                    <div className="mt-4 flex items-center justify-between px-2">
-                        <div className="flex items-center gap-2 scale-90 origin-left">
-                            <ModelSelector value={selectedModel} onChange={setSelectedModel} className="bg-transparent border-none hover:bg-foreground/5" />
-                        </div>
-                        <div className="flex items-center gap-6 opacity-30">
-                            <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
-                                <Shield className="h-3 w-3" /> {t.chatbot.secureConnection}
-                            </div>
-                            <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase text-green-600">
-                                <div className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> {t.chatbot.systemReady}
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Decorative BG Glows - More Subtle */}

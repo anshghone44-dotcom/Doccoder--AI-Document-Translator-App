@@ -46,8 +46,6 @@ export default function TranslationChat() {
 
     const handleVoiceTranscript = (text: string) => {
         setInput(text)
-        // Optionally auto-send the voice input
-        // handleSend()
     }
 
     const playVoiceResponse = async (content: string, index: number) => {
@@ -139,7 +137,7 @@ export default function TranslationChat() {
     }
 
     return (
-        <div className="flex flex-col h-[800px] w-full max-w-5xl mx-auto relative group/chatbot">
+        <div className="flex flex-col h-[900px] w-full max-w-5xl mx-auto relative group/chatbot">
             {/* Background Grid Effect - Subtle */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
 
@@ -153,6 +151,10 @@ export default function TranslationChat() {
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="glass rounded-2xl p-1 flex items-center gap-1 border border-border/50 scale-90 origin-right">
+                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
+                        <VoiceRecorder onTranscript={handleVoiceTranscript} />
+                        <div className="h-4 w-[1px] bg-border/50 mx-1" />
                         <VoiceSettings
                             selectedVoice={selectedVoice}
                             onVoiceChange={setSelectedVoice}
@@ -271,10 +273,6 @@ export default function TranslationChat() {
                                 rows={1}
                             />
 
-                            <div className="shrink-0 mb-1">
-                                <VoiceRecorder onTranscript={handleVoiceTranscript} />
-                            </div>
-
                             <Button
                                 type="submit"
                                 disabled={!input.trim() || isLoading}
@@ -287,10 +285,7 @@ export default function TranslationChat() {
                     </form>
 
                     <div className="mt-4 flex items-center justify-between px-2">
-                        <div className="flex items-center gap-2 scale-90 origin-left">
-                            <ModelSelector value={selectedModel} onChange={setSelectedModel} className="bg-transparent border-none hover:bg-foreground/5" />
-                        </div>
-                        <div className="flex items-center gap-6 opacity-30">
+                        <div className="flex items-center gap-6 opacity-30 ml-auto">
                             <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] uppercase">
                                 <Shield className="h-3 w-3" /> Secure Connection
                             </div>
