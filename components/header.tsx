@@ -59,10 +59,10 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                         </h1>
                     </Link>
                     <nav className="hidden gap-8 md:flex items-center ml-8">
-                        {["features", "pricing", "privacy"].map((item) => (
+                        {["features", "pricing"].map((item) => (
                             <Link
                                 key={item}
-                                href={item === "privacy" ? "/privacy" : `/#${item}`}
+                                href={`/#${item}`}
                                 className="relative text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group/link"
                             >
                                 {t.nav[item as keyof typeof t.nav]}

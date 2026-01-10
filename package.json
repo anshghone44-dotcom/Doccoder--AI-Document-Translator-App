@@ -62,6 +62,7 @@
     "next-themes": "latest",
     "openai": "latest",
     "pdf-lib": "latest",
+    "pdf-parse": "^2.4.5",
     "react": "^19",
     "react-day-picker": "9.8.0",
     "react-dom": "^19",
@@ -86,13 +87,13 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
     "dotenv": "^17.2.3",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.14",
     "jsdom": "^27.4.0",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
-    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5",
     "vitest": "^4.0.16"
   }

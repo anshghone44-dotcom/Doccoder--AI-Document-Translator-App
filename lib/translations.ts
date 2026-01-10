@@ -145,6 +145,7 @@ export const translations = {
         nav: {
             features: "विशेषताएं",
             pricing: "मूल्य निर्धारण",
+            privacy: "गोपनीयता",
             signIn: "साइन इन करें",
             selectLanguage: "भाषा चुनें",
         },
@@ -286,6 +287,7 @@ export const translations = {
         nav: {
             features: "वैशिष्ट्ये",
             pricing: "किंमत",
+            privacy: "गोपनीयता",
             signIn: "साइन इन करा",
             selectLanguage: "भाषा निवडा",
         },
@@ -427,6 +429,7 @@ export const translations = {
         nav: {
             features: "বৈশিষ্ট্য",
             pricing: "মূল্য নির্ধারণ",
+            privacy: "গোপনীয়তা",
             signIn: "সাইন ইন করুন",
             selectLanguage: "ভাষা নির্বাচন করুন",
         },
@@ -568,6 +571,7 @@ export const translations = {
         nav: {
             features: "વિશેષતાઓ",
             pricing: "કિંમત",
+            privacy: "ગોપનીયતા",
             signIn: "સાઇન ઇન કરો",
             selectLanguage: "ભાષા પસંદ કરો",
         },
@@ -709,6 +713,7 @@ export const translations = {
         nav: {
             features: "Fonctionnalités",
             pricing: "Tarification",
+            privacy: "Confidentialité",
             signIn: "Se connecter",
             selectLanguage: "Choisir la langue",
         },
@@ -850,6 +855,7 @@ export const translations = {
         nav: {
             features: "功能",
             pricing: "价格",
+            privacy: "隐私",
             signIn: "登录",
             selectLanguage: "选择语言",
         },
@@ -990,6 +996,7 @@ export const translations = {
         nav: {
             features: "機能",
             pricing: "料金",
+            privacy: "プライバシー",
             signIn: "サインイン",
             selectLanguage: "言語を選択",
         },
@@ -1130,6 +1137,7 @@ export const translations = {
         nav: {
             features: "Funktionen",
             pricing: "Preise",
+            privacy: "Datenschutz",
             signIn: "Anmelden",
             selectLanguage: "Sprache wählen",
         },
@@ -1270,6 +1278,7 @@ export const translations = {
         nav: {
             features: "Características",
             pricing: "Precios",
+            privacy: "Privacidad",
             signIn: "Iniciar sesión",
             selectLanguage: "Seleccionar idioma",
         },
@@ -1410,6 +1419,7 @@ export const translations = {
         nav: {
             features: "기능",
             pricing: "가격",
+            privacy: "개인정보 보호",
             signIn: "로그인",
             selectLanguage: "언어 선택",
         },
@@ -1550,6 +1560,7 @@ export const translations = {
         nav: {
             features: "அம்சங்கள்",
             pricing: "விலை",
+            privacy: "தனியுரிமை",
             signIn: "உள்நுழை",
             selectLanguage: "மொழியைத் தேர்ந்தெடுக்கவும்",
         },
@@ -1690,6 +1701,7 @@ export const translations = {
         nav: {
             features: "ఫీచర్లు",
             pricing: "ధరలు",
+            privacy: "గోప్యత",
             signIn: "సైన్ ఇన్",
             selectLanguage: "భాషను ఎంచుకోండి",
         },
@@ -1830,6 +1842,7 @@ export const translations = {
         nav: {
             features: "ವೈಶಿಷ್ಟ್ಯಗಳು",
             pricing: "ಬೆಲೆ",
+            privacy: "ಗೌಪ್ಯತೆ",
             signIn: "ಸೈನ್ ಇನ್",
             selectLanguage: "ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
         },

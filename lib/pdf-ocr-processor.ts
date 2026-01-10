@@ -1,4 +1,5 @@
 import { PDFDocument, type PDFPage } from "pdf-lib"
+import * as pdfParse from "pdf-parse"
 
 export interface TableData {
   headers: string[]
@@ -17,10 +18,22 @@ export interface ExtractedContent {
 }
 
 /**
+ * Sanitize text to ensure it's valid UTF-8
+ */
+function sanitizeTextForUTF8(text: string): string {
+  // Replace any invalid UTF-8 sequences or problematic characters
+  return text
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uD800-\uDFFF\uFFFE\uFFFF]/g, '') // Remove control chars and invalid surrogates
+    .replace(/[\uFFFD]/g, '?') // Replace replacement character with question mark
+    .normalize('NFC') // Normalize to composed form
+}
+
+/**
  * Advanced PDF processor with OCR simulation and table detection
  * In production, integrate with Tesseract.js or cloud OCR services
  */
 export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: string): Promise<ExtractedContent> {
+  // Load PDF with pdf-lib for metadata
   const pdfDoc = await PDFDocument.load(arrayBuffer)
   const pageCount = pdfDoc.getPageCount()
 
@@ -32,22 +45,28 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
     pageCount,
   }
 
-  // Extract text and detect tables
+  // Extract text using pdf-parse
   let fullText = ""
   const tables: TableData[] = []
 
-  for (let i = 0; i < pageCount; i++) {
-    const page = pdfDoc.getPage(i)
-    const pageText = await extractPageText(page, i)
-    fullText += pageText + "\n\n"
+  try {
+    const pdfData = await (pdfParse as any)(Buffer.from(arrayBuffer))
+    fullText = pdfData.text
+
+    // Sanitize the extracted text for UTF-8
+    fullText = sanitizeTextForUTF8(fullText)
 
     // Detect and extract tables from page
-    const pageTables = detectTablesInPage(pageText)
+    const pageTables = detectTablesInPage(fullText)
     tables.push(...pageTables)
+  } catch (error) {
+    console.error("PDF text extraction failed:", error)
+    // Fallback message
+    fullText = `Document: ${filename}\nPages: ${pageCount}\n\nText extraction failed. The PDF may be image-based, encrypted, or corrupted. Please ensure the PDF contains selectable text.`
   }
 
   return {
-    text: fullText,
+    text: sanitizeTextForUTF8(fullText),
     tables,
     metadata,
   }
@@ -55,47 +74,19 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
 
 /**
  * Extract text from a single PDF page
- * In production, use pdfjs-dist or similar for actual text extraction
+ * Currently a placeholder - implement with proper PDF parsing library
  */
 async function extractPageText(page: PDFPage, pageIndex: number): Promise<string> {
-  // Real text extraction from PDF stream blocks
-  try {
-    // @ts-ignore - accessing internal stream for simple extraction
-    const contentStream = page.node.getContents()
-    if (!contentStream) return ""
+  // Placeholder implementation
+  return `[Page ${pageIndex + 1}] - Text extraction not yet implemented`
+}
 
-    let text = ""
-    // Combine all streams if multiple
-    const streams = Array.isArray(contentStream) ? contentStream : [contentStream]
-
-    for (const stream of streams) {
-      const bytes = stream.getContents()
-      const decoded = new TextDecoder("utf-8").decode(bytes)
-
-      // Simple scan for (string) patterns
-      let inString = false
-      let current = ""
-      for (let i = 0; i < decoded.length; i++) {
-        const char = decoded[i]
-        if (char === "(" && !inString) {
-          inString = true
-          current = ""
-        } else if (char === ")" && inString) {
-          inString = false
-          // Sanitize: replace the replacement character (0xfffd) if it leaked from stream
-          const sanitized = current.replace(/\uFFFD/g, "")
-          if (sanitized.length > 1) text += sanitized + " "
-        } else if (inString) {
-          current += char
-        }
-      }
-    }
-
-    return text.replace(/\\/g, "").trim() || `[Page ${pageIndex + 1} - No readable text detected]`
-  } catch (err) {
-    console.error("Text extraction failed for page", pageIndex, err)
-    return `[Page ${pageIndex + 1} - extraction error]`
-  }
+/**
+ * Extract text from a single PDF page using PDF.js (placeholder)
+ */
+async function extractPageTextWithPdfJS(page: any, pageIndex: number): Promise<string> {
+  // Placeholder
+  return `[Page ${pageIndex + 1}] - PDF.js extraction not available`
 }
 
 /**

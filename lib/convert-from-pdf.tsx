@@ -28,7 +28,7 @@ export async function convertPdfToFormat(
 
       // Extract content with table preservation
       const content = await extractPdfContent(arrayBuffer, filename)
-      extractedText = formatExtractedContent(content)
+      extractedText = options.targetFormat === "txt" ? content.text : formatExtractedContent(content)
 
       console.log("[v0] Text extraction completed with table detection, length:", extractedText.length)
     } catch (err: any) {
@@ -89,7 +89,7 @@ async function convertToText(
   return {
     bytes: textBytes,
     suggestedName: `${filename}.txt`,
-    mimeType: "text/plain",
+    mimeType: "text/plain; charset=utf-8",
   }
 }
 
@@ -114,7 +114,7 @@ async function convertToCsv(
   return {
     bytes: csvBytes,
     suggestedName: `${filename}.csv`,
-    mimeType: "text/csv",
+    mimeType: "text/csv; charset=utf-8",
   }
 }
 
@@ -267,7 +267,7 @@ async function convertToMarkdown(
   return {
     bytes: mdBytes,
     suggestedName: `${filename}.md`,
-    mimeType: "text/markdown",
+    mimeType: "text/markdown; charset=utf-8",
   }
 }
 
