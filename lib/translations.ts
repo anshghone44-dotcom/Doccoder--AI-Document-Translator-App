@@ -5,6 +5,7 @@ export const translations = {
             pricing: "Pricing",
             privacy: "Privacy",
             signIn: "Sign In",
+            signUp: "Sign Up",
             selectLanguage: "Select Language",
         },
         hero: {

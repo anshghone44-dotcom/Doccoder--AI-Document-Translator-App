@@ -96,6 +96,18 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                             <Star className={cn("h-4 w-4 transition-all duration-500 group-hover:rotate-[144deg]", hoveredButton === "signin" ? "fill-current" : "opacity-0")} />
                         </Button>
                     </Link>
+
+                    <Link href="/signup">
+                        <Button
+                            size="sm"
+                            className="hidden md:inline-flex items-center gap-2 font-bold px-6 py-2 rounded-xl transition-all duration-500 bg-primary text-primary-foreground hover:bg-white hover:text-black hover:scale-105 active:scale-95 group"
+                            onMouseEnter={() => setHoveredButton("signup")}
+                            onMouseLeave={() => setHoveredButton(null)}
+                        >
+                            {t.nav.signUp}
+                            <Star className={cn("h-4 w-4 transition-all duration-500 group-hover:rotate-[144deg]", hoveredButton === "signup" ? "fill-current" : "opacity-0")} />
+                        </Button>
+                    </Link>
                     <ThemeToggle />
                 </div>
             </div>
