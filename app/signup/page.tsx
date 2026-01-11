@@ -417,14 +417,6 @@ export default function SignupPage() {
                                 )}
                             </div>
 
-                            <div className="text-center pt-6">
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
-                                    {st.haveAccount}{" "}
-                                    <Link href="/auth/login" className="text-primary hover:text-primary/80 transition-colors font-black">
-                                        {st.signIn}
-                                    </Link>
-                                </p>
-                            </div>
                         </form>
                     </CardContent>
                 </Card>

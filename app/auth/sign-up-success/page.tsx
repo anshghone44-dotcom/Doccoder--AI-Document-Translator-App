@@ -46,14 +46,10 @@ export default function SignUpSuccessPage() {
               <ol className="list-decimal list-inside space-y-1 ml-2">
                 <li>Check your email inbox</li>
                 <li>Click the verification link</li>
-                <li>Sign in to your account</li>
               </ol>
             </div>
 
             <div className="pt-4 space-y-3">
-              <Button className="w-full bg-primary hover:bg-primary/90" asChild>
-                <Link href="/auth/login">Go to Sign In</Link>
-              </Button>
 
               <p className="text-center text-sm text-muted-foreground">
                 Didn&apos;t receive the email?

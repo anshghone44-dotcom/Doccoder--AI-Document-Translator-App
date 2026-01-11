@@ -95,17 +95,17 @@ export async function POST(req: NextRequest) {
       1. Identify all requested target language(s) (ISO 639-1).
       2. Identify the requested output format.
       
-      Output format priority:
-      - "Excel"/.xlsx -> xlsx
-      - "Word"/.docx -> docx
-      - "CSV"/.csv -> csv
-      - "Text"/.txt -> txt
-      - Default to "pdf" if no format is specified.
+      Output format mapping:
+      - "Excel", "XLS", "XLSX", "Spreadsheet", "Table", "Grid", "Workbook" -> xlsx
+      - "Word", "DOC", "DOCX", "Document", "Letter", "Report" -> docx
+      - "CSV", "Comma Separated", "Dataset" -> csv
+      - "Text", "TXT", "Plain Text", "Notes", "String" -> txt
+      - Default to "pdf" if no specific format is mentioned or if "PDF" is requested.
 
       Return ONLY a JSON object:
       {
         "langs": ["iso-code"], 
-        "format": "pdf|docx|xlsx|csv|txt|other" 
+        "format": "pdf|docx|xlsx|csv|txt" 
       }`,
         temperature: 0,
       })
@@ -263,18 +263,18 @@ Title:`,
 
         const { text: jsonResult } = await generateText({
           model: getFinalModel(aiModel),
-          prompt: `Analyze the following text and decompose it into a structured JSON array of sections.
+          prompt: `You are the System Intelligence Core. Execute the following transformation goal with absolute precision.
         
         USER DIRECTIVE: ${prompt}
         SOURCE LANGUAGE: Detect automatically
         TARGET LANGUAGE: ${languageFull}
 
-        CRITICAL: 
+        SYSTEM PROTOCOLS: 
         1. EXECUTE THE USER DIRECTIVE ABOVE WITH ABSOLUTE PRIORITY.
         2. Deliver the final synchronized content in ${languageFull}.
-        3. If the user asks for a summary, professional tone, or specific data extraction, prioritize that over literal translation.
-        4. Group related paragraphs into logical sections.
-        - Each section must have a 'title' (in ${languageFull}) and 'content' (in ${languageFull}).
+        3. If the user asks for a summary, professional tone, data extraction, or format-specific structure, prioritize that.
+        4. Maintain absolute technical integrity and professional caliber.
+        5. For structured output (Excel/Word/CSV), ensure data is logically grouped.
         
         OUTPUT FORMAT:
         [

@@ -363,18 +363,6 @@ export default function SignUpPage() {
                     </Link>
                   </p>
                 </div>
-                <div className="mt-8 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Already have an account?{" "}
-                    <Link
-                      href="/auth/login"
-                      className="text-primary hover:text-primary/80 font-semibold transition-all duration-300 hover:underline underline-offset-4 relative group"
-                    >
-                      Sign in here
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-                    </Link>
-                  </p>
-                </div>
               </CardContent>
             </Card>
           </div>
