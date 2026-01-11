@@ -86,6 +86,7 @@ export async function POST(req: NextRequest) {
     let targetFormat: string = "pdf"
 
     try {
+      console.log("Sending metadata detection prompt to model:", prompt)
       const { text: detectionResult } = await generateText({
         model: getFinalModel(aiModel),
         prompt: `Analyze the user's transformation prompt: "${prompt}"
@@ -93,15 +94,21 @@ export async function POST(req: NextRequest) {
       
       Tasks:
       1. Identify all requested target language(s) (ISO 639-1).
-      2. Identify the requested output format.
+      2. Identify the requested output format based on keywords.
+      
+      Format Mapping Rules (STRICT):
+      - Keywords: ["excel", "xls", "xlsx", "spreadsheet", "table", "csv"] -> If any of these are present, prioritize "xlsx" (or "csv" if explicitly asked for CSV).
+      - Keywords: ["word", "doc", "docx", "document"] -> prioritize "docx".
+      - Keywords: ["text", "txt", "notes", "markdown"] -> prioritize "txt".
+      - Keywords: ["pdf", "fixed"] -> prioritize "pdf".
       
       Output format mapping:
-      - "Excel", "XLS", "XLSX", "Spreadsheet", "Table", "Grid", "Workbook" -> xlsx
-      - "Word", "DOC", "DOCX", "Document", "Letter", "Report" -> docx
-      - "CSV", "Comma Separated", "Dataset" -> csv
-      - "Text", "TXT", "Plain Text", "Notes", "String" -> txt
-      - Default to "pdf" if no specific format is mentioned or if "PDF" is requested.
-
+      - Requested: "Excel", "XLS", "XLSX" -> xlsx
+      - Requested: "Word", "DOC", "DOCX" -> docx
+      - Requested: "CSV" -> csv
+      - Requested: "Text", "TXT" -> txt
+      - Default to "pdf" ONLY if no format is mentioned.
+ 
       Return ONLY a JSON object:
       {
         "langs": ["iso-code"], 
@@ -109,7 +116,9 @@ export async function POST(req: NextRequest) {
       }`,
         temperature: 0,
       })
+      console.log("Detection response from LLM:", detectionResult)
 
+      Logger.info("Detection result raw", { requestId, detectionResult })
       const cleaned = detectionResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
       const parsed = JSON.parse(cleaned)
       if (parsed.langs && Array.isArray(parsed.langs) && parsed.langs.length > 0) {
@@ -222,22 +231,24 @@ export async function POST(req: NextRequest) {
       try {
         Logger.info("Requesting AI title generation", { filename, aiModel, languageFull })
 
+        console.log("Sending title generation prompt to model for:", filename)
         const { text } = await generateText({
           model: getFinalModel(aiModel),
           prompt: `Create a technically precise, concise one-line title for the document "${filename}".
-
+ 
 User's requested transformation goal: ${prompt}
-
+ 
 CRITICAL: If the user explicitly mentions a target language in their goal (e.g. "translate to Marathi"), prioritize that language. Otherwise, return the title in ${languageFull}.
-
+ 
 Guidelines:
 - Use professional, system-grade technical terminology.
 - Keep the title descriptive yet under 60 characters.
 - Return ONLY the title text. No quotes.
-
+ 
 Title:`,
           temperature: 0.7,
         })
+        console.log("Title generation response from LLM:", text)
         const single = text.split("\n").filter(Boolean)[0]?.trim()
 
         Logger.info("AI title generated successfully", {
@@ -261,6 +272,7 @@ Title:`,
       try {
         Logger.info("Requesting structured AI translation", { lang, textSnippet: text.slice(0, 50) })
 
+        console.log("Sending structured translation prompt to model for:", lang)
         const { text: jsonResult } = await generateText({
           model: getFinalModel(aiModel),
           prompt: `You are the System Intelligence Core. Execute the following transformation goal with absolute precision.
@@ -268,7 +280,7 @@ Title:`,
         USER DIRECTIVE: ${prompt}
         SOURCE LANGUAGE: Detect automatically
         TARGET LANGUAGE: ${languageFull}
-
+ 
         SYSTEM PROTOCOLS: 
         1. EXECUTE THE USER DIRECTIVE ABOVE WITH ABSOLUTE PRIORITY.
         2. Deliver the final synchronized content in ${languageFull}.
@@ -289,6 +301,7 @@ Title:`,
         ${text.slice(0, 10000)}`,
           temperature: 0.3,
         })
+        console.log("Structured translation response from LLM:", jsonResult.slice(0, 500))
 
         const cleaned = jsonResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
         const data = JSON.parse(cleaned) as StructuredData[]
@@ -318,6 +331,7 @@ Title:`,
           textSnippet: text.slice(0, 50) + "..."
         })
 
+        console.log("Sending content translation prompt to model for:", targetLanguage)
         const { text: translated } = await generateText({
           model: getFinalModel(aiModel),
           prompt: `You are the System Intelligence Core, a voice-enabled assistant. Execute linguistic synchronization.
@@ -325,7 +339,7 @@ Title:`,
         USER GOAL: ${prompt}
         SOURCE LANGUAGE: Detect automatically
         TARGET LANGUAGE: ${languageFull}
-
+ 
         SYSTEM PROTOCOL:
         1. EXECUTE THE USER GOAL WITH ABSOLUTE PRIORITY.
         2. Deliver the final output in ${languageFull}.
@@ -334,13 +348,14 @@ Title:`,
         5. Maintain absolute technical precision.
         
         Return ONLY the translated/processed text.
-
+ 
         TEXT OBJECT:
         ${text.slice(0, 15000)}
-
+ 
         SYNCHRONIZED OUTPUT:`,
           temperature: 0.3,
         })
+        console.log("Content translation response from LLM:", translated.slice(0, 500))
 
         Logger.info("AI content translation successful", {
           durationMs: Date.now() - startTime,
@@ -447,6 +462,7 @@ Title:`,
     async function generateSuccessMessage(targetLanguage: string) {
       const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
       try {
+        console.log("Sending success message prompt to model for:", targetLanguage)
         const { text } = await generateText({
           model: getFinalModel(aiModel),
           prompt: `You are the System Intelligence Core. Generate a technical success confirmation in ${languageFull}.
@@ -458,6 +474,7 @@ Title:`,
         Return ONLY the message text (sterile, professional, system-grade).`,
           temperature: 0.7,
         })
+        console.log("Success message response from LLM:", text)
 
         return text.trim()
       } catch (err) {

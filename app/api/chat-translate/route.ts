@@ -120,12 +120,14 @@ export async function POST(request: NextRequest) {
         const finalModel = getFinalModel(model)
 
         Logger.info("Requesting chat translation", { requestId })
+        console.log("Sending text to model:", lastUserMessage)
         const response = await generateText({
             model: finalModel,
             system: systemPrompt,
             prompt: lastUserMessage,
             temperature: 0.7,
         })
+        console.log("Response from LLM:", response)
 
         Logger.info("Chat translation successful", {
             requestId,

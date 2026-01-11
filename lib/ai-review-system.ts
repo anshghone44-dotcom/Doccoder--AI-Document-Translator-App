@@ -30,6 +30,7 @@ export interface ReviewResult {
  */
 export async function detectGrammarErrors(text: string, language: string): Promise<GrammarError[]> {
   try {
+    console.log("Sending grammar check text to model for language:", language)
     const { text: response } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Review the following ${language} text for grammar, spelling, punctuation, and style errors.
@@ -47,6 +48,7 @@ export async function detectGrammarErrors(text: string, language: string): Promi
       Errors (JSON):`,
       temperature: 0.7,
     })
+    console.log("Grammar review response from LLM:", response)
 
     try {
       const errors = JSON.parse(response)
@@ -74,6 +76,7 @@ export async function checkCompliance(
   targetCulture?: string,
 ): Promise<ComplianceIssue[]> {
   try {
+    console.log("Sending compliance check text to model for language:", targetLanguage)
     const { text: response } = await generateText({
       model: openai("gpt-4o-mini"),
       prompt: `Review the following text for cultural sensitivity, legal compliance, and potential issues in ${targetLanguage}${targetCulture ? ` (${targetCulture} context)` : ""}.
@@ -98,6 +101,7 @@ export async function checkCompliance(
       Issues (JSON):`,
       temperature: 0.7,
     })
+    console.log("Compliance review response from LLM:", response)
 
     try {
       const issues = JSON.parse(response)
