@@ -1,6 +1,4 @@
 import { PDFDocument, type PDFPage } from "pdf-lib"
-// @ts-ignore
-import pdf = require("pdf-parse")
 
 export interface TableData {
   headers: string[]
@@ -37,6 +35,8 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
   const buffer = Buffer.from(arrayBuffer)
 
   try {
+    // Dynamically require pdf-parse to avoid top-level bundling issues in some environments
+    const pdf = require("pdf-parse/lib/pdf-parse.js")
     const data = await (pdf as any)(buffer)
 
     // Load with pdf-lib for additional metadata if needed
