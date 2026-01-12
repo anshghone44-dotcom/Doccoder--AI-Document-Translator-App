@@ -397,89 +397,62 @@ Title:`,
       }
     }
 
-    // Convert all files
+    // Simplified Processing Flow: Extract -> Translate -> Convert
     const results = []
     for (const f of files) {
       try {
         Logger.info("Processing file", { filename: f.name, targetFormat, targetLanguages })
-        const ext = (f.name.split(".").pop() || "").toLowerCase()
         const arrayBuffer = await f.arrayBuffer()
-        const u8 = new Uint8Array(arrayBuffer)
 
+        // 1. EXTRACT content (Handling multiple input types)
         let rawText = ""
-        if (ext === "docx") {
-          const { value } = await mammoth.extractRawText({ arrayBuffer })
-          rawText = value
-        } else if (ext === "xlsx" || ext === "xls" || ext === "csv") {
-          const wb = XLSX.read(u8, { type: "array" })
-          wb.SheetNames.forEach((sheetName, idx) => {
-            const sheet = wb.Sheets[sheetName]
-            rawText += `Sheet ${idx + 1}: ${sheetName}\n\n${XLSX.utils.sheet_to_csv(sheet)}\n\n`
-          })
-        } else if (["txt", "md", "markdown", "html"].includes(ext)) {
-          rawText = new TextDecoder("utf-8").decode(u8)
-        } else if (ext === "pdf") {
+        const ext = (f.name.split(".").pop() || "").toLowerCase()
+        if (ext === "pdf") {
           const content = await extractPdfContent(arrayBuffer, f.name)
           rawText = formatExtractedContent(content)
+        } else if (ext === "docx") {
+          rawText = (await mammoth.extractRawText({ arrayBuffer })).value
+        } else if (ext === "xlsx" || ext === "xls" || ext === "csv") {
+          const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: "array" })
+          wb.SheetNames.forEach((name) => {
+            rawText += `Sheet: ${name}\n${XLSX.utils.sheet_to_csv(wb.Sheets[name])}\n\n`
+          })
+        } else {
+          rawText = new TextDecoder("utf-8").decode(new Uint8Array(arrayBuffer))
         }
 
         for (const tLang of targetLanguages) {
-          let finalBytes: Uint8Array
-          let finalName: string
+          // 2. TRANSLATE content
+          const translatedText = await translateContent(rawText, tLang)
+          const coverLine = await getCoverLineFor(f.name, tLang)
 
-          if (targetFormat === "pdf" || targetFormat === "xlsx") {
-            const processedContent = await translateContent(rawText, tLang)
-            const coverLine = await getCoverLineFor(f.name, tLang)
-            const { bytes, suggestedName } = await convertAnyToPdf({
-              name: f.name,
-              arrayBuffer: async () => arrayBuffer,
-              contentOverride: processedContent
-            }, {
-              coverLine,
-              templateId: template.id,
-              orientation: template.orientation,
-              margin: typeof template.margin === "number" ? template.margin : undefined,
-            }, targetFormat)
-            finalBytes = bytes
-            finalName = suggestedName
-          } else {
-            const structuredData = await translateToStructuredData(rawText, tLang)
-            const baseName = f.name.replace(/\.[^/.]+$/, "")
-
-            switch (targetFormat) {
-              case "csv":
-                finalBytes = await generateCsv(structuredData)
-                finalName = `${baseName}.csv`
-                break
-              case "docx":
-                finalBytes = await generateWord(structuredData, f.name)
-                finalName = `${baseName}.docx`
-                break
-              case "txt":
-                finalBytes = await generateStructuredText(structuredData)
-                finalName = `${baseName}.txt`
-                break
-              default:
-                // SAFE WORKFLOW Rule: Never return original file.
-                throw new Error(`Technical restriction: Output generator for '${targetFormat}' is not initialized.`)
-            }
-          }
+          // 3. CONVERT to requested format
+          // Note: convertAnyToPdf handles both PDF and XLSX internally via the format toggle
+          const output = await convertAnyToPdf({
+            name: f.name,
+            contentOverride: translatedText,
+            arrayBuffer: async () => arrayBuffer
+          }, {
+            coverLine,
+            templateId: template.id,
+            orientation: template.orientation,
+            margin: template.margin
+          }, targetFormat)
 
           const langSuffix = tLang !== "en" ? ` (${LANGUAGE_MAP[tLang] || tLang})` : ""
-          const namedWithLang = finalName.includes(".")
-            ? finalName.replace(/(\.[^.]+)$/, `${langSuffix}$1`)
-            : `${finalName}${langSuffix}`
+          const finalName = output.suggestedName.includes(".")
+            ? output.suggestedName.replace(/(\.[^.]+)$/, `${langSuffix}$1`)
+            : `${output.suggestedName}${langSuffix}`
 
-          results.push({ name: namedWithLang, bytes: finalBytes, format: targetFormat })
-          Logger.info("File processed successfully", { requestId, finalName: namedWithLang, targetLanguage: tLang })
+          results.push({ name: finalName, bytes: output.bytes, format: targetFormat })
+          Logger.info("File processed successfully", { requestId, finalName, targetLanguage: tLang })
         }
       } catch (err: any) {
-        Logger.error("Processing sequence interrupted", err, { requestId, filename: f.name })
+        Logger.error("Processing failed for file", err, { requestId, filename: f.name })
         return new Response(JSON.stringify({
-          error: "Processing Interrupt",
-          message: `System encountered a technical barrier while processing '${f.name}': ${err?.message || "Internal operation failed."}`,
-          code: "PROCESS_INTERRUPT"
-        }), { status: 400, headers: { "Content-Type": "application/json" } })
+          error: "Processing Error",
+          message: `System failed to process '${f.name}': ${err?.message || "Internal failure."}`
+        }), { status: 500, headers: { "Content-Type": "application/json" } })
       }
     }
 
