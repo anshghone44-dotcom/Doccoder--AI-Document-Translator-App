@@ -238,7 +238,7 @@ function safeText(text: string): string {
  */
 async function getAppFont(doc: PDFDocument) {
   try {
-    const fontPath = path.join(process.cwd(), "node_modules", "geist", "dist", "fonts", "geist-sans", "Geist-Regular.ttf")
+    const fontPath = path.join(process.cwd(), "public", "fonts", "Geist-Regular.ttf")
     if (fs.existsSync(fontPath)) {
       const fontBytes = fs.readFileSync(fontPath)
       return await doc.embedFont(fontBytes)
@@ -246,8 +246,6 @@ async function getAppFont(doc: PDFDocument) {
   } catch (e) {
     console.error("Failed to load custom font, falling back to Helvetica", e)
   }
-  // Fallback if Geist is missing (though it might still have WinAnsi issues)
-  // StandardFonts is not used here to avoid WinAnsi issues if possible
   return null
 }
 
