@@ -427,7 +427,7 @@ Title:`,
           let finalBytes: Uint8Array
           let finalName: string
 
-          if (targetFormat === "pdf") {
+          if (targetFormat === "pdf" || targetFormat === "xlsx") {
             const processedContent = await translateContent(rawText, tLang)
             const coverLine = await getCoverLineFor(f.name, tLang)
             const { bytes, suggestedName } = await convertAnyToPdf({
@@ -439,7 +439,7 @@ Title:`,
               templateId: template.id,
               orientation: template.orientation,
               margin: typeof template.margin === "number" ? template.margin : undefined,
-            })
+            }, targetFormat)
             finalBytes = bytes
             finalName = suggestedName
           } else {
@@ -447,10 +447,6 @@ Title:`,
             const baseName = f.name.replace(/\.[^/.]+$/, "")
 
             switch (targetFormat) {
-              case "xlsx":
-                finalBytes = await generateExcel(structuredData, f.name)
-                finalName = `${baseName}.xlsx`
-                break
               case "csv":
                 finalBytes = await generateCsv(structuredData)
                 finalName = `${baseName}.csv`

@@ -27,15 +27,47 @@ function pageSize(orientation?: "portrait" | "landscape") {
   return orientation === "landscape" ? [A4.height, A4.width] : [A4.width, A4.height]
 }
 
+/**
+ * NEW: Function to translate content into an Excel file
+ * This fulfills your requirement to "translate this file into excel"
+ */
+export async function convertToExcel(
+  text: string,
+  filename: string
+): Promise<{ bytes: Uint8Array; suggestedName: string }> {
+  // Split text by lines to create rows
+  const lines = text.split('\n').map(line => [line]);
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(lines);
+  XLSX.utils.book_append_sheet(wb, ws, "Translated_Content");
+
+  // Generate buffer
+  const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+  return {
+    bytes: new Uint8Array(buf),
+    suggestedName: `${stripExt(filename)}_translated.xlsx`
+  };
+}
+
 export async function convertAnyToPdf(
   file: { name: string; type?: string; arrayBuffer: () => Promise<ArrayBuffer>; contentOverride?: string },
   cover?: CoverOptions,
+  targetFormat: string = "pdf" // Added format toggle
 ): Promise<{ bytes: Uint8Array; suggestedName: string }> {
   const filename = file.name || "document"
   const ext = (filename.split(".").pop() || "").toLowerCase()
   const mime = file.type || mimeFromExt(ext)
   const arrayBuffer = await file.arrayBuffer()
   const u8 = new Uint8Array(arrayBuffer)
+
+  // 1. EXTRACT OR USE OVERRIDDEN CONTENT (Translated text)
+  let contentToProcess = file.contentOverride;
+
+  // 2. IF THE USER WANTS EXCEL OUTPUT
+  if (targetFormat === "xlsx" && contentToProcess) {
+    return await convertToExcel(contentToProcess, filename);
+  }
 
   // If already a PDF, pass through but optionally prepend a cover page.
   // CRITICAL: If contentOverride is provided (e.g. translation), we generate a NEW PDF from that text.

@@ -36,7 +36,7 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
 
   try {
     // Dynamically require pdf-parse to avoid top-level bundling issues in some environments
-    const pdf = require("pdf-parse/lib/pdf-parse.js")
+    const pdf = require("pdf-parse")
     const data = await (pdf as any)(buffer)
 
     // Load with pdf-lib for additional metadata if needed
