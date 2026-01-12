@@ -8,8 +8,9 @@ import { anthropic } from "@ai-sdk/anthropic"
 import { xai } from "@ai-sdk/xai"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
-import { generateExcel, generateCsv, generateWord, generateText as generateStructuredText } from "@/lib/document-generators"
-import type { StructuredData } from "@/lib/document-generators"
+import { build_excel, build_docx } from "@/lib/document-generators"
+import type { PipelineOutput } from "@/lib/document-generators"
+import { build_pdf, stripExt } from "@/lib/convert-to-pdf"
 
 // Structured Logger Utility
 const Logger = {
@@ -262,6 +263,85 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const SYSTEM_PROTOCOL = `
+You are the System Intelligence Core. Execute a high-precision linguistic and structural transformation.
+
+PROTOCOL:
+1. TRANSLATION: Translate the source content into the target_language first. Maintain absolute technical integrity and context.
+2. RESTRUCTURE: Restructure the translated content based on the requested output_format.
+3. NO REPETITION: Do NOT include source-language text in the translated_content or structure unless explicitly requested.
+4. VALIDATION: Return ONLY a valid JSON object following the schema below.
+
+SCHEMA:
+{
+  "source_language": "iso-code",
+  "target_language": "iso-code",
+  "output_format": "pdf | docx | xlsx",
+  "translated_content": "Full summary of translated text",
+  "structure": {
+    "sections": [ 
+      {
+        "heading": "Section Heading",
+        "paragraphs": ["Paragraph text..."],
+        "tables": [
+          {
+            "headers": ["Header 1", "Header 2"],
+            "rows": [["Cell 1", "Cell 2"]]
+          }
+        ]
+      }
+    ],
+    "sheets": [ 
+      {
+        "name": "Sheet name",
+        "headers": ["Col 1", "Col 2"],
+        "rows": [["Val 1", "Val 2"]]
+      }
+    ]
+  }
+}
+
+OUTPUT RULES:
+- For Excel (xlsx): Provide 'sheets' only. No paragraphs or sections.
+- For PDF/DOCX: Provide 'sections'.
+- Return ONLY the JSON. No preamble. No markdown blocks.
+`;
+
+    async function translateAndStructure(text: string, lang: string, format: string): Promise<PipelineOutput> {
+      if (!text || !text.trim()) throw new Error("No input text for transformation.");
+      const languageFull = LANGUAGE_MAP[lang] || lang || "English"
+
+      try {
+        Logger.info("Requesting unified transformation", { aiModel, targetLanguage: lang, targetFormat: format })
+
+        const { text: jsonResult } = await generateText({
+          model: getFinalModel(aiModel),
+          prompt: `${SYSTEM_PROTOCOL}
+        
+        USER GOAL: ${explicitGoal}
+        TARGET LANGUAGE: ${languageFull}
+        REQUIRED FORMAT: ${format}
+
+        TEXT TO PROCESS:
+        ${text.slice(0, 15000)}`,
+          temperature: 0.2,
+        })
+
+        const cleaned = jsonResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
+        const data = JSON.parse(cleaned) as PipelineOutput
+
+        Logger.info("JSON Schema Validity Check", {
+          requestId,
+          isValid: !!(data.source_language && data.target_language && data.structure)
+        })
+
+        return data
+      } catch (err) {
+        Logger.error("Unified transformation failed", err)
+        throw err
+      }
+    }
+
     async function getCoverLineFor(filename: string, languageCode: string) {
       if (!prompt.trim()) return undefined
 
@@ -304,100 +384,8 @@ Title:`,
       }
     }
 
-    async function translateToStructuredData(text: string, lang: string): Promise<StructuredData[]> {
-      if (!text || !text.trim()) return []
-      const startTime = Date.now()
-      const languageFull = LANGUAGE_MAP[lang] || lang || "English"
 
-      try {
-        Logger.info("Requesting structured transformation", { aiModel, targetLanguage: lang, targetFormat, explicitGoal })
-
-        const formatSpec = targetFormat === 'xlsx' || targetFormat === 'csv'
-          ? "TABULAR MODE: Extract data into logical rows and columns. Each item in the array should represent a logical record or row."
-          : "DOCUMENT MODE: Extract headings and paragraphs. Each item in the array should represent a section or chapter."
-
-        const { text: jsonResult } = await generateText({
-          model: getFinalModel(aiModel),
-          prompt: `You are the System Intelligence Core. Execute a high-precision structured transformation.
-        
-        USER GOAL: ${explicitGoal}
-        TARGET LANGUAGE: ${languageFull}
-        TARGET FORMAT: ${targetFormat}
-
-        SYSTEM PROTOCOL:
-        1. ${formatSpec}
-        2. Deliver the final output strictly in ${languageFull}.
-        3. Prioritize user's specific instructions (summarization, tone, etc.) while maintaining structure.
-        4. Maintain absolute technical integrity.
-        
-        OUTPUT FORMAT (STRICT JSON ARRAY ONLY):
-        [
-          {
-            "title": "Section/Row Header",
-            "content": "Detailed content or comma-separated values for rows",
-            "language": "${languageFull}"
-          }
-        ]
-        
-        TEXT TO PROCESS:
-        ${text.slice(0, 10000)}`,
-          temperature: 0.3,
-        })
-        console.log("Structured translation response from LLM:", jsonResult.slice(0, 500))
-
-        const cleaned = jsonResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
-        const data = JSON.parse(cleaned) as StructuredData[]
-
-        Logger.info("Structured translation successful", { count: data.length, durationMs: Date.now() - startTime })
-        return data
-      } catch (err) {
-        Logger.error("Structured translation failed, falling back to simple format", err)
-        return [{
-          title: "Processed Document",
-          content: text,
-          language: languageFull
-        }]
-      }
-    }
-
-    async function translateContent(text: string, targetLanguage: string) {
-      if (!text || !text.trim()) return text
-      const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
-
-      const processChunk = async (chunk: string) => {
-        const { text: translated } = await generateText({
-          model: getFinalModel(aiModel),
-          prompt: `You are the System Intelligence Core. Execute the following transformation goal with absolute precision.
-        
-        USER GOAL: ${explicitGoal}
-        TARGET LANGUAGE: ${languageFull}
-
-        SYSTEM PROTOCOL:
-        1. EXECUTE THE USER GOAL WITH ABSOLUTE PRIORITY.
-        2. Deliver the final output in ${languageFull}.
-        3. Maintain absolute technical precision.
-        
-        Return ONLY the translated/processed text.
-
-        TEXT SEGMENT:
-        ${chunk}
-
-        SYNCHRONIZED OUTPUT:`,
-          temperature: 0.3,
-        })
-        return translated
-      }
-
-      try {
-        Logger.info("Requesting AI content transformation (chunked)", { targetLanguage, textLength: text.length })
-        return await processInChunks(text, 8000, processChunk)
-      } catch (err) {
-        Logger.error("AI content translation failed", err, { aiModel, targetLanguage })
-        return text
-      }
-    }
-
-    // Simplified Processing Flow: Extract -> Translate -> Convert
+    // REFACTORED PIPELINE: Extract -> Translate & Structure -> Build
     const results = []
     for (const f of files) {
       try {
@@ -422,36 +410,68 @@ Title:`,
         }
 
         for (const tLang of targetLanguages) {
-          // 2. TRANSLATE content
-          const translatedText = await translateContent(rawText, tLang)
+          // 2. TRANSLATE & STRUCTURE (Unified LLM Call)
+          const structuredResult = await translateAndStructure(rawText, tLang, targetFormat)
+
+          Logger.info("Pipeline Step: Translation & Structure Complete", {
+            requestId,
+            target_language: structuredResult.target_language,
+            output_format: structuredResult.output_format
+          })
+
+          // 3. BUILD (Routing logic)
+          let finalBytes: Uint8Array
+          let finalName: string
+          let finalMime: string
+          let builderName: string
+
           const coverLine = await getCoverLineFor(f.name, tLang)
 
-          // 3. CONVERT to requested format
-          // Note: convertAnyToPdf handles both PDF and XLSX internally via the format toggle
-          const output = await convertAnyToPdf({
-            name: f.name,
-            contentOverride: translatedText,
-            arrayBuffer: async () => arrayBuffer
-          }, {
-            coverLine,
-            templateId: template.id,
-            orientation: template.orientation,
-            margin: template.margin
-          }, targetFormat)
+          if (structuredResult.output_format === "xlsx") {
+            builderName = "build_excel"
+            finalBytes = await build_excel(structuredResult)
+            finalName = `${stripExt(f.name)}_translated.xlsx`
+            finalMime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          } else if (structuredResult.output_format === "docx") {
+            builderName = "build_docx"
+            finalBytes = await build_docx(structuredResult)
+            finalName = `${stripExt(f.name)}_translated.docx`
+            finalMime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          } else if (structuredResult.output_format === "pdf") {
+            builderName = "build_pdf"
+            const pdfResult = await build_pdf(structuredResult, f.name, {
+              coverLine,
+              templateId: template.id,
+              orientation: template.orientation,
+              margin: template.margin
+            })
+            finalBytes = pdfResult.bytes
+            finalName = pdfResult.suggestedName
+            finalMime = "application/pdf"
+          } else {
+            throw new Error(`Technical restriction: Builder for format '${structuredResult.output_format}' is not initialized.`)
+          }
+
+          Logger.info("Pipeline Step: Build Complete", {
+            requestId,
+            builderName,
+            finalMime,
+            finalName
+          })
 
           const langSuffix = tLang !== "en" ? ` (${LANGUAGE_MAP[tLang] || tLang})` : ""
-          const finalName = output.suggestedName.includes(".")
-            ? output.suggestedName.replace(/(\.[^.]+)$/, `${langSuffix}$1`)
-            : `${output.suggestedName}${langSuffix}`
+          const namedWithLang = finalName.includes(".")
+            ? finalName.replace(/(\.[^.]+)$/, `${langSuffix}$1`)
+            : `${finalName}${langSuffix}`
 
-          results.push({ name: finalName, bytes: output.bytes, format: targetFormat })
-          Logger.info("File processed successfully", { requestId, finalName, targetLanguage: tLang })
+          results.push({ name: namedWithLang, bytes: finalBytes, format: targetFormat, mime: finalMime })
+          Logger.info("File processed successfully", { requestId, finalName: namedWithLang, targetLanguage: tLang })
         }
       } catch (err: any) {
-        Logger.error("Processing failed for file", err, { requestId, filename: f.name })
+        Logger.error("Pipeline breakdown", err, { requestId, filename: f.name })
         return new Response(JSON.stringify({
-          error: "Processing Error",
-          message: `System failed to process '${f.name}': ${err?.message || "Internal failure."}`
+          error: "Pipeline Fault",
+          message: `Technical failure during high-precision processing of '${f.name}': ${err?.message || "Internal operation interrupted."}`
         }), { status: 500, headers: { "Content-Type": "application/json" } })
       }
     }
@@ -494,7 +514,7 @@ Title:`,
 
       return new Response(single.bytes as any, {
         headers: {
-          "Content-Type": mimeMap[single.format] || "application/octet-stream",
+          "Content-Type": (single as any).mime || "application/octet-stream",
           "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
           "X-Assistant-Message": encodeURIComponent(assistantMessage),
         },

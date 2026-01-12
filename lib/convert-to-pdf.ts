@@ -4,6 +4,7 @@ import mammoth from "mammoth"
 import { wrapText } from "./wrapText"
 import fs from "fs"
 import path from "path"
+import type { PipelineOutput } from "./document-generators"
 
 // Attempt to load sharp optionally (for WEBP/HEIC conversion). If unavailable, skip gracefully.
 let sharp: any = null
@@ -25,6 +26,23 @@ const A4 = { width: 595.28, height: 841.89 } // points
 
 function pageSize(orientation?: "portrait" | "landscape") {
   return orientation === "landscape" ? [A4.height, A4.width] : [A4.width, A4.height]
+}
+
+/**
+ * NEW: build_pdf handles structured sections (headings, paragraphs, tables).
+ */
+export async function build_pdf(data: PipelineOutput, filename: string, cover?: CoverOptions): Promise<{ bytes: Uint8Array; suggestedName: string }> {
+  const doc = await PDFDocument.create()
+  if (cover?.coverLine) {
+    await addCoverPage(doc, cover.coverLine, filename, cover)
+  }
+  await addStructuredPages(doc, data, cover)
+
+  const bytes = await doc.save()
+  return {
+    bytes,
+    suggestedName: `${stripExt(filename)}_translated.pdf`
+  }
 }
 
 /**
@@ -246,7 +264,7 @@ function mimeFromExt(ext: string): string {
   return map[ext] || "application/octet-stream"
 }
 
-function stripExt(name: string) {
+export function stripExt(name: string) {
   const i = name.lastIndexOf(".")
   return i > 0 ? name.slice(0, i) : name
 }
@@ -458,5 +476,99 @@ async function addCodePages(doc: PDFDocument, text: string, cover?: CoverOptions
       maxWidth,
     })
     y -= hLine
+  }
+}
+async function addStructuredPages(doc: PDFDocument, data: PipelineOutput, cover?: CoverOptions) {
+  const customFont = await getAppFont(doc)
+  const body = customFont
+  const bold = customFont // Geist has different weights usually, but we'll use same for now or fallback
+
+  const fontSize = 11
+  const headingSize = 16
+  const lineGap = 4
+  const margin = typeof cover?.margin === "number" ? cover!.margin! : 36
+
+  const [w, h] = pageSize(cover?.orientation)
+  const maxWidth = w - margin * 2
+
+  if (!body) return
+
+  let page = doc.addPage([w, h])
+  let y = h - margin
+
+  const checkPage = (heightNeeded: number) => {
+    if (y - heightNeeded < margin) {
+      page = doc.addPage([w, h])
+      y = h - margin
+    }
+  }
+
+  if (data.structure.sections) {
+    for (const s of data.structure.sections) {
+      // Heading
+      checkPage(headingSize + 20)
+      page.drawText(safeText(s.heading), {
+        x: margin,
+        y: y - headingSize,
+        font: body,
+        size: headingSize,
+        color: rgb(0, 0, 0),
+      })
+      y -= (headingSize + 15)
+
+      // Paragraphs
+      for (const p of s.paragraphs) {
+        const lines = wrapText(p.replace(/\r\n/g, "\n"), body, fontSize, maxWidth)
+        for (const line of lines) {
+          checkPage(fontSize + lineGap)
+          page.drawText(safeText(line), {
+            x: margin,
+            y: y - fontSize,
+            font: body,
+            size: fontSize,
+            color: rgb(0, 0, 0),
+          })
+          y -= (fontSize + lineGap)
+        }
+        y -= 10 // extra space between paragraphs
+      }
+
+      // Tables
+      if (s.tables) {
+        for (const t of s.tables) {
+          const colWidth = maxWidth / t.headers.length
+          const rowHeight = fontSize + 10
+
+          // Draw Headers
+          checkPage(rowHeight)
+          t.headers.forEach((header, i) => {
+            page.drawText(safeText(header), {
+              x: margin + (i * colWidth),
+              y: y - fontSize,
+              font: body,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+            })
+          })
+          y -= rowHeight
+
+          // Draw Rows
+          for (const row of t.rows) {
+            checkPage(rowHeight)
+            row.forEach((cell, i) => {
+              page.drawText(safeText(String(cell)), {
+                x: margin + (i * colWidth),
+                y: y - fontSize,
+                font: body,
+                size: fontSize,
+                color: rgb(0.2, 0.2, 0.2),
+              })
+            })
+            y -= rowHeight
+          }
+          y -= 20 // space after table
+        }
+      }
+    }
   }
 }
