@@ -1,4 +1,6 @@
 import { PDFDocument, type PDFPage } from "pdf-lib"
+// @ts-ignore
+import pdf = require("pdf-parse")
 
 export interface TableData {
   headers: string[]
@@ -28,41 +30,52 @@ function sanitizeTextForUTF8(text: string): string {
 }
 
 /**
- * Advanced PDF processor with OCR simulation and table detection
- * In production, integrate with Tesseract.js or cloud OCR services
+ * Advanced PDF processor with real text extraction
  */
 export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: string): Promise<ExtractedContent> {
-  // Load PDF with pdf-lib for metadata
-  const pdfDoc = await PDFDocument.load(arrayBuffer)
-  const pageCount = pdfDoc.getPageCount()
-
-  // Extract metadata
-  const metadata = {
-    title: pdfDoc.getTitle() || filename,
-    author: pdfDoc.getAuthor(),
-    creationDate: pdfDoc.getCreationDate()?.toISOString(),
-    pageCount,
-  }
-
-  // Extract text - serverless-friendly approach
-  let fullText = ""
-  const tables: TableData[] = []
+  // Path for pdf-parse requires a buffer
+  const buffer = Buffer.from(arrayBuffer)
 
   try {
-    // For serverless environments, provide informative message
-    // In production, integrate with cloud PDF processing service
-    fullText = `Document: ${filename}\nPages: ${pageCount}\n\nThis PDF contains ${pageCount} page(s).\n\nFor text extraction in production environments, please integrate with a cloud PDF processing service like:\n- Google Cloud Document AI\n- AWS Textract\n- Azure Form Recognizer\n\nThe PDF appears to be valid but requires specialized processing for text extraction.`
+    const data = await (pdf as any)(buffer)
 
-    // For now, don't attempt table detection in serverless environment
+    // Load with pdf-lib for additional metadata if needed
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const pageCount = pdfDoc.getPageCount()
+
+    const metadata = {
+      title: data.info?.Title || pdfDoc.getTitle() || filename,
+      author: data.info?.Author || pdfDoc.getAuthor(),
+      creationDate: pdfDoc.getCreationDate()?.toISOString(),
+      pageCount: data.numpages || pageCount,
+    }
+
+    // pdf-parse extracts all text from all pages
+    const fullText = data.text || ""
+
+    // Tables will be detected by the LLM in the translation pipeline
+    // using the extracted text. We return an empty array for now as
+    // structured extraction is handled downstream.
+    const tables: TableData[] = []
+
+    return {
+      text: sanitizeTextForUTF8(fullText),
+      tables,
+      metadata,
+    }
   } catch (error) {
     console.error("PDF processing error:", error)
-    fullText = `Document: ${filename}\n\nUnable to process PDF. The file may be corrupted or encrypted. Please ensure the PDF is valid and not password-protected.`
-  }
 
-  return {
-    text: sanitizeTextForUTF8(fullText),
-    tables,
-    metadata,
+    // Fallback to minimal extraction if pdf-parse fails
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    return {
+      text: `PDF extraction failed for ${filename}. Please try a different document.`,
+      tables: [],
+      metadata: {
+        title: pdfDoc.getTitle() || filename,
+        pageCount: pdfDoc.getPageCount(),
+      }
+    }
   }
 }
 

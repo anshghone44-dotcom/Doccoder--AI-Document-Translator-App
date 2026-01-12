@@ -8,8 +8,10 @@ import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileTex
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
+import FormatSelector, { type OutputFormat } from "@/components/format-selector"
 import VoiceSettings from "@/components/voice-settings"
 import VoiceRecorder from "@/components/voice-recorder"
+import { LanguageSelector } from "@/components/language-selector"
 
 type Message = {
     role: "user" | "assistant"
@@ -52,6 +54,7 @@ export default function DocChatbot() {
         setTargetLang(language)
     }, [language])
     const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
+    const [targetFormat, setTargetFormat] = useState<OutputFormat>("pdf")
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
     const [autoPlay, setAutoPlay] = useState(true)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -173,6 +176,7 @@ export default function DocChatbot() {
                 form.set("prompt", userMessage)
                 form.set("targetLanguage", targetLang)
                 form.set("aiModel", selectedModel)
+                form.set("targetFormat", targetFormat)
                 currentFiles.forEach(f => form.append("files", f, f.name))
 
                 const res = await fetch("/api/transform", {
@@ -250,6 +254,8 @@ export default function DocChatbot() {
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="scale-90 origin-right flex items-center gap-2">
+                        <LanguageSelector />
+                        <FormatSelector value={targetFormat} onChange={setTargetFormat} />
                         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
                         <VoiceRecorder onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))} />
                         <VoiceSettings

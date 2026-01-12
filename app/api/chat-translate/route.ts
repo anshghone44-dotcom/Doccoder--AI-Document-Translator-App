@@ -1,6 +1,7 @@
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
+import { xai } from "@ai-sdk/xai"
 import { type NextRequest, NextResponse } from "next/server"
 import { Logger } from "@/lib/logger"
 
@@ -57,6 +58,30 @@ export async function POST(request: NextRequest) {
             }, { status: 400 })
         }
 
+        // Validate API Keys based on model
+        const modelProvider = model?.split('/')[0] || 'openai'
+        if (modelProvider === 'openai' && !process.env.OPENAI_API_KEY) {
+            return NextResponse.json({
+                error: "Authentication Error",
+                message: "OpenAI API key is missing. Please configure OPENAI_API_KEY in your system environment.",
+                code: "MISSING_KEY"
+            }, { status: 500 })
+        }
+        if (modelProvider === 'anthropic' && !process.env.ANTHROPIC_API_KEY) {
+            return NextResponse.json({
+                error: "Authentication Error",
+                message: "Anthropic API key is missing. Please configure ANTHROPIC_API_KEY in your system environment.",
+                code: "MISSING_KEY"
+            }, { status: 500 })
+        }
+        if (modelProvider === 'xai' && !process.env.XAI_API_KEY) {
+            return NextResponse.json({
+                error: "Authentication Error",
+                message: "xAI (Grok) API key is missing. Please configure XAI_API_KEY in your system environment.",
+                code: "MISSING_KEY"
+            }, { status: 500 })
+        }
+
         const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_MAP)
         const isLanguageSupported = SUPPORTED_LANGUAGES.includes(targetLanguage) || targetLanguage === "en"
 
@@ -109,6 +134,9 @@ export async function POST(request: NextRequest) {
 
                 if (requestedModel && (requestedModel.startsWith('anthropic') || requestedModel.startsWith('claude'))) {
                     return anthropic(mappedModel)
+                }
+                if (requestedModel && (requestedModel.startsWith('xai') || requestedModel.startsWith('grok'))) {
+                    return xai(mappedModel)
                 }
                 return openai(mappedModel)
             } catch (err) {

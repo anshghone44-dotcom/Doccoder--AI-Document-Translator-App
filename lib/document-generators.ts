@@ -12,10 +12,23 @@ export interface StructuredData {
  */
 export async function generateExcel(data: StructuredData[], filename: string): Promise<Uint8Array> {
     const wb = XLSX.utils.book_new()
-    const wsData = [
-        ["Title", "Content", "Language"],
-        ...data.map(item => [item.title, item.content, item.language])
-    ]
+
+    // Attempt to detect if content is CSV-like to spread across columns
+    const wsData: any[][] = [["Title", "Content/Data", "Language"]]
+
+    data.forEach(item => {
+        // Simple heuristic: if content has commas and no newlines, or multiple lines with same comma count
+        const lines = item.content.split("\n").filter(l => l.trim())
+        if (lines.length > 1 && lines[0].includes(",")) {
+            lines.forEach(line => {
+                const cells = line.split(",").map(c => c.trim())
+                wsData.push([item.title, ...cells, item.language])
+            })
+        } else {
+            wsData.push([item.title, item.content, item.language])
+        }
+    })
+
     const ws = XLSX.utils.aoa_to_sheet(wsData)
     XLSX.utils.book_append_sheet(wb, ws, "Translated Data")
     const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" })

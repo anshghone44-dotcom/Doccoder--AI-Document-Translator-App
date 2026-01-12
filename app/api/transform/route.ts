@@ -5,6 +5,7 @@ import { convertAnyToPdf } from "@/lib/convert-to-pdf"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
+import { xai } from "@ai-sdk/xai"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
 import { generateExcel, generateCsv, generateWord, generateText as generateStructuredText } from "@/lib/document-generators"
@@ -28,6 +29,20 @@ const Logger = {
   warn: (message: string, data?: any) => {
     console.warn(JSON.stringify({ level: "WARN", timestamp: new Date().toISOString(), message, ...data }))
   }
+}
+
+/**
+ * Splits text into chunks and processes them with the provided function.
+ */
+async function processInChunks(text: string, chunkSize: number, processFn: (chunk: string) => Promise<string>): Promise<string> {
+  if (!text) return ""
+  const chunks: string[] = []
+  for (let i = 0; i < text.length; i += chunkSize) {
+    chunks.push(text.slice(i, i + chunkSize))
+  }
+
+  const results = await Promise.all(chunks.map(chunk => processFn(chunk)))
+  return results.join("\n")
 }
 
 export const maxDuration = 60
@@ -72,10 +87,33 @@ export async function POST(req: NextRequest) {
     Logger.info("Transform API request started", { requestId })
 
     const form = await req.formData()
-    // ... (logic follows)
     const prompt = (form.get("prompt") || "").toString()
     const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
     const baseLanguage = (form.get("targetLanguage") || "en").toString()
+
+    // Validate API Keys base on model
+    const modelProvider = aiModel?.split('/')[0] || 'openai'
+    if (modelProvider === 'openai' && !process.env.OPENAI_API_KEY) {
+      return new Response(JSON.stringify({
+        error: "Authentication Error",
+        message: "OpenAI API key is missing. Please configure OPENAI_API_KEY in your system environment.",
+        code: "MISSING_KEY"
+      }), { status: 500, headers: { "Content-Type": "application/json" } })
+    }
+    if (modelProvider === 'anthropic' && !process.env.ANTHROPIC_API_KEY) {
+      return new Response(JSON.stringify({
+        error: "Authentication Error",
+        message: "Anthropic API key is missing. Please configure ANTHROPIC_API_KEY in your system environment.",
+        code: "MISSING_KEY"
+      }), { status: 500, headers: { "Content-Type": "application/json" } })
+    }
+    if (modelProvider === 'xai' && !process.env.XAI_API_KEY) {
+      return new Response(JSON.stringify({
+        error: "Authentication Error",
+        message: "xAI (Grok) API key is missing. Please configure XAI_API_KEY in your system environment.",
+        code: "MISSING_KEY"
+      }), { status: 500, headers: { "Content-Type": "application/json" } })
+    }
 
     // SAFE WORKFLOW - Step 1: Validate Backend Capabilities
     const SUPPORTED_FORMATS = ["pdf", "docx", "xlsx", "csv", "txt"]
@@ -84,6 +122,7 @@ export async function POST(req: NextRequest) {
     // Detect if user explicitly requested languages or formats in the prompt
     let targetLanguages: string[] = [baseLanguage]
     let targetFormat: string = "pdf"
+    let explicitGoal: string = prompt || "Process document"
 
     try {
       console.log("Sending metadata detection prompt to model:", prompt)
@@ -94,25 +133,20 @@ export async function POST(req: NextRequest) {
       
       Tasks:
       1. Identify all requested target language(s) (ISO 639-1).
-      2. Identify the requested output format based on keywords.
+      2. Identify the requested output format.
+      3. Extract the core "transformation goal" (e.g., "summarize", "translate", "extract tables", "change tone to formal").
       
       Format Mapping Rules (STRICT):
-      - Keywords: ["excel", "xls", "xlsx", "spreadsheet", "table", "csv"] -> If any of these are present, prioritize "xlsx" (or "csv" if explicitly asked for CSV).
-      - Keywords: ["word", "doc", "docx", "document"] -> prioritize "docx".
-      - Keywords: ["text", "txt", "notes", "markdown"] -> prioritize "txt".
-      - Keywords: ["pdf", "fixed"] -> prioritize "pdf".
-      
-      Output format mapping:
-      - Requested: "Excel", "XLS", "XLSX" -> xlsx
-      - Requested: "Word", "DOC", "DOCX" -> docx
-      - Requested: "CSV" -> csv
-      - Requested: "Text", "TXT" -> txt
-      - Default to "pdf" ONLY if no format is mentioned.
+      - Keywords: ["excel", "xls", "xlsx", "spreadsheet", "table", "csv"] -> xlsx
+      - Keywords: ["word", "doc", "docx", "document"] -> docx
+      - Keywords: ["text", "txt", "notes", "markdown"] -> txt
+      - Keywords: ["pdf", "fixed"] -> pdf
  
       Return ONLY a JSON object:
       {
         "langs": ["iso-code"], 
-        "format": "pdf|docx|xlsx|csv|txt" 
+        "format": "pdf|docx|xlsx|csv|txt",
+        "explicitGoal": "summarized description of what the user wants to do"
       }`,
         temperature: 0,
       })
@@ -121,14 +155,17 @@ export async function POST(req: NextRequest) {
       Logger.info("Detection result raw", { requestId, detectionResult })
       const cleaned = detectionResult.trim().replace(/^```json/, "").replace(/```$/, "").trim()
       const parsed = JSON.parse(cleaned)
+
       if (parsed.langs && Array.isArray(parsed.langs) && parsed.langs.length > 0) {
         targetLanguages = parsed.langs
       } else if (parsed.lang) {
         targetLanguages = [parsed.lang]
       }
-      targetFormat = parsed.format || "pdf"
 
-      Logger.info("Detected transformation metadata", { requestId, targetLanguages, targetFormat })
+      targetFormat = form.get("targetFormat")?.toString() || parsed.format || "pdf"
+      explicitGoal = parsed.explicitGoal || prompt || "Process document"
+
+      Logger.info("Detected transformation metadata", { requestId, targetLanguages, targetFormat, explicitGoal })
     } catch (err) {
       Logger.warn("Metadata detection failed, using defaults", { requestId, err: (err as any).message })
     }
@@ -215,6 +252,9 @@ export async function POST(req: NextRequest) {
         if (requestedModel && (requestedModel.startsWith('anthropic') || requestedModel.startsWith('claude'))) {
           return anthropic(mappedModel)
         }
+        if (requestedModel && (requestedModel.startsWith('xai') || requestedModel.startsWith('grok'))) {
+          return xai(mappedModel)
+        }
         return openai(mappedModel)
       } catch (err) {
         Logger.error("Failed to initialize AI model, defaulting to gpt-4o-mini", err, { requestedModel })
@@ -236,7 +276,7 @@ export async function POST(req: NextRequest) {
           model: getFinalModel(aiModel),
           prompt: `Create a technically precise, concise one-line title for the document "${filename}".
  
-User's requested transformation goal: ${prompt}
+User's requested transformation goal: ${explicitGoal}
  
 CRITICAL: If the user explicitly mentions a target language in their goal (e.g. "translate to Marathi"), prioritize that language. Otherwise, return the title in ${languageFull}.
  
@@ -270,29 +310,31 @@ Title:`,
       const languageFull = LANGUAGE_MAP[lang] || lang || "English"
 
       try {
-        Logger.info("Requesting structured AI translation", { lang, textSnippet: text.slice(0, 50) })
+        Logger.info("Requesting structured transformation", { aiModel, targetLanguage: lang, targetFormat, explicitGoal })
 
-        console.log("Sending structured translation prompt to model for:", lang)
+        const formatSpec = targetFormat === 'xlsx' || targetFormat === 'csv'
+          ? "TABULAR MODE: Extract data into logical rows and columns. Each item in the array should represent a logical record or row."
+          : "DOCUMENT MODE: Extract headings and paragraphs. Each item in the array should represent a section or chapter."
+
         const { text: jsonResult } = await generateText({
           model: getFinalModel(aiModel),
-          prompt: `You are the System Intelligence Core. Execute the following transformation goal with absolute precision.
+          prompt: `You are the System Intelligence Core. Execute a high-precision structured transformation.
         
-        USER DIRECTIVE: ${prompt}
-        SOURCE LANGUAGE: Detect automatically
+        USER GOAL: ${explicitGoal}
         TARGET LANGUAGE: ${languageFull}
- 
-        SYSTEM PROTOCOLS: 
-        1. EXECUTE THE USER DIRECTIVE ABOVE WITH ABSOLUTE PRIORITY.
-        2. Deliver the final synchronized content in ${languageFull}.
-        3. If the user asks for a summary, professional tone, data extraction, or format-specific structure, prioritize that.
-        4. Maintain absolute technical integrity and professional caliber.
-        5. For structured output (Excel/Word/CSV), ensure data is logically grouped.
+        TARGET FORMAT: ${targetFormat}
+
+        SYSTEM PROTOCOL:
+        1. ${formatSpec}
+        2. Deliver the final output strictly in ${languageFull}.
+        3. Prioritize user's specific instructions (summarization, tone, etc.) while maintaining structure.
+        4. Maintain absolute technical integrity.
         
-        OUTPUT FORMAT:
+        OUTPUT FORMAT (STRICT JSON ARRAY ONLY):
         [
           {
-            "title": "Section Title",
-            "content": "Section Content...",
+            "title": "Section/Row Header",
+            "content": "Detailed content or comma-separated values for rows",
             "language": "${languageFull}"
           }
         ]
@@ -320,49 +362,35 @@ Title:`,
 
     async function translateContent(text: string, targetLanguage: string) {
       if (!text || !text.trim()) return text
-      const startTime = Date.now()
+      const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
-      try {
-        const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
-
-        Logger.info("Requesting AI content translation", {
-          preferredLanguage: languageFull,
-          aiModel,
-          textSnippet: text.slice(0, 50) + "..."
-        })
-
-        console.log("Sending content translation prompt to model for:", targetLanguage)
+      const processChunk = async (chunk: string) => {
         const { text: translated } = await generateText({
           model: getFinalModel(aiModel),
-          prompt: `You are the System Intelligence Core, a voice-enabled assistant. Execute linguistic synchronization.
+          prompt: `You are the System Intelligence Core. Execute the following transformation goal with absolute precision.
         
-        USER GOAL: ${prompt}
-        SOURCE LANGUAGE: Detect automatically
+        USER GOAL: ${explicitGoal}
         TARGET LANGUAGE: ${languageFull}
- 
+
         SYSTEM PROTOCOL:
         1. EXECUTE THE USER GOAL WITH ABSOLUTE PRIORITY.
         2. Deliver the final output in ${languageFull}.
-        3. If the user goal involves summarization, stylistic changes, or specific modifications, follow them precisely.
-        4. Prioritize audio-friendly, conversational interaction for voice mode synthesis.
-        5. Maintain absolute technical precision.
+        3. Maintain absolute technical precision.
         
         Return ONLY the translated/processed text.
- 
-        TEXT OBJECT:
-        ${text.slice(0, 15000)}
- 
+
+        TEXT SEGMENT:
+        ${chunk}
+
         SYNCHRONIZED OUTPUT:`,
           temperature: 0.3,
         })
-        console.log("Content translation response from LLM:", translated.slice(0, 500))
-
-        Logger.info("AI content translation successful", {
-          durationMs: Date.now() - startTime,
-          translatedSnippet: translated.slice(0, 50) + "..."
-        })
-
         return translated
+      }
+
+      try {
+        Logger.info("Requesting AI content transformation (chunked)", { targetLanguage, textLength: text.length })
+        return await processInChunks(text, 8000, processChunk)
       } catch (err) {
         Logger.error("AI content translation failed", err, { aiModel, targetLanguage })
         return text
@@ -455,7 +483,7 @@ Title:`,
           error: "Processing Interrupt",
           message: `System encountered a technical barrier while processing '${f.name}': ${err?.message || "Internal operation failed."}`,
           code: "PROCESS_INTERRUPT"
-        }), { status: 500, headers: { "Content-Type": "application/json" } })
+        }), { status: 400, headers: { "Content-Type": "application/json" } })
       }
     }
 

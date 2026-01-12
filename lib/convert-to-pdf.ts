@@ -1,11 +1,9 @@
-// Utilities to convert various file types into PDF pages using pdf-lib.
-// Supports: PDF passthrough, DOCX (via mammoth -> text), XLS/XLSX/CSV (via xlsx -> text),
-// TXT/MD/HTML (text fallback), PNG/JPG/JPEG/WEBP (images; WEBP converted via sharp if available).
-
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib"
+import { PDFDocument, rgb } from "pdf-lib"
 import * as XLSX from "xlsx"
 import mammoth from "mammoth"
 import { wrapText } from "./wrapText"
+import fs from "fs"
+import path from "path"
 
 // Attempt to load sharp optionally (for WEBP/HEIC conversion). If unavailable, skip gracefully.
 let sharp: any = null
@@ -226,19 +224,31 @@ function sanitizeFilename(name: string) {
 }
 
 /**
- * Ensures text is encodable by standard PDF fonts (WinAnsi).
- * Characters outside this range are replaced to prevent crashes.
+ * Ensures text is valid for rendering.
+ * We no longer restrict to WinAnsi as we embed a UTF-8 compatible font.
  */
 function safeText(text: string): string {
   if (!text) return ""
-  // PDF Standard Fonts use WinAnsiEncoding. 
-  // We'll filter for standard printable characters + some extras.
-  // This is a defensive barrier against 0xfffd and other Unicode interrupts.
-  return text.normalize("NFC").replace(/[^\x00-\x7F\xA0-\xFF]/g, (char) => {
-    // If it's a known common special char, we can try to map it, 
-    // otherwise fallback to a safe placeholder.
-    return "?"
-  })
+  return text.normalize("NFC").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "")
+}
+
+/**
+ * Loads and embeds a custom font for UTF-8 support.
+ * Uses Geist-Regular as it's already in node_modules.
+ */
+async function getAppFont(doc: PDFDocument) {
+  try {
+    const fontPath = path.join(process.cwd(), "node_modules", "geist", "dist", "fonts", "geist-sans", "Geist-Regular.ttf")
+    if (fs.existsSync(fontPath)) {
+      const fontBytes = fs.readFileSync(fontPath)
+      return await doc.embedFont(fontBytes)
+    }
+  } catch (e) {
+    console.error("Failed to load custom font, falling back to Helvetica", e)
+  }
+  // Fallback if Geist is missing (though it might still have WinAnsi issues)
+  // StandardFonts is not used here to avoid WinAnsi issues if possible
+  return null
 }
 
 function stripHtml(html: string) {
@@ -274,8 +284,12 @@ async function prependCoverPage(base: PDFDocument, coverLine: string, filename: 
 async function addCoverPage(doc: PDFDocument, coverLine: string, filename: string, cover?: CoverOptions) {
   const [w, h] = pageSize(cover?.orientation)
   const page = doc.addPage([w, h])
-  const font = await doc.embedFont(StandardFonts.HelveticaBold)
-  const sub = await doc.embedFont(StandardFonts.Helvetica)
+
+  const customFont = await getAppFont(doc)
+  // Use custom font for everything to support UTF-8
+  const font = customFont
+  const sub = customFont
+
   const title = coverLine
   const subTitle = sanitizeFilename(filename)
   const margin = typeof cover?.margin === "number" ? cover!.margin! : 36
@@ -283,24 +297,29 @@ async function addCoverPage(doc: PDFDocument, coverLine: string, filename: strin
   // theme color depending on template
   const theme = pickTheme(cover?.templateId)
 
-  // Title
-  page.drawText(safeText(title), {
-    x: margin,
-    y: h - margin - 48,
-    size: cover?.templateId === "professional" ? 28 : 24,
-    font,
-    color: theme.title,
-    maxWidth: w - margin * 2,
-  })
-  // Subtitle
-  page.drawText(safeText(subTitle), {
-    x: margin,
-    y: h - margin - 48 - 28,
-    size: 12,
-    font: sub,
-    color: theme.subtitle,
-    maxWidth: w - margin * 2,
-  })
+  if (font) {
+    // Title
+    page.drawText(safeText(title), {
+      x: margin,
+      y: h - margin - 48,
+      size: cover?.templateId === "professional" ? 28 : 24,
+      font,
+      color: theme.title,
+      maxWidth: w - margin * 2,
+    })
+    // Subtitle
+    page.drawText(safeText(subTitle), {
+      x: margin,
+      y: h - margin - 48 - 28,
+      size: 12,
+      font: sub || undefined,
+      color: theme.subtitle,
+      maxWidth: w - margin * 2,
+    })
+  } else {
+    // Basic fallback if font loading failed
+    page.drawText("Document Transformation Result", { x: margin, y: h - margin - 48, size: 24 })
+  }
 
   // Minimal accent rule for visual polish
   if (cover?.templateId !== "minimal") {
@@ -314,7 +333,8 @@ async function addCoverPage(doc: PDFDocument, coverLine: string, filename: strin
 }
 
 async function addTextPages(doc: PDFDocument, text: string, cover?: CoverOptions) {
-  const body = await doc.embedFont(StandardFonts.Helvetica)
+  const customFont = await getAppFont(doc)
+  const body = customFont
   const fontSize = cover?.templateId === "professional" ? 11.5 : 11
   const lineGap = cover?.templateId === "photo" ? 6 : 4
   const margin = typeof cover?.margin === "number" ? cover!.margin! : 36
@@ -322,6 +342,12 @@ async function addTextPages(doc: PDFDocument, text: string, cover?: CoverOptions
   const [w, h] = pageSize(cover?.orientation)
   const maxWidth = w - margin * 2
   const maxHeight = h - margin * 2
+
+  if (!body) {
+    const page = doc.addPage([w, h])
+    page.drawText("Error: Custom UTF-8 font could not be loaded. Please ensure Geist font is available in node_modules.", { x: margin, y: h - margin, size: 10 })
+    return
+  }
 
   const lines = wrapText(text.replace(/\r\n/g, "\n"), body, fontSize, maxWidth)
   let page = doc.addPage([w, h])
@@ -371,7 +397,8 @@ async function createPdfFromCode(text: string, filename: string, cover?: CoverOp
 }
 
 async function addCodePages(doc: PDFDocument, text: string, cover?: CoverOptions) {
-  const mono = await doc.embedFont(StandardFonts.Courier)
+  const customFont = await getAppFont(doc)
+  const mono = customFont // Using same font for now, or could find a mono ttf
   const fontSize = 9.5 // Smaller for code to fit more content
   const lineGap = 3
   const margin = typeof cover?.margin === "number" ? cover!.margin! : 36
@@ -379,6 +406,8 @@ async function addCodePages(doc: PDFDocument, text: string, cover?: CoverOptions
   const [w, h] = pageSize(cover?.orientation)
   const maxWidth = w - margin * 2
   const maxHeight = h - margin * 2
+
+  if (!mono) return
 
   const lines = wrapText(text.replace(/\r\n/g, "\n"), mono, fontSize, maxWidth)
   let page = doc.addPage([w, h])
