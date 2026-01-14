@@ -49,7 +49,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
-              <Link href="/chatbot">
+              <Link href="/translate">
                 <Button
                   size="lg"
                   className="h-14 px-8 text-lg font-bold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.24)] hover:scale-105 active:scale-95 group"
@@ -133,7 +133,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground/90">
               Ready to experience lightning-fast translations?
             </h2>
-            <Link href="/chatbot">
+            <Link href="/translate">
               <Button
                 size="lg"
                 className="h-20 px-16 text-2xl font-black bg-foreground text-background hover:bg-foreground/90 transition-all duration-500 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 group relative overflow-hidden"
