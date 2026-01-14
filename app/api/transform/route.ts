@@ -264,7 +264,7 @@ export async function POST(req: NextRequest) {
     }
 
     const SYSTEM_PROTOCOL = `
-You are the System Intelligence Core. Execute a high-precision linguistic and structural transformation.
+You are the Doccoder AI Assistant. Execute a high-precision linguistic and structural transformation.
 
 PROTOCOL:
 1. TRANSLATION: Translate the source content into the target_language first. Maintain absolute technical integrity and context.
@@ -482,7 +482,7 @@ Title:`,
         console.log("Sending success message prompt to model for:", targetLanguage)
         const { text } = await generateText({
           model: getFinalModel(aiModel),
-          prompt: `You are the System Intelligence Core. Generate a technical success confirmation in ${languageFull}.
+          prompt: `You are the Doccoder AI Assistant. Generate a technical success confirmation in ${languageFull}.
         
         CONTEXT: 
         - Target Language: ${languageFull}
@@ -545,7 +545,7 @@ Title:`,
     Logger.error("Global Transform API failure", err, { requestId })
     return new Response(JSON.stringify({
       error: "System Fault",
-      message: `System Intelligence Core encountered a fatal exception: ${err?.message || "Internal synchronized operation failed."}`,
+      message: `Doccoder AI Assistant encountered a fatal exception: ${err?.message || "Internal synchronized operation failed."}`,
       code: "GLOBAL_FAULT"
     }), { status: 500, headers: { "Content-Type": "application/json" } })
   }

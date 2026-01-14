@@ -11,7 +11,6 @@ import ModelSelector, { type AIModel } from "@/components/model-selector"
 import FormatSelector, { type OutputFormat } from "@/components/format-selector"
 import VoiceSettings from "@/components/voice-settings"
 import VoiceRecorder from "@/components/voice-recorder"
-import { LanguageSelector } from "@/components/language-selector"
 
 type Message = {
     role: "user" | "assistant"
@@ -247,14 +246,9 @@ export default function DocChatbot() {
             {/* Header / Control Bar - More Discrete */}
             <div className="px-6 py-4 flex items-center justify-between relative z-20">
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-card border border-border/50 backdrop-blur-md shadow-sm">
-                        <Zap className="h-4 w-4 text-primary" />
-                        <span className="text-[10px] font-bold tracking-widest uppercase text-foreground/70">System Intelligence Core</span>
-                    </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="scale-90 origin-right flex items-center gap-2">
-                        <LanguageSelector />
                         <FormatSelector value={targetFormat} onChange={setTargetFormat} />
                         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
                         <VoiceRecorder onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))} />

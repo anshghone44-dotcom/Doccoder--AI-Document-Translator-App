@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         const lastUserMessage = messages[messages.length - 1].content
         const targetLanguageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
-        const systemPrompt = `You are the System Intelligence Core, a high-fidelity AI assistant.
+        const systemPrompt = `You are the Doccoder AI Assistant, a high-fidelity AI assistant.
         
         COMMAND OF LANGUAGE SELECTION: The system is currently focused on ${targetLanguageFull}.
         

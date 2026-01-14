@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
           Logger.info("Applying AI transformation directive", { requestId, prompt })
           const { text: transformed } = await generateText({
             model: finalModel,
-            prompt: `You are the System Intelligence Core. Execute a technical transformation on the following extracted document text.
+            prompt: `You are the Doccoder AI Assistant. Execute a technical transformation on the following extracted document text.
              
              USER DIRECTIVE: ${prompt}
              OUTPUT FORMAT: ${targetFormat}

@@ -248,10 +248,6 @@ export default function ReverseTransformChat() {
       {/* Header Area - Discrete */}
       <div className="px-6 py-4 flex items-center justify-between relative z-20">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-card border border-border/50 backdrop-blur-md shadow-sm">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="text-[10px] font-bold tracking-widest uppercase text-foreground/70">System Intelligence Core</span>
-          </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="scale-90 origin-right flex items-center gap-2">
@@ -341,7 +337,7 @@ export default function ReverseTransformChat() {
               </div>
               <div className="space-y-4 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-                  {language === "en" ? "PDF Neural Analysis" : t.chatbot.architect}
+                  {language === "en" ? "PDF Neural Analysis" : t.chatbot.welcome}
                 </h1>
                 <p className="text-muted-foreground text-lg font-medium leading-relaxed">
                   {language === "en" ? "Upload PDF objects for structural decomposition and multi-format synthesis." : ""}
