@@ -60,12 +60,22 @@ export async function POST(request: NextRequest) {
 
         // Validate API Keys based on model
         const modelProvider = model?.split('/')[0] || 'openai'
-        if (modelProvider === 'openai' && !process.env.OPENAI_API_KEY) {
-            return NextResponse.json({
-                error: "Authentication Error",
-                message: "OpenAI API key is missing. Please configure OPENAI_API_KEY in your system environment.",
-                code: "MISSING_KEY"
-            }, { status: 500 })
+        if (modelProvider === 'openai') {
+            const key = process.env.OPENAI_API_KEY
+            if (!key) {
+                return NextResponse.json({
+                    error: "Authentication Error",
+                    message: "OpenAI API key is missing. Please configure OPENAI_API_KEY in your system environment.",
+                    code: "MISSING_KEY"
+                }, { status: 500 })
+            }
+            if (key === "DocTech" || key.includes("your-") || key.includes("YOUR_")) {
+                return NextResponse.json({
+                    error: "Authentication Error",
+                    message: `The system is currently using a placeholder API key: '${key}'. Please update your environment variables with a valid OpenAI API key to enable linguistic synchronization.`,
+                    code: "PLACEHOLDER_KEY"
+                }, { status: 500 })
+            }
         }
         if (modelProvider === 'anthropic' && !process.env.ANTHROPIC_API_KEY) {
             return NextResponse.json({

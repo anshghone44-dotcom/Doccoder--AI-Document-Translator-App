@@ -94,12 +94,22 @@ export async function POST(req: NextRequest) {
 
     // Validate API Keys base on model
     const modelProvider = aiModel?.split('/')[0] || 'openai'
-    if (modelProvider === 'openai' && !process.env.OPENAI_API_KEY) {
-      return new Response(JSON.stringify({
-        error: "Authentication Error",
-        message: "OpenAI API key is missing. Please configure OPENAI_API_KEY in your system environment.",
-        code: "MISSING_KEY"
-      }), { status: 500, headers: { "Content-Type": "application/json" } })
+    if (modelProvider === 'openai') {
+      const key = process.env.OPENAI_API_KEY
+      if (!key) {
+        return new Response(JSON.stringify({
+          error: "Authentication Error",
+          message: "OpenAI API key is missing. Please configure OPENAI_API_KEY in your system environment.",
+          code: "MISSING_KEY"
+        }), { status: 500, headers: { "Content-Type": "application/json" } })
+      }
+      if (key === "DocTech" || key.includes("your-") || key.includes("YOUR_")) {
+        return new Response(JSON.stringify({
+          error: "Authentication Error",
+          message: `The system is currently using a placeholder API key: '${key}'. Please update your environment variables with a valid OpenAI API key to enable document translation.`,
+          code: "PLACEHOLDER_KEY"
+        }), { status: 500, headers: { "Content-Type": "application/json" } })
+      }
     }
     if (modelProvider === 'anthropic' && !process.env.ANTHROPIC_API_KEY) {
       return new Response(JSON.stringify({
@@ -469,9 +479,15 @@ Title:`,
         }
       } catch (err: any) {
         Logger.error("Pipeline breakdown", err, { requestId, filename: f.name })
+
+        let customMessage = err?.message || "Internal operation interrupted."
+        if (customMessage.includes("DocTech") || customMessage.includes("Incorrect API key")) {
+          customMessage = "Authentication failed: The provided API key 'DocTech' is invalid. Please ensure your environment variables (OPENAI_API_KEY) are correctly configured with a valid key from platform.openai.com."
+        }
+
         return new Response(JSON.stringify({
           error: "Pipeline Fault",
-          message: `Technical failure during high-precision processing of '${f.name}': ${err?.message || "Internal operation interrupted."}`
+          message: `Technical failure during high-precision processing of '${f.name}': ${customMessage}`
         }), { status: 500, headers: { "Content-Type": "application/json" } })
       }
     }

@@ -60,6 +60,9 @@ export function UploadZone() {
     const [targetLang, setTargetLang] = useState("es")
     const [targetFormat, setTargetFormat] = useState("pdf")
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [isProcessing, setIsProcessing] = useState(false)
+    const [processError, setProcessError] = useState<string | null>(null)
+    const [processSuccess, setProcessSuccess] = useState(false)
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault()
@@ -78,6 +81,8 @@ export function UploadZone() {
         const files = Array.from(e.dataTransfer.files)
         if (files.length > 0) {
             setSelectedFile(files[0])
+            setProcessError(null)
+            setProcessSuccess(false)
         }
     }, [])
 
@@ -85,10 +90,73 @@ export function UploadZone() {
         const files = e.target.files
         if (files && files.length > 0) {
             setSelectedFile(files[0])
+            setProcessError(null)
+            setProcessSuccess(false)
         }
     }, [])
 
-    const clearSelection = () => setSelectedFile(null)
+    const clearSelection = () => {
+        setSelectedFile(null)
+        setProcessError(null)
+        setProcessSuccess(false)
+    }
+
+    const handleProcess = async () => {
+        if (!selectedFile || isProcessing) return
+
+        setIsProcessing(true)
+        setProcessError(null)
+        setProcessSuccess(false)
+
+        try {
+            const formData = new FormData()
+            formData.append("files", selectedFile)
+            formData.append("targetLanguage", targetLang)
+            formData.append("targetFormat", targetFormat)
+            formData.append("prompt", `Translate this ${selectedFile.name} into ${targetLang} and output as ${targetFormat}`)
+            formData.append("aiModel", "openai/gpt-4-mini") // Default for high precision
+
+            const response = await fetch("/api/transform", {
+                method: "POST",
+                body: formData,
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: "System interrupt detected." }))
+                throw new Error(errorData.message || "Transformation module failure.")
+            }
+
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement("a")
+            a.href = url
+
+            // Try to extract filename from Content-Disposition
+            let filename = `translated_${selectedFile.name}`
+            const disposition = response.headers.get("Content-Disposition")
+            if (disposition && disposition.includes("filename=")) {
+                const match = disposition.match(/filename="(.+)"/)
+                if (match && match[1]) filename = match[1]
+            } else {
+                // Fallback extensions based on targetFormat
+                const baseName = selectedFile.name.split('.').slice(0, -1).join('.')
+                filename = `${baseName}_translated.${targetFormat}`
+            }
+
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+
+            setProcessSuccess(true)
+        } catch (err: any) {
+            console.error("Translation error:", err)
+            setProcessError(err.message || "An unexpected error occurred during processing.")
+        } finally {
+            setIsProcessing(false)
+        }
+    }
 
     return (
         <div className="w-full max-w-5xl mx-auto space-y-8">
@@ -257,21 +325,46 @@ export function UploadZone() {
                 </div>
             </div>
 
+            {/* Error and Success States */}
+            {(processError || processSuccess) && (
+                <div className={cn(
+                    "p-4 rounded-xl border animate-in fade-in slide-in-from-top-2 duration-300",
+                    processError ? "bg-red-500/10 border-red-500/20 text-red-500" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                )}>
+                    <div className="flex items-center gap-3">
+                        {processError ? <XCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                        <p className="text-sm font-medium">
+                            {processError ? processError : "Document processed successfully. Your download should start automatically."}
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {/* Large Action Button */}
             <div className="flex justify-center pt-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
                 <Button
                     size="lg"
+                    onClick={handleProcess}
                     className={cn(
-                        "h-16 px-12 rounded-2xl text-lg font-bold transition-all duration-300 shadow-lg shadow-primary/20",
-                        selectedFile
+                        "h-16 px-12 rounded-2xl text-lg font-bold transition-all duration-300 shadow-lg shadow-primary/20 min-w-[280px]",
+                        selectedFile && !isProcessing
                             ? "bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 active:scale-100"
                             : "bg-muted text-muted-foreground cursor-not-allowed"
                     )}
-                    disabled={!selectedFile}
+                    disabled={!selectedFile || isProcessing}
                 >
-                    <Cpu className="mr-3 h-6 w-6" />
-                    Process Translation
-                    <ArrowRight className="ml-3 h-6 w-6" />
+                    {isProcessing ? (
+                        <>
+                            <div className="mr-3 h-6 w-6 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                            Synchronizing...
+                        </>
+                    ) : (
+                        <>
+                            <Cpu className="mr-3 h-6 w-6" />
+                            Process Translation
+                            <ArrowRight className="ml-3 h-6 w-6" />
+                        </>
+                    )}
                 </Button>
             </div>
 
