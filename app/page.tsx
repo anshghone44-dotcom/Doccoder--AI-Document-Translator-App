@@ -6,6 +6,7 @@ import { Zap, FileCheck, Lock, Gauge, Star, ChevronLeft, ChevronRight } from "lu
 import { useTranslation } from "@/components/language-context"
 import { useRef } from "react"
 import Header from "@/components/header"
+import DocChatbot from "@/components/doc-chatbot"
 
 export default function Home() {
   const { t } = useTranslation()
@@ -125,26 +126,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Middle CTA Section */}
-      <section className="py-20 relative overflow-hidden">
+      {/* Featured Intelligence Section */}
+      <section id="chat" className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-foreground/[0.02]" />
-        <div className="mx-auto max-w-7xl px-6 relative text-center">
-          <div className="max-w-3xl mx-auto space-y-10">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground/90">
-              Ready to experience lightning-fast translations?
+        <div className="mx-auto max-w-7xl px-6 relative">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-foreground/90">
+              {t.hero.title.split(" ").slice(-2).join(" ")} — Grounded
             </h2>
-            <Link href="/translate">
-              <Button
-                size="lg"
-                className="h-20 px-16 text-2xl font-black bg-foreground text-background hover:bg-foreground/90 transition-all duration-500 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 group relative overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-4">
-                  {t.hero.cta}
-                  <Star className="h-8 w-8 transition-all duration-700 group-hover:rotate-[144deg] group-hover:scale-125 fill-current" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full -translate-x-full skew-x-12" />
-              </Button>
-            </Link>
+            <p className="text-xl text-foreground/60 max-w-2xl mx-auto">
+              Upload documents and chat with our grounded reasoning engine.
+            </p>
+          </div>
+
+          <div className="max-w-5xl mx-auto bg-background/50 backdrop-blur-xl rounded-[2.5rem] border border-foreground/5 shadow-2xl overflow-hidden">
+            <DocChatbot />
           </div>
         </div>
       </section>

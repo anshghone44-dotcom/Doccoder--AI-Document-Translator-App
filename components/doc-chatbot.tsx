@@ -18,6 +18,8 @@ type Message = {
     files?: { name: string; url?: string; type?: string }[]
     downloadUrl?: string
     filename?: string
+    citations?: string
+    confidence?: "High" | "Partial" | "Not Found"
 }
 
 
@@ -54,6 +56,8 @@ export default function DocChatbot() {
     }, [language])
     const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
     const [targetFormat, setTargetFormat] = useState<OutputFormat>("pdf")
+    const [intelligenceMode, setIntelligenceMode] = useState<"strict" | "explainer" | "summary">("strict")
+    const [activeContext, setActiveContext] = useState<string>("")
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
     const [autoPlay, setAutoPlay] = useState(true)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -83,6 +87,17 @@ export default function DocChatbot() {
 
     const removeFile = (index: number) => {
         setFiles(prev => prev.filter((_, i) => i !== index))
+        if (files.length === 1) setActiveContext("") // Reset context if last file removed
+    }
+
+    const extractFileText = async (file: File) => {
+        // Simplified text extraction for local context injection
+        // In production, this would be handled by the Knowledge Layer / Vector Store
+        return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target?.result as string || "");
+            reader.readAsText(file);
+        });
     }
 
     const copyToClipboard = async (text: string) => {
@@ -208,6 +223,32 @@ export default function DocChatbot() {
                     downloadUrl: objectUrl,
                     filename
                 }])
+            } else if (activeContext) {
+                // Handle document-grounded query for already processed document
+                const res = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        query: userMessage,
+                        context: activeContext,
+                        language: targetLang,
+                        mode: intelligenceMode,
+                        model: selectedModel,
+                    }),
+                })
+
+                if (!res.ok) {
+                    const errBody = await res.json().catch(() => ({}))
+                    throw new Error(errBody.message || "Intelligence engine interrupt.")
+                }
+
+                const data = await res.json()
+                setMessages(prev => [...prev, {
+                    role: "assistant",
+                    content: data.answer,
+                    citations: data.citations,
+                    confidence: data.confidence
+                }])
             } else {
                 // Handle plain text translation
                 const res = await fetch("/api/chat-translate", {
@@ -239,7 +280,7 @@ export default function DocChatbot() {
     }
 
     return (
-        <div className="flex flex-col h-[900px] w-full max-w-5xl mx-auto relative group/chatbot">
+        <div className="flex flex-col h-[800px] w-full max-w-5xl mx-auto relative group/chatbot">
             {/* Background Grid Effect - Subtle */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
 
@@ -319,6 +360,26 @@ export default function DocChatbot() {
                                 )}
                             >
                                 <div className="whitespace-pre-wrap leading-7">{m.content}</div>
+
+                                {m.confidence && (
+                                    <div className="mt-3 flex items-center gap-2">
+                                        <div className={cn(
+                                            "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest",
+                                            m.confidence === "High" ? "bg-green-500/10 text-green-500" :
+                                                m.confidence === "Partial" ? "bg-yellow-500/10 text-yellow-500" :
+                                                    "bg-red-500/10 text-red-500"
+                                        )}>
+                                            Confidence: {m.confidence}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {m.citations && m.citations !== "None" && (
+                                    <div className="mt-3 pt-3 border-t border-border/5">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-1">Document Evidence</div>
+                                        <div className="text-xs text-muted-foreground italic leading-relaxed">{m.citations}</div>
+                                    </div>
+                                )}
 
                                 {m.files && m.files.length > 0 && (
                                     <div className="mt-4 pt-4 border-t border-border/10 flex flex-wrap gap-2">
@@ -416,6 +477,21 @@ export default function DocChatbot() {
 
                     {showRecommendations && !input && (
                         <div className="mb-6 flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+                            {/* Intelligence Mode Toggles */}
+                            <div className="flex gap-1 p-1 bg-foreground/5 rounded-full border border-border/50 mr-2">
+                                {(['strict', 'explainer', 'summary'] as const).map((mode) => (
+                                    <button
+                                        key={mode}
+                                        onClick={() => setIntelligenceMode(mode)}
+                                        className={cn(
+                                            "px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all",
+                                            intelligenceMode === mode ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                                        )}
+                                    >
+                                        {mode}
+                                    </button>
+                                ))}
+                            </div>
                             {t.chatbot.recommendations.map((rec: string, i: number) => (
                                 <button
                                     key={i}
