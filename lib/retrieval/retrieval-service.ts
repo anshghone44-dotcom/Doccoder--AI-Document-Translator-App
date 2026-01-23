@@ -1,9 +1,9 @@
 import { Logger } from "@/lib/logger";
+import { SupabaseVectorStore } from "@/lib/vector-store/supabase-vector-store";
 
 /**
  * Service responsible for retrieving document context for the Reasoning Layer.
- * In a production environment, this would interface with a Vector Store.
- * For this implementation, it provides a bridge for local context injection.
+ * Professional RAG Pipeline: Interfaces with Supabase pgvector for semantic search.
  */
 
 export interface RetrievalResult {
@@ -13,47 +13,67 @@ export interface RetrievalResult {
         sourceName: string;
         pageCount?: number;
         intent?: string;
+        similarity?: number;
     };
 }
+
 export const RetrievalService = {
     /**
      * Retrieves relevant context based on a query.
-     * Enhances grounding by identifying user intent and selecting the most relevant segments.
+     * Enhances grounding by identifying user intent and performing semantic vector search.
      */
-    async getRelevantContext(query: string, sourceData: string, sourceName: string): Promise<RetrievalResult> {
-        Logger.info("Retrieval service: Performing semantic retrieval", { sourceName, queryLength: query.length });
+    async getRelevantContext(query: string, sourceData: string, sourceName: string, documentId?: string): Promise<RetrievalResult> {
+        Logger.info("Retrieval service: Performing semantic retrieval", { sourceName, queryLength: query.length, useVector: !!documentId });
 
         // Intent Detection: Identify if the user is asking a specific question or a general one
         const intent = this.identifyUserIntent(query);
 
-        // Chunking the source data for more granular selection
-        const chunks = this.chunkText(sourceData, 1500, 300);
+        let relevantContent = "";
+        let bestSimilarity = 0;
 
-        // Semantic Filtering (Heuristic for now: match key terms from the query to chunks)
-        // In a vector-enabled system, this would be a cosine similarity search
-        let relevantContent = sourceData;
-        if (chunks.length > 1) {
-            const queryTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 3);
-            const scoredChunks = chunks.map(chunk => {
-                const score = queryTerms.reduce((acc, term) => acc + (chunk.toLowerCase().includes(term) ? 1 : 0), 0);
-                return { chunk, score };
-            });
+        if (documentId) {
+            // PRO RAG: Use Vector Similarity Search
+            try {
+                const searchResults = await SupabaseVectorStore.similaritySearch(query, 3);
+                if (searchResults.length > 0) {
+                    relevantContent = searchResults.map(r => r.content).join("\n\n---\n\n");
+                    bestSimilarity = searchResults[0].similarity;
+                }
+            } catch (error) {
+                Logger.error("Vector search failed, falling back to heuristic", error);
+                documentId = undefined; // Force fallback
+            }
+        }
 
-            // Sort by relevance score and take the top 2 chunks (providing focused context)
-            const bestChunks = scoredChunks
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 2)
-                .map(sc => sc.chunk);
+        if (!documentId) {
+            // FALLBACK / LIGHT RAG: Heuristic keyword matching
+            const chunks = this.chunkText(sourceData, 1500, 300);
 
-            relevantContent = bestChunks.join("\n\n---\n\n");
+            if (chunks.length <= 2) {
+                relevantContent = sourceData;
+            } else {
+                const queryTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 3);
+                const scoredChunks = chunks.map(chunk => {
+                    const score = queryTerms.reduce((acc, term) => acc + (chunk.toLowerCase().includes(term) ? 1 : 0), 0);
+                    return { chunk, score };
+                });
+
+                const bestChunks = scoredChunks
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, 2)
+                    .map(sc => sc.chunk);
+
+                relevantContent = bestChunks.join("\n\n---\n\n");
+            }
         }
 
         return {
-            content: relevantContent,
+            content: relevantContent || sourceData.slice(0, 2000), // Safety fallback
             metadata: {
-                sourceId: Buffer.from(sourceName).toString('base64'),
+                sourceId: documentId || Buffer.from(sourceName).toString('base64'),
                 sourceName: sourceName,
-                intent: intent
+                intent: intent,
+                similarity: bestSimilarity
             }
         };
     },

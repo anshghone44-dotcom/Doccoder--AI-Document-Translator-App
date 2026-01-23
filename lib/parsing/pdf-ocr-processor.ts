@@ -31,15 +31,32 @@ function sanitizeTextForUTF8(text: string): string {
  * Advanced PDF processor with real text extraction
  */
 export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: string): Promise<ExtractedContent> {
-  // Path for pdf-parse requires a buffer
   const buffer = Buffer.from(arrayBuffer)
 
   try {
-    // Dynamically require pdf-parse to avoid top-level bundling issues in some environments
     const pdf = require("pdf-parse")
-    const data = await (pdf as any)(buffer)
 
-    // Load with pdf-lib for additional metadata if needed
+    // Custom pagerender to inject page markers
+    const options = {
+      pagerender: (pageData: any) => {
+        return pageData.getTextContent()
+          .then((textContent: any) => {
+            let lastY, text = `[PAGE_${pageData.pageIndex + 1}]\n`;
+            for (let item of textContent.items) {
+              if (lastY == item.transform[5] || !lastY) {
+                text += item.str;
+              } else {
+                text += '\n' + item.str;
+              }
+              lastY = item.transform[5];
+            }
+            return text;
+          });
+      }
+    };
+
+    const data = await (pdf as any)(buffer, options)
+
     const pdfDoc = await PDFDocument.load(arrayBuffer)
     const pageCount = pdfDoc.getPageCount()
 
@@ -50,23 +67,15 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
       pageCount: data.numpages || pageCount,
     }
 
-    // pdf-parse extracts all text from all pages
     const fullText = data.text || ""
-
-    // Tables will be detected by the LLM in the translation pipeline
-    // using the extracted text. We return an empty array for now as
-    // structured extraction is handled downstream.
-    const tables: TableData[] = []
 
     return {
       text: sanitizeTextForUTF8(fullText),
-      tables,
+      tables: [],
       metadata,
     }
   } catch (error) {
     console.error("PDF processing error:", error)
-
-    // Fallback to minimal extraction if pdf-parse fails
     const pdfDoc = await PDFDocument.load(arrayBuffer)
     return {
       text: `PDF extraction failed for ${filename}. Please try a different document.`,

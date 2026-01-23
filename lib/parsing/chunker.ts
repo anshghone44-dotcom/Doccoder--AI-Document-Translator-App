@@ -27,8 +27,17 @@ export async function chunkDocument(
     const chunks: DocumentChunk[] = [];
     let start = 0;
 
+    let currentPage = metadata.pageNumber || 1;
+
     while (start < text.length) {
         let end = Math.min(start + chunkSize, text.length);
+
+        // Detect page markers in the current window
+        const windowText = text.slice(start, end);
+        const pageMatch = windowText.match(/\[PAGE_(\d+)\]/);
+        if (pageMatch) {
+            currentPage = parseInt(pageMatch[1], 10);
+        }
 
         // Try to find a logical break point (newline or period) within the last 20% of the chunk
         if (end < text.length) {
@@ -42,11 +51,14 @@ export async function chunkDocument(
             }
         }
 
-        const chunkContent = text.slice(start, end).trim();
+        const chunkContent = text.slice(start, end).replace(/\[PAGE_\d+\]\n?/g, "").trim();
         if (chunkContent.length > 0) {
             chunks.push({
                 content: chunkContent,
-                metadata: { ...metadata }
+                metadata: {
+                    ...metadata,
+                    pageNumber: currentPage
+                }
             });
         }
 

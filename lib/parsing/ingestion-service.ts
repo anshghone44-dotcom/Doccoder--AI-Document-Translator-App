@@ -37,7 +37,7 @@ export const IngestionService = {
         }
     },
 
-    private async ingestPdf(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {
+    async ingestPdf(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {
         const result = await extractPdfContent(arrayBuffer, filename);
         return {
             content: result.text,
@@ -49,7 +49,7 @@ export const IngestionService = {
         };
     },
 
-    private async ingestDocx(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {
+    async ingestDocx(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {
         const result = await mammoth.extractRawText({ arrayBuffer });
         return {
             content: result.value,
@@ -59,7 +59,7 @@ export const IngestionService = {
         };
     },
 
-    private async ingestTxt(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {
+    async ingestTxt(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {
         const content = new TextDecoder("utf-8").decode(new Uint8Array(arrayBuffer));
         return {
             content,
