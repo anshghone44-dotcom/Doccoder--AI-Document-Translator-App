@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { compareTranslations, type ComparisonResult } from "@/lib/text-comparison"
+import { compareTranslations, type ComparisonResult } from "@/lib/retrieval/text-comparison"
 
 interface ComparisonViewProps {
   originalText: string
@@ -66,15 +66,14 @@ export function ComparisonView({ originalText, translatedText, targetLanguage = 
                 <div key={idx} className="border rounded-lg p-3 space-y-2">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        segment.type === "added"
+                      className={`px-2 py-1 rounded text-xs font-semibold ${segment.type === "added"
                           ? "bg-green-100 text-green-800"
                           : segment.type === "removed"
                             ? "bg-red-100 text-red-800"
                             : segment.type === "modified"
                               ? "bg-yellow-100 text-yellow-800"
                               : "bg-gray-100 text-gray-800"
-                      }`}
+                        }`}
                     >
                       {segment.type.toUpperCase()}
                     </span>

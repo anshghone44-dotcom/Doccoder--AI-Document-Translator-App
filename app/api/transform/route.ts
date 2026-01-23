@@ -1,16 +1,16 @@
 import type { NextRequest } from "next/server"
 import JSZip from "jszip"
-import { extractPdfContent, formatExtractedContent } from "@/lib/pdf-ocr-processor"
-import { convertAnyToPdf } from "@/lib/convert-to-pdf"
+import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
+import { convertAnyToPdf } from "@/lib/parsing/convert-to-pdf"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { anthropic } from "@ai-sdk/anthropic"
 import { xai } from "@ai-sdk/xai"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
-import { build_excel, build_docx } from "@/lib/document-generators"
-import type { PipelineOutput } from "@/lib/document-generators"
-import { build_pdf, stripExt } from "@/lib/convert-to-pdf"
+import { build_excel, build_docx } from "@/lib/parsing/document-generators"
+import type { PipelineOutput } from "@/lib/parsing/document-generators"
+import { build_pdf, stripExt } from "@/lib/parsing/convert-to-pdf"
 
 // Structured Logger Utility
 const Logger = {

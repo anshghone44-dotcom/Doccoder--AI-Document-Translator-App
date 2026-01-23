@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { performAIReview, type ReviewResult } from "@/lib/ai-review-system"
+import { performAIReview, type ReviewResult } from "@/lib/ai/ai-review-system"
 import { AlertCircle, CheckCircle, AlertTriangle } from "lucide-react"
 
 interface AIReviewPanelProps {
@@ -70,25 +70,23 @@ export function AIReviewPanel({ text, language, targetCulture }: AIReviewPanelPr
             <CardContent>
               <div className="flex items-center gap-4">
                 <div
-                  className={`text-4xl font-bold ${
-                    review.overallScore >= 80
+                  className={`text-4xl font-bold ${review.overallScore >= 80
                       ? "text-green-600"
                       : review.overallScore >= 60
                         ? "text-yellow-600"
                         : "text-red-600"
-                  }`}
+                    }`}
                 >
                   {review.overallScore}%
                 </div>
                 <div className="flex-1 bg-gray-200 rounded-full h-3">
                   <div
-                    className={`h-3 rounded-full transition-all ${
-                      review.overallScore >= 80
+                    className={`h-3 rounded-full transition-all ${review.overallScore >= 80
                         ? "bg-green-600"
                         : review.overallScore >= 60
                           ? "bg-yellow-600"
                           : "bg-red-600"
-                    }`}
+                      }`}
                     style={{ width: `${review.overallScore}%` }}
                   />
                 </div>

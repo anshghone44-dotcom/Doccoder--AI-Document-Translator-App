@@ -12,7 +12,7 @@ import {
     DropdownMenuSeparator,
 } from "./ui/dropdown-menu"
 import { useTranslation } from "./language-context"
-import { LanguageCode } from "@/lib/translations"
+import { LanguageCode } from "@/lib/retrieval/translations"
 
 const languages: { code: LanguageCode; name: string; nativeName: string }[] = [
     { code: "en", name: "English", nativeName: "English" },

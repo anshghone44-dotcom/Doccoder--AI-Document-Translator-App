@@ -148,6 +148,7 @@ export const translations = {
             pricing: "मूल्य निर्धारण",
             privacy: "गोपनीयता",
             signIn: "साइन इन करें",
+            signUp: "साइन अप करें",
             selectLanguage: "भाषा चुनें",
         },
         hero: {
@@ -290,6 +291,7 @@ export const translations = {
             pricing: "किंमत",
             privacy: "गोपनीयता",
             signIn: "साइन इन करा",
+            signUp: "साइन अप करा",
             selectLanguage: "भाषा निवडा",
         },
         hero: {
@@ -432,6 +434,7 @@ export const translations = {
             pricing: "মূল্য নির্ধারণ",
             privacy: "গোপনীয়তা",
             signIn: "সাইন ইন করুন",
+            signUp: "নিবন্ধন করুন",
             selectLanguage: "ভাষা নির্বাচন করুন",
         },
         hero: {
@@ -574,6 +577,7 @@ export const translations = {
             pricing: "કિંમત",
             privacy: "ગોપનીયતા",
             signIn: "સાઇન ઇન કરો",
+            signUp: "સાઇન અપ કરો",
             selectLanguage: "ભાષા પસંદ કરો",
         },
         hero: {
@@ -716,6 +720,7 @@ export const translations = {
             pricing: "Tarification",
             privacy: "Confidentialité",
             signIn: "Se connecter",
+            signUp: "S'inscrire",
             selectLanguage: "Choisir la langue",
         },
         hero: {

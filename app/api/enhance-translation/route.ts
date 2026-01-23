@@ -1,4 +1,4 @@
-import { enhanceTranslation, type TranslationTone } from "@/lib/ai-translation-features"
+import { enhanceTranslation, type TranslationTone } from "@/lib/ai/ai-translation-features"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
