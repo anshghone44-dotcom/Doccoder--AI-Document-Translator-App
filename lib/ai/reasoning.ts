@@ -17,6 +17,7 @@ export interface ReasoningOptions {
     model: string;
     language: string;
     mode: ReasoningMode;
+    messages?: { role: "user" | "assistant"; content: string }[];
 }
 
 /**
@@ -33,7 +34,8 @@ export async function generateGroundedResponse(
         requestId,
         model: options.model,
         mode: options.mode,
-        contextLength: context.length
+        contextLength: context.length,
+        historyLength: options.messages?.length || 0
     });
 
     try {
@@ -43,13 +45,22 @@ export async function generateGroundedResponse(
         const { text } = await generateText({
             model: finalModel,
             system: systemPrompt,
-            prompt: `
+            messages: [
+                ...(options.messages || []).map(m => ({
+                    role: m.role as "user" | "assistant",
+                    content: m.content
+                })),
+                {
+                    role: "user",
+                    content: `
 Retrieved Document Evidence:
 ${context}
 
 User Question:
 ${query}
-`,
+`
+                }
+            ],
             temperature: 0.2, // Low temperature for higher accuracy and hallucination control
         });
 
