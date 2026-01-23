@@ -1,21 +1,37 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Mic, MicOff, Loader2, AlertCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 interface VoiceRecorderProps {
   onTranscript: (text: string) => void
+  isActive?: boolean
+  onRecordingChange?: (isRecording: boolean) => void
 }
 
-export default function VoiceRecorder({ onTranscript }: VoiceRecorderProps) {
+export default function VoiceRecorder({ onTranscript, isActive, onRecordingChange }: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [permissionDenied, setPermissionDenied] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const { toast } = useToast()
+
+  // Sync with prop for programmatic start
+  useEffect(() => {
+    if (isActive && !isRecording && !isProcessing) {
+      startRecording();
+    } else if (!isActive && isRecording) {
+      stopRecording();
+    }
+  }, [isActive]);
+
+  // Notify parent of recording state
+  useEffect(() => {
+    onRecordingChange?.(isRecording);
+  }, [isRecording, onRecordingChange]);
 
   async function startRecording() {
     try {

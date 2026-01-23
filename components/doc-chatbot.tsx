@@ -62,6 +62,7 @@ export default function DocChatbot() {
     const [autoPlay, setAutoPlay] = useState(true)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
     const [showRecommendations, setShowRecommendations] = useState(true)
+    const [isAutoListening, setIsAutoListening] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -112,9 +113,11 @@ export default function DocChatbot() {
         if (playingMessageIndexRef.current === index) {
             audioRef.current?.pause()
             setPlayingMessageIndex(null)
+            setIsAutoListening(false)
             return
         }
 
+        setIsAutoListening(false) // Stop any current auto-listening
         setPlayingMessageIndex(index)
         try {
             const res = await fetch("/api/tts", {
@@ -128,15 +131,20 @@ export default function DocChatbot() {
             const blob = await res.blob()
             const url = URL.createObjectURL(blob)
 
+            const onPlaybackEnded = () => {
+                setPlayingMessageIndex(null)
+                if (autoPlay) setIsAutoListening(true)
+            }
+
             if (audioRef.current) {
                 audioRef.current.src = url
                 audioRef.current.play()
-                audioRef.current.onended = () => setPlayingMessageIndex(null)
+                audioRef.current.onended = onPlaybackEnded
             } else {
                 const audio = new Audio(url)
                 audioRef.current = audio
                 audio.play()
-                audio.onended = () => setPlayingMessageIndex(null)
+                audio.onended = onPlaybackEnded
             }
         } catch (err) {
             console.warn("ElevenLabs TTS failed, falling back to browser synthesis:", err)
@@ -146,14 +154,17 @@ export default function DocChatbot() {
                 window.speechSynthesis.cancel() // Stop any current speech
                 const utterance = new SpeechSynthesisUtterance(text)
                 utterance.lang = language // Use current UI language
-                utterance.onend = () => setPlayingMessageIndex(null)
+                utterance.onend = () => {
+                    setPlayingMessageIndex(null)
+                    if (autoPlay) setIsAutoListening(true)
+                }
                 utterance.onerror = () => setPlayingMessageIndex(null)
                 window.speechSynthesis.speak(utterance)
             } else {
                 setPlayingMessageIndex(null)
             }
         }
-    }, [selectedVoice])
+    }, [selectedVoice, autoPlay, language])
 
     useEffect(() => {
         if (autoPlay && messages.length > 0) {
@@ -234,6 +245,7 @@ export default function DocChatbot() {
                         language: targetLang,
                         mode: intelligenceMode,
                         model: selectedModel,
+                        messages: messages.map(m => ({ role: m.role, content: m.content }))
                     }),
                 })
 
@@ -292,7 +304,17 @@ export default function DocChatbot() {
                     <div className="scale-90 origin-right flex items-center gap-2">
                         <FormatSelector value={targetFormat} onChange={setTargetFormat} />
                         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-                        <VoiceRecorder onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))} />
+                        <VoiceRecorder
+                            onTranscript={(text) => {
+                                setInput((prev) => (prev ? `${prev} ${text}` : text))
+                                setIsAutoListening(false)
+                                handleSend() // Explicitly send on voice completion
+                            }}
+                            isActive={isAutoListening}
+                            onRecordingChange={(isRecording) => {
+                                if (!isRecording) setIsAutoListening(false)
+                            }}
+                        />
                         <VoiceSettings
                             selectedVoice={selectedVoice}
                             onVoiceChange={setSelectedVoice}

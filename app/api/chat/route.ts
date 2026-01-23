@@ -6,13 +6,14 @@ export async function POST(req: NextRequest) {
     const requestId = Math.random().toString(36).substring(7);
 
     try {
-        const { query, context, language, mode, model } = await req.json();
+        const { query, context, language, mode, model, messages } = await req.json();
 
         Logger.info("Grounded Chat API: Request received", {
             requestId,
             language,
             mode,
-            contextAvailable: !!context
+            contextAvailable: !!context,
+            historyLength: messages?.length || 0
         });
 
         if (!query) {
@@ -30,7 +31,8 @@ export async function POST(req: NextRequest) {
         const result = await generateGroundedResponse(query, context || "No document context provided.", {
             model: model || "openai/gpt-4-mini",
             language: language || "en",
-            mode: reasoningMode
+            mode: reasoningMode,
+            messages: messages || []
         });
 
         Logger.info("Grounded Chat API: Success", { requestId });
