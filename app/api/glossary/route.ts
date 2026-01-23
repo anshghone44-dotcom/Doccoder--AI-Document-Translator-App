@@ -1,4 +1,4 @@
-import { getGlossaryEntries, addGlossaryEntry, searchGlossary } from "@/lib/glossary-manager"
+import { getGlossaryEntries, addGlossaryEntry, searchGlossary } from "@/lib/retrieval/glossary-manager"
 import { createClient } from "@/lib/supabase/server"
 import { type NextRequest, NextResponse } from "next/server"
 

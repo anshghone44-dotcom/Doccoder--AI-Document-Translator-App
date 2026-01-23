@@ -12,7 +12,7 @@ import {
   deleteGlossaryEntry,
   searchGlossary,
   type GlossaryEntry,
-} from "@/lib/glossary-manager"
+} from "@/lib/retrieval/glossary-manager"
 import { Trash2, Plus, Search } from "lucide-react"
 
 interface GlossaryManagerProps {
@@ -27,13 +27,14 @@ export function GlossaryManager({ userId, languagePair = "en-es" }: GlossaryMana
   const [newTranslation, setNewTranslation] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const loadGlossary = async () => {
+    setLoading(true)
+    const data = await getGlossaryEntries(userId, languagePair)
+    setEntries(data)
+    setLoading(false)
+  }
+
   useEffect(() => {
-    const loadGlossary = async () => {
-      setLoading(true)
-      const data = await getGlossaryEntries(userId, languagePair)
-      setEntries(data)
-      setLoading(false)
-    }
     loadGlossary()
   }, [userId, languagePair])
 

@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server"
-import { convertPdfToFormat } from "@/lib/convert-from-pdf"
-import { extractPdfContent, formatExtractedContent } from "@/lib/pdf-ocr-processor"
+import { convertPdfToFormat } from "@/lib/parsing/convert-from-pdf"
+import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
 import JSZip from "jszip"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
