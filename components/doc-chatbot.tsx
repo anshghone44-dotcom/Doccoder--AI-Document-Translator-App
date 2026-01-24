@@ -178,11 +178,11 @@ export default function DocChatbot() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [autoPlay, handlePlayTTS, isLoading, messages.length])
 
-    const handleSend = async (e?: React.FormEvent) => {
+    const handleSend = async (e?: React.FormEvent, overrideMsg?: string) => {
         e?.preventDefault()
-        if ((!input.trim() && files.length === 0) || isLoading) return
+        if ((!input.trim() && !overrideMsg && files.length === 0) || isLoading) return
 
-        const userMessage = input.trim() || (files.length > 0 ? t.chatbot.processAndTranslate : "")
+        const userMessage = overrideMsg || input.trim() || (files.length > 0 ? t.chatbot.processAndTranslate : "")
         const currentFiles = [...files]
 
         setMessages(prev => [...prev, {
@@ -363,9 +363,8 @@ export default function DocChatbot() {
                         <ModelSelector value={selectedModel} onChange={setSelectedModel} />
                         <VoiceRecorder
                             onTranscript={(text) => {
-                                setInput((prev) => (prev ? `${prev} ${text}` : text))
                                 setIsAutoListening(false)
-                                handleSend() // Explicitly send on voice completion
+                                handleSend(undefined, text) // Pass text directly to avoid stale state
                             }}
                             isActive={isAutoListening}
                             onRecordingChange={(isRecording) => {
