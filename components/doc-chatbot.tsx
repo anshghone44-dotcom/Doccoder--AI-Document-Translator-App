@@ -260,12 +260,12 @@ export default function DocChatbot() {
                     setActiveSourceName(data.filename);
                     setActiveContext(data.content); // Use partial/full content as local context fallback
 
-                    // Now ask the model to acknowledge the document
+                    // Now ask the model to process the document with the user's initial instructions
                     const chatRes = await fetch("/api/chat", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            query: `I have uploaded the document: ${data.filename}. Please confirm you are ready to answer questions about it.`,
+                            query: userMessage || `I have uploaded the document: ${data.filename}. Please confirm you are ready to answer questions about it.`,
                             context: data.content,
                             documentId: data.documentId,
                             sourceName: data.filename,
