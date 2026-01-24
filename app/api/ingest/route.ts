@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { IngestionService } from "@/lib/parsing/ingestion-service";
+import { isLLMReady } from "@/lib/ai/models";
 import { Logger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
     const requestId = Math.random().toString(36).substring(7);
 
     try {
+        if (!isLLMReady()) {
+            return NextResponse.json({
+                error: "Configuration Error",
+                message: "Document intelligence is not configured yet. Please provide a valid AI service key."
+            }, { status: 500 });
+        }
         const formData = await req.formData();
         const file = formData.get("file") as File;
 

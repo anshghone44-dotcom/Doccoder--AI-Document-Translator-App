@@ -1,14 +1,16 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
+import { isLLMReady } from "@/lib/ai/models"
 
 export async function GET() {
     try {
-        const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY
-        if (!elevenLabsApiKey) {
+        if (!isLLMReady(true)) {
             return NextResponse.json(
-                { error: "ElevenLabs API key not configured" },
+                { error: "Configuration Error", message: "Voice services are not configured yet. Please provide a valid ELEVENLABS_API_KEY." },
                 { status: 500 },
             )
         }
+
+        const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY as string
 
         console.log("[v0] Fetching available voices from ElevenLabs...")
 

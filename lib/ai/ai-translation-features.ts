@@ -1,5 +1,5 @@
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { getModelInstance, isLLMReady } from "./models"
 import { Logger } from "@/lib/logger"
 
 export type TranslationTone = "formal" | "casual" | "legal" | "academic"
@@ -22,25 +22,29 @@ export async function explainParagraph(
   targetLanguage: string,
   tone: TranslationTone = "formal",
 ): Promise<string> {
+  if (!isLLMReady()) return "AI Configuration Error: LLM services are not currently available.";
+
   const startTime = Date.now()
   try {
     Logger.info("Requesting paragraph explanation", { targetLanguage, tone, textSnippet: text.slice(0, 50) + "..." })
     const { text: explanation } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Explain the following text in a ${tone} tone for translation to ${targetLanguage}.
-      Provide a clear, concise explanation that helps understand the context and nuances:
+      model: getModelInstance("openai/gpt-4-mini"),
+      prompt: `You are the Doccoder AI Assistant. Explain the following text strictly using the provided context. 
+      Do NOT use outside knowledge. If the text is unclear, say "Information insufficient".
+      Tone: ${tone}
+      Target Language Context: ${targetLanguage}
 
-      "${text}"
+      Text: "${text}"
 
       Explanation:`,
-      temperature: 0.7,
+      temperature: 0.3,
     })
 
     Logger.info("Paragraph explanation successful", { durationMs: Date.now() - startTime })
     return explanation
   } catch (error) {
     Logger.error("Error explaining paragraph", error, { targetLanguage, tone })
-    throw new Error("Failed to generate explanation")
+    return "Linguistic synchronization analysis interrupted."
   }
 }
 
@@ -48,25 +52,27 @@ export async function explainParagraph(
  * Summarize a document or long text
  */
 export async function summarizeDocument(text: string, maxLength = 200): Promise<string> {
+  if (!isLLMReady()) return "AI Configuration Error: LLM services are not currently available.";
+
   const startTime = Date.now()
   try {
     Logger.info("Requesting document summary", { maxLength, textSnippet: text.slice(0, 50) + "..." })
     const { text: summary } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Summarize the following document in approximately ${maxLength} words. 
-      Focus on key points and main ideas:
+      model: getModelInstance("openai/gpt-4-mini"),
+      prompt: `You are the Doccoder AI Assistant. Summarize the following document in approximately ${maxLength} words. 
+      STRICT GROUNDING: Use ONLY the provided text. Do NOT add outside facts or assumptions.
       
       "${text}"
       
       Summary:`,
-      temperature: 0.7,
+      temperature: 0.3,
     })
 
     Logger.info("Document summary successful", { durationMs: Date.now() - startTime })
     return summary
   } catch (error) {
     Logger.error("Error summarizing document", error)
-    throw new Error("Failed to generate summary")
+    return "Document synthesis failed."
   }
 }
 
@@ -74,18 +80,21 @@ export async function summarizeDocument(text: string, maxLength = 200): Promise<
  * Extract key points from text
  */
 export async function extractKeyPoints(text: string, maxPoints = 5): Promise<string[]> {
+  if (!isLLMReady()) return ["AI Configuration Error"];
+
   const startTime = Date.now()
   try {
     Logger.info("Requesting key points extraction", { maxPoints, textSnippet: text.slice(0, 50) + "..." })
     const { text: response } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Extract the ${maxPoints} most important key points from the following text.
-      Return them as a numbered list:
+      model: getModelInstance("openai/gpt-4-mini"),
+      prompt: `You are the Doccoder AI Assistant. Extract up to ${maxPoints} key points from the following text.
+      GROUNDING RULE: Use ONLY information from the text.
+      Format: Numbered list.
       
       "${text}"
       
       Key Points:`,
-      temperature: 0.7,
+      temperature: 0.2,
     })
 
     Logger.info("Key points extraction successful", { durationMs: Date.now() - startTime })
@@ -95,7 +104,7 @@ export async function extractKeyPoints(text: string, maxPoints = 5): Promise<str
       .map((line: string) => line.replace(/^\d+\.\s*/, "").trim())
   } catch (error) {
     Logger.error("Error extracting key points", error)
-    throw new Error("Failed to extract key points")
+    return ["Metadata extraction interrupted."]
   }
 }
 
@@ -103,6 +112,8 @@ export async function extractKeyPoints(text: string, maxPoints = 5): Promise<str
  * Rewrite text in a specific style
  */
 export async function rewriteInStyle(text: string, style: RewriteStyle, targetLanguage: string): Promise<string> {
+  if (!isLLMReady()) return "AI Configuration Error: LLM services are not currently available.";
+
   const styleDescriptions = {
     professional: "professional and formal business language",
     simple: "simple, easy-to-understand language suitable for general audiences",
@@ -113,21 +124,21 @@ export async function rewriteInStyle(text: string, style: RewriteStyle, targetLa
   try {
     Logger.info("Requesting text rewrite", { style, targetLanguage, textSnippet: text.slice(0, 50) + "..." })
     const { text: rewritten } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Rewrite the following text in ${styleDescriptions[style]} for translation to ${targetLanguage}.
-      Maintain the original meaning while adapting the tone and style:
+      model: getModelInstance("openai/gpt-4-mini"),
+      prompt: `You are the Doccoder AI Assistant. Rewrite the following text in ${styleDescriptions[style]} for translation to ${targetLanguage}.
+      STRICT GROUNDING: Maintain the original meaning without adding outside info.
       
       "${text}"
       
       Rewritten Text:`,
-      temperature: 0.8,
+      temperature: 0.4,
     })
 
     Logger.info("Text rewrite successful", { durationMs: Date.now() - startTime })
     return rewritten
   } catch (error) {
     Logger.error("Error rewriting text", error, { style, targetLanguage })
-    throw new Error("Failed to rewrite text")
+    return "Content adaptation failed."
   }
 }
 
@@ -140,6 +151,8 @@ export async function applyToneToTranslation(
   tone: TranslationTone,
   targetLanguage: string,
 ): Promise<string> {
+  if (!isLLMReady()) return translatedText;
+
   const toneDescriptions = {
     formal: "formal and professional",
     casual: "casual and conversational",
@@ -151,22 +164,22 @@ export async function applyToneToTranslation(
   try {
     Logger.info("Requesting tone adjustment", { tone, targetLanguage })
     const { text: tonedTranslation } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Adjust the following ${targetLanguage} translation to be ${toneDescriptions[tone]}.
+      model: getModelInstance("openai/gpt-4-mini"),
+      prompt: `You are the Doccoder AI Assistant. Adjust the following ${targetLanguage} translation to be ${toneDescriptions[tone]}.
       Keep the meaning intact but adjust the tone and word choice:
       
       Original: "${originalText}"
       Current Translation: "${translatedText}"
       
       Adjusted Translation:`,
-      temperature: 0.7,
+      temperature: 0.3,
     })
 
     Logger.info("Tone adjustment successful", { durationMs: Date.now() - startTime })
     return tonedTranslation
   } catch (error) {
     Logger.error("Error applying tone", error, { tone, targetLanguage })
-    throw new Error("Failed to apply tone to translation")
+    return translatedText
   }
 }
 

@@ -8,7 +8,7 @@ import { Logger } from "@/lib/logger";
  * Centralizes model mapping, provider selection, and API key validation.
  */
 
-export type AIProvider = "openai" | "anthropic" | "xai";
+export type AIProvider = "openai" | "anthropic" | "xai" | "elevenlabs";
 
 export interface ModelConfig {
     provider: AIProvider;
@@ -34,7 +34,8 @@ export function validateProviderKey(provider: AIProvider): void {
     const keyMap: Record<AIProvider, { env: string; name: string }> = {
         openai: { env: "OPENAI_API_KEY", name: "OpenAI" },
         anthropic: { env: "ANTHROPIC_API_KEY", name: "Anthropic" },
-        xai: { env: "XAI_API_KEY", name: "xAI (Grok)" }
+        xai: { env: "XAI_API_KEY", name: "xAI (Grok)" },
+        elevenlabs: { env: "ELEVENLABS_API_KEY", name: "ElevenLabs" }
     };
 
     const config = keyMap[provider];
@@ -44,7 +45,7 @@ export function validateProviderKey(provider: AIProvider): void {
         throw new Error(`${config.name} API key is missing. Please configure ${config.env} in your environment variables.`);
     }
 
-    if (key.includes("your-") || key.includes("YOUR_") || key.length < 20) {
+    if (key.includes("your-") || key.includes("YOUR_") || key.length < 15) {
         throw new Error(`The ${config.name} API key appears to be a placeholder or is incorrectly formatted.`);
     }
 }
@@ -52,9 +53,10 @@ export function validateProviderKey(provider: AIProvider): void {
 /**
  * Checks if the primary AI services are ready for operation.
  */
-export function isLLMReady(): boolean {
+export function isLLMReady(checkVoice = false): boolean {
     try {
         validateProviderKey("openai");
+        if (checkVoice) validateProviderKey("elevenlabs");
         return true;
     } catch {
         return false;

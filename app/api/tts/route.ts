@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { isLLMReady } from "@/lib/ai/models"
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,15 +9,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No text provided" }, { status: 400 })
     }
 
-    const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY
-
-    if (!elevenLabsApiKey) {
-      console.error("[v0] ELEVENLABS_API_KEY not set")
+    if (!isLLMReady(true)) {
       return NextResponse.json(
-        { error: "ElevenLabs API key not configured. Please add ELEVENLABS_API_KEY to environment variables." },
+        { error: "Configuration Error", message: "Voice services are not configured yet. Please provide a valid ELEVENLABS_API_KEY." },
         { status: 500 },
       )
     }
+
+    const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY as string
 
     console.log("[v0] Generating speech for text:", text.substring(0, 50) + "...")
 

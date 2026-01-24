@@ -3,8 +3,7 @@ import { convertPdfToFormat } from "@/lib/parsing/convert-from-pdf"
 import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
 import JSZip from "jszip"
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
-import { anthropic } from "@ai-sdk/anthropic"
+import { getModelInstance, isLLMReady } from "@/lib/ai/models"
 import { Logger } from "@/lib/logger"
 
 export const maxDuration = 60
@@ -54,6 +53,15 @@ export async function POST(req: NextRequest) {
     const targetLanguage = (form.get("targetLanguage") || "en").toString()
     const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
+    // 0. Production-Safe Readiness Check
+    if (!isLLMReady()) {
+      return new Response(JSON.stringify({
+        error: "Configuration Error",
+        message: "Document intelligence is not configured yet. Please provide a valid API key in the system environment.",
+        code: "AUTH_FAULT"
+      }), { status: 500, headers: { "Content-Type": "application/json" } });
+    }
+
     // SAFE WORKFLOW - Step 1: Validate Backend Capabilities
     const SUPPORTED_FORMATS = ["docx", "txt", "images", "csv", "xlsx", "pptx", "json", "xml", "md", "rtf"]
     const targetFormat = rawFormat as any
@@ -102,28 +110,16 @@ export async function POST(req: NextRequest) {
     }
 
     // AI Logic for individual file transformation
-    const getFinalModel = (model: string) => {
-      try {
-        const modelMapping: Record<string, string> = {
-          "openai/gpt-5": "gpt-4o",
-          "xai/grok-4": "gpt-4o",
-          "anthropic/claude-4.1": "claude-3-5-sonnet-latest",
-          "openai/gpt-4-mini": "gpt-4o-mini",
-        }
-
-        const modelId = model && model.includes('/') ? model.split('/')[1] : (model || "gpt-4o-mini")
-        const mappedModel = modelMapping[model] || modelId
-
-        if (model && (model.startsWith('anthropic') || model.startsWith('claude'))) {
-          return anthropic(mappedModel)
-        }
-        return openai(mappedModel)
-      } catch (err) {
-        return openai("gpt-4o-mini")
-      }
+    let finalModel;
+    try {
+      finalModel = getModelInstance(aiModel);
+    } catch (error: any) {
+      return new Response(JSON.stringify({
+        error: "Configuration Error",
+        message: error.message,
+        code: "AUTH_FAULT"
+      }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
-
-    const finalModel = getFinalModel(aiModel)
 
     // Convert all PDF files
     const results = []
@@ -141,23 +137,23 @@ export async function POST(req: NextRequest) {
           const { text: transformed } = await generateText({
             model: finalModel,
             prompt: `You are the Doccoder AI Assistant. Execute a technical transformation on the following extracted document text.
-             
-             USER DIRECTIVE: ${prompt}
-             OUTPUT FORMAT: ${targetFormat}
-             TARGET LANGUAGE: ${languageFull}
+                 
+                 STRICT GROUNDING: Use ONLY the provided text. Do NOT add outside knowledge.
+                 
+                 USER DIRECTIVE: ${prompt}
+                 OUTPUT FORMAT: ${targetFormat}
+                 TARGET LANGUAGE: ${languageFull}
 
-             INSTRUCTIONS:
-             1. EXECUTE THE USER DIRECTIVE WITH ABSOLUTE PRIORITY. 
-             2. If the user asks for a summary, extract specific data (like names/dates), or change the tone, do so with precision.
-             3. Deliver the final content in ${languageFull}.
-             4. Preserve any tabular or structured data if compatible with the directive.
-             5. Return ONLY the transformed text. No preamble.
+                 INSTRUCTIONS:
+                 1. EXECUTE THE USER DIRECTIVE WITH ABSOLUTE PRIORITY. 
+                 2. Deliver the final content in ${languageFull}.
+                 3. Return ONLY the transformed text. No preamble.
 
-             EXTRACTED TEXT:
-             ${extractedText.slice(0, 20000)}
+                 EXTRACTED TEXT:
+                 ${extractedText.slice(0, 20000)}
 
-             TRANSFORMED OUTPUT:`,
-            temperature: 0.3,
+                 TRANSFORMED OUTPUT:`,
+            temperature: 0.2,
           })
           extractedText = transformed.trim()
         }
