@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 -- Create table to store document chunks and their embeddings
 CREATE TABLE IF NOT EXISTS public.document_sections (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    document_id UUID REFERENCES public.shared_documents(id) ON DELETE CASCADE,
+    document_id UUID, -- Decoupled for rapid session-based ingestion
     content TEXT NOT NULL,
     embedding VECTOR(1536), -- Dimension for text-embedding-3-small
     metadata JSONB DEFAULT '{}'::jsonb,

@@ -1,6 +1,8 @@
-import { extractPdfContent, formatExtractedContent } from "./pdf-ocr-processor";
+import { extractPdfContent } from "./pdf-ocr-processor";
 import mammoth from "mammoth";
 import { Logger } from "@/lib/logger";
+import { chunkDocument, ChunkMetadata } from "./chunker";
+import { SupabaseVectorStore } from "@/lib/vector-store/supabase-vector-store";
 
 export interface IngestedDocument {
     content: string;
@@ -13,7 +15,7 @@ export interface IngestedDocument {
 }
 
 /**
- * Unified service for ingesting different document formats.
+ * Unified service for ingesting different document formats and preparing them for RAG.
  */
 export const IngestionService = {
     /**
@@ -35,6 +37,27 @@ export const IngestionService = {
             default:
                 throw new Error(`Unsupported file format for ingestion: ${ext}`);
         }
+    },
+
+    /**
+     * Orchestrates the full RAG pipeline: Ingest -> Chunk -> Embed -> Store.
+     */
+    async processForRAG(file: File): Promise<{ documentId: string; document: IngestedDocument }> {
+        const document = await this.ingestFile(file);
+        const documentId = globalThis.crypto.randomUUID();
+
+        Logger.info("Processing document for RAG", { documentId, filename: file.name });
+
+        const metadata: ChunkMetadata = {
+            sourceId: documentId,
+            sourceName: file.name,
+            pageCount: document.metadata.pageCount
+        };
+
+        const chunks = await chunkDocument(document.content, metadata);
+        await SupabaseVectorStore.saveChunks(documentId, chunks);
+
+        return { documentId, document };
     },
 
     async ingestPdf(arrayBuffer: ArrayBuffer, filename: string): Promise<IngestedDocument> {

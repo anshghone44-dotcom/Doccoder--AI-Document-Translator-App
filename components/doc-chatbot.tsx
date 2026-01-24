@@ -58,6 +58,8 @@ export default function DocChatbot() {
     const [targetFormat, setTargetFormat] = useState<OutputFormat>("pdf")
     const [intelligenceMode, setIntelligenceMode] = useState<"strict" | "explainer" | "summary">("strict")
     const [activeContext, setActiveContext] = useState<string>("")
+    const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null)
+    const [activeSourceName, setActiveSourceName] = useState<string | null>(null)
     const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM") // Rachel
     const [autoPlay, setAutoPlay] = useState(true)
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null)
@@ -196,45 +198,98 @@ export default function DocChatbot() {
 
         try {
             if (currentFiles.length > 0) {
-                // Handle file translation/transformation
-                const form = new FormData()
-                form.set("prompt", userMessage)
-                form.set("targetLanguage", targetLang)
-                form.set("aiModel", selectedModel)
-                form.set("targetFormat", targetFormat)
-                currentFiles.forEach(f => form.append("files", f, f.name))
+                // Determine if we should treat this as a transformation (PDF/Format change) 
+                // or as knowledge ingestion for the expert agent.
+                const isTransformRequest = userMessage.toLowerCase().includes("translate") ||
+                    userMessage.toLowerCase().includes("convert") ||
+                    userMessage.toLowerCase().includes("format") ||
+                    userMessage.toLowerCase().includes("badlo");
 
-                const res = await fetch("/api/transform", {
-                    method: "POST",
-                    body: form,
-                })
+                if (isTransformRequest) {
+                    // Handle file translation/transformation
+                    const form = new FormData()
+                    form.set("prompt", userMessage)
+                    form.set("targetLanguage", targetLang)
+                    form.set("aiModel", selectedModel)
+                    form.set("targetFormat", targetFormat)
+                    currentFiles.forEach(f => form.append("files", f, f.name))
 
-                if (!res.ok) {
-                    const errBody = await res.json().catch(() => ({}))
-                    throw new Error(errBody.message || "Transformation failed. Check system logs.")
+                    const res = await fetch("/api/transform", {
+                        method: "POST",
+                        body: form,
+                    })
+
+                    if (!res.ok) {
+                        const errBody = await res.json().catch(() => ({}))
+                        throw new Error(errBody.message || "Transformation failed. Check system logs.")
+                    }
+
+                    const blob = await res.blob()
+                    const objectUrl = URL.createObjectURL(blob)
+
+                    let filename = "translated-output.pdf"
+                    const cd = res.headers.get("Content-Disposition") || ""
+                    const match = cd.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i)
+                    if (match) {
+                        filename = decodeURIComponent(match[1] || match[2])
+                    }
+
+                    const headerMsg = res.headers.get("X-Assistant-Message")
+                    const assistantMessage = headerMsg ? decodeURIComponent(headerMsg) : t.chatbot.processingComplete
+
+                    setMessages(prev => [...prev, {
+                        role: "assistant",
+                        content: assistantMessage,
+                        downloadUrl: objectUrl,
+                        filename
+                    }])
+                } else {
+                    // PRO RAG: Ingest document for conversational intelligence
+                    const form = new FormData();
+                    form.append("file", currentFiles[0]); // Handle first file for RAG
+
+                    const res = await fetch("/api/ingest", {
+                        method: "POST",
+                        body: form,
+                    });
+
+                    if (!res.ok) throw new Error("Knowledge synchronization failed.");
+
+                    const data = await res.json();
+                    setActiveDocumentId(data.documentId);
+                    setActiveSourceName(data.filename);
+                    setActiveContext(data.content); // Use partial/full content as local context fallback
+
+                    // Now ask the model to acknowledge the document
+                    const chatRes = await fetch("/api/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            query: `I have uploaded the document: ${data.filename}. Please confirm you are ready to answer questions about it.`,
+                            context: data.content,
+                            documentId: data.documentId,
+                            sourceName: data.filename,
+                            language: targetLang,
+                            mode: intelligenceMode,
+                            model: selectedModel,
+                            messages: []
+                        }),
+                    });
+
+                    if (!chatRes.ok) throw new Error("Intelligence engine handshake failed.");
+                    const chatData = await chatRes.json();
+
+                    setMessages(prev => [...prev, {
+                        role: "assistant",
+                        content: chatData.answer,
+                        citations: chatData.citations,
+                        confidence: chatData.confidence
+                    }]);
+
+                    // AUTO-TRIGGER VOICE: Enable microphone automatically after sync
+                    setIsAutoListening(true);
                 }
-
-                const blob = await res.blob()
-                const objectUrl = URL.createObjectURL(blob)
-
-                let filename = "translated-output.pdf"
-                const cd = res.headers.get("Content-Disposition") || ""
-                const match = cd.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i)
-                if (match) {
-                    filename = decodeURIComponent(match[1] || match[2])
-                }
-
-                // Try to get dynamic assistant message from header
-                const headerMsg = res.headers.get("X-Assistant-Message")
-                const assistantMessage = headerMsg ? decodeURIComponent(headerMsg) : t.chatbot.processingComplete
-
-                setMessages(prev => [...prev, {
-                    role: "assistant",
-                    content: assistantMessage,
-                    downloadUrl: objectUrl,
-                    filename
-                }])
-            } else if (activeContext) {
+            } else if (activeContext || activeDocumentId) {
                 // Handle document-grounded query for already processed document
                 const res = await fetch("/api/chat", {
                     method: "POST",
@@ -242,6 +297,8 @@ export default function DocChatbot() {
                     body: JSON.stringify({
                         query: userMessage,
                         context: activeContext,
+                        documentId: activeDocumentId,
+                        sourceName: activeSourceName,
                         language: targetLang,
                         mode: intelligenceMode,
                         model: selectedModel,
@@ -550,7 +607,7 @@ export default function DocChatbot() {
                             </Button>
 
                             <textarea
-                                placeholder={language === "en" ? "Voice mode active. Speak or type your request..." : t.chatbot.placeholder}
+                                placeholder={isAutoListening ? (t.chatbot.voiceActive || "Voice mode active. Speak now...") : t.chatbot.placeholder}
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => {
