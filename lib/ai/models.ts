@@ -50,6 +50,18 @@ export function validateProviderKey(provider: AIProvider): void {
 }
 
 /**
+ * Checks if the primary AI services are ready for operation.
+ */
+export function isLLMReady(): boolean {
+    try {
+        validateProviderKey("openai");
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Returns a configured model instance based on the requested model string.
  * Handles mapping, provider selection, and key validation.
  */

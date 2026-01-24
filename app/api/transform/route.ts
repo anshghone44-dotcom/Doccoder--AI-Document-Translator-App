@@ -3,7 +3,7 @@ import JSZip from "jszip"
 import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
 import { convertAnyToPdf } from "@/lib/parsing/convert-to-pdf"
 import { generateText } from "ai"
-import { getModelInstance } from "@/lib/ai/models"
+import { getModelInstance, isLLMReady } from "@/lib/ai/models"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
 import { build_excel, build_docx } from "@/lib/parsing/document-generators"
@@ -89,6 +89,15 @@ export async function POST(req: NextRequest) {
     const prompt = (form.get("prompt") || "").toString()
     const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
     const baseLanguage = (form.get("targetLanguage") || "en").toString()
+
+    // 0. Production-Safe Readiness Check
+    if (!isLLMReady()) {
+      return new Response(JSON.stringify({
+        error: "Configuration Error",
+        message: "Document intelligence is not configured yet. Please provide a valid API key in the system environment.",
+        code: "AUTH_FAULT"
+      }), { status: 500, headers: { "Content-Type": "application/json" } });
+    }
 
     // Production-Safe Model Initialization
     let finalModel;

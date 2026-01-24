@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateGroundedResponse, ReasoningMode } from "@/lib/ai/reasoning";
-import { getModelInstance } from "@/lib/ai/models";
+import { getModelInstance, isLLMReady } from "@/lib/ai/models";
 import { RetrievalService } from "@/lib/retrieval/retrieval-service";
 import { Logger } from "@/lib/logger";
 
@@ -10,15 +10,14 @@ export async function POST(req: NextRequest) {
     try {
         const { query, context, language, mode, model, messages, documentId, sourceName } = await req.json();
 
-        // Production-Safe Model Validation
-        try {
-            getModelInstance(model);
-        } catch (error: any) {
+        // 1. Production-Safe Readiness Check
+        if (!isLLMReady()) {
             return NextResponse.json({
-                error: "Configuration Error",
-                message: error.message,
-                code: "AUTH_FAULT"
-            }, { status: 500 });
+                answer: "Document intelligence is not configured yet. Please provide a valid API key in the system environment.",
+                citations: "None",
+                confidence: "Not Found",
+                metadata: {}
+            });
         }
 
         if (!query) {

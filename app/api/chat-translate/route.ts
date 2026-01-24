@@ -1,5 +1,5 @@
 import { generateText } from "ai"
-import { getModelInstance } from "@/lib/ai/models"
+import { getModelInstance, isLLMReady } from "@/lib/ai/models"
 import { type NextRequest, NextResponse } from "next/server"
 import { Logger } from "@/lib/logger"
 
@@ -56,7 +56,15 @@ export async function POST(request: NextRequest) {
             }, { status: 400 })
         }
 
-        // Production-Safe Model Initialization
+        // 1. Production-Safe Readiness Check
+        if (!isLLMReady()) {
+            return NextResponse.json({
+                role: "assistant",
+                content: "Document intelligence is not configured yet. Please provide a valid API key in the system environment."
+            });
+        }
+
+        // 2. Production-Safe Model Initialization
         let finalModel;
         try {
             finalModel = getModelInstance(model);
