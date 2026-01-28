@@ -4,7 +4,19 @@ export interface GuardResult {
     messages?: any[];
 }
 
+function isGreeting(text: string) {
+    return ["hi", "hello", "hey", "greeting", "namaste", "hola"].includes(text.toLowerCase().trim());
+}
+
 export function buildGuardedPrompt(userText: string, documentContext?: string): GuardResult {
+    // 0. Greeting Check
+    if (isGreeting(userText)) {
+        return {
+            refuse: true,
+            message: "Hello. Please upload a document or ask a question about it."
+        };
+    }
+
     // 1. Check for missing context
     if (!documentContext || documentContext.trim().length === 0) {
         return {

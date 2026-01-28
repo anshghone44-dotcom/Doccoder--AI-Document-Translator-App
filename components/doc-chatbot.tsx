@@ -49,6 +49,7 @@ export default function DocChatbot() {
     const [input, setInput] = useState("")
     const [files, setFiles] = useState<File[]>([])
     const [docState, setDocState] = useState<DocumentState | null>(null)
+    const [isConfigured, setIsConfigured] = useState<boolean>(true) // Assume true initially
     const [targetLang, setTargetLang] = useState(language)
 
     // Sync local targetLang with global language
@@ -81,6 +82,20 @@ export default function DocChatbot() {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight
         }
     }, [messages])
+
+    // Check AI Readiness on mount
+    useEffect(() => {
+        const checkReadiness = async () => {
+            try {
+                const res = await fetch("/api/readiness")
+                const data = await res.json()
+                setIsConfigured(data.ready)
+            } catch {
+                setIsConfigured(false)
+            }
+        }
+        checkReadiness()
+    }, [])
 
     const onFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -245,6 +260,7 @@ export default function DocChatbot() {
                         downloadUrl: objectUrl,
                         filename
                     }])
+                    setDocState("READY")
                 } else {
                     // PRO RAG: Ingest document for conversational intelligence
                     setDocState("UPLOADING");
@@ -290,6 +306,8 @@ export default function DocChatbot() {
                         citations: chatData.citations,
                         confidence: chatData.confidence
                     }]);
+
+                    setDocState("READY")
 
                     // AUTO-TRIGGER VOICE: Enable microphone automatically after sync
                     setIsAutoListening(true);
@@ -343,7 +361,9 @@ export default function DocChatbot() {
                 const data = await res.json()
                 setMessages(prev => [...prev, data])
             }
-            setDocState(null) // Reset to READY/Success
+            if (currentFiles.length === 0 && (activeContext || activeDocumentId)) {
+                setDocState("READY")
+            }
         } catch (error: any) {
             setDocState("FAILED")
             setMessages(prev => [
@@ -617,8 +637,14 @@ export default function DocChatbot() {
                             </Button>
 
                             <textarea
-                                placeholder={isAutoListening ? (t.chatbot.voiceActive || "Voice mode active. Speak now...") : t.chatbot.placeholder}
+                                placeholder={
+                                    !isConfigured ? "AI Services unconfigured. Please check environment." :
+                                        docState !== "READY" && !activeContext ? "Upload a document to begin." :
+                                            isAutoListening ? (t.chatbot.voiceActive || "Voice mode active. Speak now...") :
+                                                t.chatbot.placeholder
+                                }
                                 value={input}
+                                disabled={(!isConfigured || (docState !== "READY" && !activeContext)) && files.length === 0}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -632,7 +658,7 @@ export default function DocChatbot() {
 
                             <Button
                                 type="submit"
-                                disabled={(!input.trim() && files.length === 0) || docState !== null}
+                                disabled={(!input.trim() && files.length === 0) || docState === "UPLOADING" || docState === "PARSING" || docState === "INDEXING" || (!isConfigured || (docState !== "READY" && !activeContext) && files.length === 0)}
                                 className="h-12 w-12 rounded-full bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0 group/send disabled:opacity-30"
                                 aria-label={t.chatbot.ariaLabels.send}
                             >

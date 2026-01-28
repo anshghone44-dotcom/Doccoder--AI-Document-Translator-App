@@ -18,6 +18,10 @@ export interface GroundedResponse {
     confidence: "High" | "Partial" | "Not Found";
 }
 
+function isGreeting(text: string) {
+    return ["hi", "hello", "hey", "greeting", "namaste", "hola"].includes(text.toLowerCase().trim());
+}
+
 /**
  * Generates a response strictly grounded in provided document context.
  * Enforces Hard-Locking: If no context or unconfigured, it refuses to respond using general knowledge.
@@ -27,6 +31,15 @@ export async function generateGroundedResponse(
     documentContext: string,
     options: GroundedOptions = {}
 ): Promise<GroundedResponse> {
+    // 0. Greeting Check
+    if (isGreeting(query)) {
+        return {
+            answer: "Hello. Please upload a document or ask a question about it.",
+            citations: "None",
+            confidence: "High"
+        };
+    }
+
     const requestId = Math.random().toString(36).substring(7);
 
     // 1. System Readiness Check
