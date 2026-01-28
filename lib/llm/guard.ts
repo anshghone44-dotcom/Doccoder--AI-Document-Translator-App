@@ -1,5 +1,3 @@
-import { openai } from "./client";
-
 export interface GuardResult {
     refuse: boolean;
     message?: string;
@@ -7,27 +5,36 @@ export interface GuardResult {
 }
 
 export function buildGuardedPrompt(userText: string, documentContext?: string): GuardResult {
-    // Simple safety and relevance check logic
-    // If the user text is too short or clearly malicious, we can refuse.
-
-    const messages = [
-        {
-            role: "system",
-            content: `You are a helpful assistant. Use the following document context to answer questions: ${documentContext || "No context provided."}`
-        },
-        {
-            role: "user",
-            content: userText
-        }
-    ];
-
-    // For demonstration, we'll refuse if the question is "bad" (placeholder logic)
-    if (userText.toLowerCase().includes("ignore previous instructions")) {
+    // 1. Check for missing context
+    if (!documentContext || documentContext.trim().length === 0) {
         return {
             refuse: true,
-            message: "I cannot perform that action. Please stay on topic."
+            message: "I'm sorry, I don't have any document context to answer from. Please upload a document first."
         };
     }
+
+    // 2. Construct the strict system prompt
+    const systemPrompt = `
+You are a strict document-only assistant. 
+Your ONLY source of truth is the provided document context below. 
+If the answer to the user's question is not explicitly found in the context, you must state that you do not know.
+Do NOT use any outside knowledge.
+Do NOT hallucinate.
+
+RESPONSE RULES:
+- Be extremely concise.
+- Provide voice-friendly responses (no markdown, no bolding, no lists, no special characters).
+- Speak in natural, complete sentences.
+- If the information is missing, say exactly: "I'm sorry, I couldn't find that information in the document."
+
+DOCUMENT CONTEXT:
+${documentContext}
+  `.trim();
+
+    const messages = [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userText }
+    ];
 
     return {
         refuse: false,
