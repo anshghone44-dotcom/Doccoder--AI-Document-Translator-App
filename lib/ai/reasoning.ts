@@ -24,7 +24,7 @@ export interface GroundedResponse {
  */
 export async function generateGroundedResponse(
     query: string,
-    context: string,
+    documentContext: string,
     options: GroundedOptions = {}
 ): Promise<GroundedResponse> {
     const requestId = Math.random().toString(36).substring(7);
@@ -38,11 +38,10 @@ export async function generateGroundedResponse(
         };
     }
 
-    // 2. Hard-Lock: Reject empty context
-    const hasContext = context && context.trim().length > 0;
-    if (!hasContext) {
+    // 2. Hard-Lock: Reject empty or insufficient context (User snippet implemented)
+    if (!documentContext || documentContext.length < 50) {
         return {
-            answer: "This document does not contain that information. (No context chunks provided for verification)",
+            answer: "The document is not ready yet.",
             citations: "None",
             confidence: "Not Found"
         };
@@ -52,7 +51,7 @@ export async function generateGroundedResponse(
         requestId,
         model: options.model,
         mode: options.mode,
-        contextLength: context.length,
+        contextLength: documentContext.length,
         historyLength: options.messages?.length || 0
     });
 
@@ -72,7 +71,7 @@ export async function generateGroundedResponse(
                     role: "user",
                     content: `
 Retrieved Document Evidence:
-${context}
+${documentContext}
 
 User Question:
 ${query}

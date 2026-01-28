@@ -1,11 +1,21 @@
-import { runLLM } from "@/lib/llm/execute";
+import { generateGroundedResponse } from "@/lib/ai/reasoning";
 
 export async function POST(req: Request) {
-    const { message } = await req.json();
+    const {
+        query,
+        context,
+        language,
+        mode,
+        model,
+        messages
+    } = await req.json();
 
-    const reply = await runLLM([
-        { role: "user", content: message }
-    ]);
+    const response = await generateGroundedResponse(query, context, {
+        language,
+        mode,
+        model,
+        messages
+    });
 
-    return Response.json({ reply });
+    return Response.json(response);
 }

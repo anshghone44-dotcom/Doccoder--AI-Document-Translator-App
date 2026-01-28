@@ -130,6 +130,7 @@ export async function POST(req: NextRequest) {
         const arrayBuffer = await file.arrayBuffer()
         const content = await extractPdfContent(arrayBuffer, file.name)
         let extractedText = formatExtractedContent(content)
+        console.log("Extracted text length:", extractedText.length);
 
         // If a prompt is provided, transform the extracted text using AI
         if (prompt.trim()) {

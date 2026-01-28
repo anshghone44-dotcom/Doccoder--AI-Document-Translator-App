@@ -11,6 +11,7 @@ import ModelSelector, { type AIModel } from "@/components/model-selector"
 import FormatSelector, { type OutputFormat } from "@/components/format-selector"
 import VoiceSettings from "@/components/voice-settings"
 import VoiceRecorder from "@/components/voice-recorder"
+import { DocumentState } from "@/lib/types"
 
 type Message = {
     role: "user" | "assistant"
@@ -47,7 +48,7 @@ export default function DocChatbot() {
     }, [t.chatbot.welcome])
     const [input, setInput] = useState("")
     const [files, setFiles] = useState<File[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [docState, setDocState] = useState<DocumentState | null>(null)
     const [targetLang, setTargetLang] = useState(language)
 
     // Sync local targetLang with global language
@@ -171,16 +172,16 @@ export default function DocChatbot() {
     useEffect(() => {
         if (autoPlay && messages.length > 0) {
             const lastMessage = messages[messages.length - 1]
-            if (lastMessage.role === "assistant" && !isLoading) {
+            if (lastMessage.role === "assistant" && !docState) {
                 handlePlayTTS(lastMessage.content, messages.length - 1)
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [autoPlay, handlePlayTTS, isLoading, messages.length])
+    }, [autoPlay, handlePlayTTS, docState, messages.length])
 
     const handleSend = async (e?: React.FormEvent, overrideMsg?: string) => {
         e?.preventDefault()
-        if ((!input.trim() && !overrideMsg && files.length === 0) || isLoading) return
+        if ((!input.trim() && !overrideMsg && files.length === 0) || docState) return
 
         const userMessage = overrideMsg || input.trim() || (files.length > 0 ? t.chatbot.processAndTranslate : "")
         const currentFiles = [...files]
@@ -194,7 +195,7 @@ export default function DocChatbot() {
         setInput("")
         setFiles([])
         setShowRecommendations(false)
-        setIsLoading(true)
+        setDocState("UPLOADING")
 
         try {
             if (currentFiles.length > 0) {
@@ -214,6 +215,7 @@ export default function DocChatbot() {
                     form.set("targetFormat", targetFormat)
                     currentFiles.forEach(f => form.append("files", f, f.name))
 
+                    setDocState("PARSING")
                     const res = await fetch("/api/transform", {
                         method: "POST",
                         body: form,
@@ -245,15 +247,17 @@ export default function DocChatbot() {
                     }])
                 } else {
                     // PRO RAG: Ingest document for conversational intelligence
+                    setDocState("UPLOADING");
                     const form = new FormData();
                     form.append("file", currentFiles[0]); // Handle first file for RAG
 
+                    setDocState("PARSING");
                     const res = await fetch("/api/ingest", {
                         method: "POST",
                         body: form,
                     });
 
-                    if (!res.ok) throw new Error("Knowledge synchronization failed.");
+                    if (!res.ok) throw new Error("The document is still being processed. Please wait a moment.");
 
                     const data = await res.json();
                     setActiveDocumentId(data.documentId);
@@ -261,6 +265,7 @@ export default function DocChatbot() {
                     setActiveContext(data.content); // Use partial/full content as local context fallback
 
                     // Now ask the model to process the document with the user's initial instructions
+                    setDocState("INDEXING");
                     const chatRes = await fetch("/api/chat", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -338,13 +343,13 @@ export default function DocChatbot() {
                 const data = await res.json()
                 setMessages(prev => [...prev, data])
             }
+            setDocState(null) // Reset to READY/Success
         } catch (error: any) {
+            setDocState("FAILED")
             setMessages(prev => [
                 ...prev,
                 { role: "assistant", content: `${t.chatbot.error}: ${error.message || "Unknown interrupt detected."}` },
             ])
-        } finally {
-            setIsLoading(false)
         }
     }
 
@@ -520,13 +525,19 @@ export default function DocChatbot() {
                     </div>
                 ))}
 
-                {isLoading && (
+                {docState && (
                     <div className="flex items-start max-w-[80%] animate-in fade-in duration-500">
                         <div className="px-6 py-4 rounded-[2rem] border border-border/50 flex items-center gap-4 bg-card shadow-sm">
                             <div className="relative">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
                             </div>
-                            <span className="text-sm text-foreground/70 font-bold uppercase tracking-widest">{t.chatbot.processing}</span>
+                            <span className="text-sm text-foreground/70 font-bold uppercase tracking-widest">
+                                {docState === "UPLOADING" ? "Uploading Document..." :
+                                    docState === "PARSING" ? "Parsing Structure..." :
+                                        docState === "INDEXING" ? "Indexing Knowledge..." :
+                                            docState === "FAILED" ? "Processing Failed" :
+                                                t.chatbot.processing}
+                            </span>
                         </div>
                     </div>
                 )}
@@ -621,7 +632,7 @@ export default function DocChatbot() {
 
                             <Button
                                 type="submit"
-                                disabled={(!input.trim() && files.length === 0) || isLoading}
+                                disabled={(!input.trim() && files.length === 0) || docState !== null}
                                 className="h-12 w-12 rounded-full bg-foreground text-background hover:bg-foreground/90 shadow-xl transition-all active:scale-95 shrink-0 group/send disabled:opacity-30"
                                 aria-label={t.chatbot.ariaLabels.send}
                             >
