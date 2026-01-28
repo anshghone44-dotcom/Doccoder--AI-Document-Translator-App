@@ -5,7 +5,7 @@ if (typeof window !== "undefined") {
 }
 
 if (!process.env.OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY environment variable is missing. Please configure it in your environment settings.");
+    throw new Error("OPENAI_API_KEY not found in environment");
 }
 
 export const openai = new OpenAI({
