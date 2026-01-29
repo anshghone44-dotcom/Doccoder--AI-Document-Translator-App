@@ -57,8 +57,11 @@ export function isLLMReady(checkVoice = false): boolean {
     try {
         validateProviderKey("openai");
         if (checkVoice) validateProviderKey("elevenlabs");
+
+        console.log("LLM READY: PASS");
         return true;
-    } catch {
+    } catch (err: any) {
+        console.error("LLM READY: FAIL →", err.message);
         return false;
     }
 }
