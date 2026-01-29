@@ -9,6 +9,7 @@ import * as XLSX from "xlsx"
 import { build_excel, build_docx } from "@/lib/parsing/document-generators"
 import type { PipelineOutput } from "@/lib/parsing/document-generators"
 import { build_pdf, stripExt } from "@/lib/parsing/convert-to-pdf"
+import { DOCUMENT_TRANSLATION_SYSTEM_PROMPT } from "@/lib/ai/prompts"
 
 // Structured Logger Utility
 const Logger = {
@@ -231,19 +232,21 @@ export async function POST(req: NextRequest) {
     }
 
     const SYSTEM_PROTOCOL = `
-You are the Doccoder AI Assistant. Execute a high-precision linguistic and structural transformation.
+${DOCUMENT_TRANSLATION_SYSTEM_PROMPT}
 
 PROTOCOL:
-1. TRANSLATION: Translate the source content into the target_language first. Maintain absolute technical integrity and context.
-2. RESTRUCTURE: Restructure the translated content based on the requested output_format.
-3. NO REPETITION: Do NOT include source-language text in the translated_content or structure unless explicitly requested.
-4. VALIDATION: Return ONLY a valid JSON object following the schema below.
+1. TRANSLATION: Translate the source content into the target_language. Maintain absolute technical integrity and context.
+2. PRESERVE FORMATTING: Strictly maintain headings, bullet points, tables, and numbered lists.
+3. RESTRUCTURE: Restructure the translated content based on the requested output_format using the JSON schema below.
+4. NON-TEXT ELEMENTS: If images or diagrams are detected in the context, note their presence (e.g., "[Image: Description]" ories "[Diagram: Content]"). Do NOT attempt to interpret or translate them, just preserve their placement markers.
+5. NO COMMENTARY: Provide ONLY the translated and converted document in JSON format. Do NOT include any preamble, introduction, or closing remarks.
+6. NO REPETITION: Do NOT include source-language text unless explicitly requested.
 
 SCHEMA:
 {
   "source_language": "iso-code",
   "target_language": "iso-code",
-  "output_format": "pdf | docx | xlsx",
+  "output_format": "pdf | docx | xlsx | txt",
   "translated_content": "Full summary of translated text",
   "structure": {
     "sections": [ 
@@ -270,8 +273,8 @@ SCHEMA:
 
 OUTPUT RULES:
 - For Excel (xlsx): Provide 'sheets' only. No paragraphs or sections.
-- For PDF/DOCX: Provide 'sections'.
-- Return ONLY the JSON. No preamble. No markdown blocks.
+- For PDF/DOCX/TXT: Provide 'sections'.
+- Return ONLY the JSON.
 `;
 
     async function translateAndStructure(text: string, lang: string, format: string): Promise<PipelineOutput> {
