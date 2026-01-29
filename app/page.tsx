@@ -8,6 +8,8 @@ import { useRef } from "react"
 import Header from "@/components/header"
 import DocChatbot from "@/components/doc-chatbot"
 
+import TranslationSection from "@/components/translation-section"
+
 export default function Home() {
   const { t } = useTranslation()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -144,6 +146,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <TranslationSection />
 
 
       <section id="formats" className="py-24 relative overflow-hidden">

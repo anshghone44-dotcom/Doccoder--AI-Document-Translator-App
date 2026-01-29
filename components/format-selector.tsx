@@ -1,10 +1,25 @@
 "use client"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FileText, Table, FileSpreadsheet, FileBox } from "lucide-react"
+import { FileText, Table, FileSpreadsheet, FileBox, Presentation, ImageIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export type OutputFormat = "pdf" | "xlsx" | "csv" | "docx" | "txt"
+export type OutputFormat =
+    | "pdf"
+    | "xlsx"
+    | "csv"
+    | "docx"
+    | "txt"
+    | "pptx"
+    | "gdoc"
+    | "gsheet"
+    | "png"
+    | "bmp"
+    | "tiff"
+    | "gif"
+    | "jpeg"
+    | "jpg"
+    | "svg"
 
 interface FormatSelectorProps {
     value: OutputFormat
@@ -19,6 +34,16 @@ export default function FormatSelector({ value, onChange, className }: FormatSel
         csv: "CSV File",
         docx: "Word Doc",
         txt: "Text File",
+        pptx: "PowerPoint",
+        gdoc: "Google Doc",
+        gsheet: "Google Sheet",
+        png: "PNG Image",
+        bmp: "Bitmap BMP",
+        tiff: "TIFF Image",
+        gif: "GIF Animation",
+        jpeg: "JPEG Image",
+        jpg: "JPG Image",
+        svg: "SVG Vector",
     }
 
     const formatIcons: Record<OutputFormat, any> = {
@@ -27,6 +52,16 @@ export default function FormatSelector({ value, onChange, className }: FormatSel
         csv: Table,
         docx: FileBox,
         txt: FileText,
+        pptx: Presentation,
+        gdoc: FileText,
+        gsheet: FileSpreadsheet,
+        png: ImageIcon,
+        bmp: ImageIcon,
+        tiff: ImageIcon,
+        gif: ImageIcon,
+        jpeg: ImageIcon,
+        jpg: ImageIcon,
+        svg: ImageIcon,
     }
 
     const SelectedIcon = formatIcons[value]

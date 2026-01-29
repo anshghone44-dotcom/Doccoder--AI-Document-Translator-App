@@ -30,6 +30,10 @@ const FILE_TYPES = [
     { icon: File, label: "CSV", ext: ".csv", color: "text-zinc-500", bgColor: "bg-zinc-500/10" },
     { icon: ImageIcon, label: "PNG", ext: ".png", color: "text-purple-500", bgColor: "bg-purple-500/10" },
     { icon: ImageIcon, label: "SVG", ext: ".svg", color: "text-pink-500", bgColor: "bg-pink-500/10" },
+    { icon: ImageIcon, label: "JPG", ext: ".jpg", color: "text-indigo-500", bgColor: "bg-indigo-500/10" },
+    { icon: FileText, label: "TXT", ext: ".txt", color: "text-slate-500", bgColor: "bg-slate-500/10" },
+    { icon: ImageIcon, label: "BMP", ext: ".bmp", color: "text-cyan-500", bgColor: "bg-cyan-500/10" },
+    { icon: ImageIcon, label: "TIFF", ext: ".tiff", color: "text-teal-500", bgColor: "bg-teal-500/10" },
 ]
 
 const LANGUAGES = [
@@ -43,6 +47,8 @@ const LANGUAGES = [
     { code: "hi", name: "Hindi" },
     { code: "pt", name: "Portuguese" },
     { code: "ru", name: "Russian" },
+    { code: "mr", name: "Marathi" },
+    { code: "gu", name: "Gujarati" },
 ]
 
 const TARGET_FORMATS = [
@@ -52,6 +58,14 @@ const TARGET_FORMATS = [
     { value: "pptx", label: "PowerPoint" },
     { value: "txt", label: "Plain Text" },
     { value: "json", label: "JSON Data" },
+    { value: "png", label: "PNG Image" },
+    { value: "jpg", label: "JPG Image" },
+    { value: "svg", label: "SVG Vector" },
+    { value: "bmp", label: "BMP Bitmap" },
+    { value: "tiff", label: "TIFF Format" },
+    { value: "gif", label: "GIF Animation" },
+    { value: "gdoc", label: "Google Doc" },
+    { value: "gsheet", label: "Google Sheet" },
 ]
 
 export function UploadZone() {
@@ -197,7 +211,7 @@ export function UploadZone() {
                                     type="file"
                                     id="file-upload"
                                     className="hidden"
-                                    accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.json,.csv,.png,.jpg,.jpeg,.svg"
+                                    accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.json,.csv,.png,.jpg,.jpeg,.svg,.bmp,.tiff,.gif"
                                     onChange={handleFileSelect}
                                 />
                                 <label htmlFor="file-upload">
