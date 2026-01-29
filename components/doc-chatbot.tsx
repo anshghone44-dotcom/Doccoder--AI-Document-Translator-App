@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2, Bot, Shield } from "lucide-react"
+import { Star, Send, Loader2, Globe, Languages, Zap, Copy, Paperclip, X, FileText, Sparkles, Download, Volume2, Bot, Shield, Settings, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/components/language-context"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
@@ -12,6 +12,14 @@ import FormatSelector, { type OutputFormat } from "@/components/format-selector"
 import VoiceSettings from "@/components/voice-settings"
 import VoiceRecorder from "@/components/voice-recorder"
 import { DocumentState } from "@/lib/types"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 type Message = {
     role: "user" | "assistant"
@@ -378,31 +386,85 @@ export default function DocChatbot() {
             {/* Background Grid Effect - Subtle */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
 
-            {/* Header / Control Bar - More Discrete */}
-            <div className="px-6 py-4 flex items-center justify-between relative z-20">
+            {/* Header / Control Bar - Clean & Discrete */}
+            <div className="px-8 py-6 flex items-center justify-between border-b border-border/5 relative z-20">
                 <div className="flex items-center gap-3">
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="scale-90 origin-right flex items-center gap-2">
-                        <FormatSelector value={targetFormat} onChange={setTargetFormat} />
-                        <ModelSelector value={selectedModel} onChange={setSelectedModel} />
-                        <VoiceRecorder
-                            onTranscript={(text) => {
-                                setIsAutoListening(false)
-                                handleSend(undefined, text) // Pass text directly to avoid stale state
-                            }}
-                            isActive={isAutoListening}
-                            onRecordingChange={(isRecording) => {
-                                if (!isRecording) setIsAutoListening(false)
-                            }}
-                        />
-                        <VoiceSettings
-                            selectedVoice={selectedVoice}
-                            onVoiceChange={setSelectedVoice}
-                            autoPlay={autoPlay}
-                            onAutoPlayChange={setAutoPlay}
-                        />
+                    <div className="h-10 w-10 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover/chatbot:scale-110 transition-transform duration-500">
+                        <MessageSquare className="h-5 w-5" />
                     </div>
+                    <div>
+                        <div className="text-xs font-bold uppercase tracking-[0.2em] text-foreground/80">Document Agent</div>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                {docState === "READY" ? "Grounded Intelligence Active" : "Consulting Document Memory"}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-foreground/5 text-muted-foreground hover:text-foreground transition-all">
+                                <Settings className="h-5 w-5" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-80 p-4 rounded-3xl bg-background/80 backdrop-blur-2xl border-border/50 shadow-2xl space-y-4">
+                            <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground pb-2">Technical Intelligence</DropdownMenuLabel>
+
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-foreground/60 px-1">Reasoning Engine</div>
+                                    <ModelSelector value={selectedModel} onChange={setSelectedModel} className="w-full" />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-foreground/60 px-1">Target Format</div>
+                                    <FormatSelector value={targetFormat} onChange={setTargetFormat} className="w-full" />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-foreground/60 px-1">Synthesis Voice</div>
+                                    <VoiceSettings
+                                        selectedVoice={selectedVoice}
+                                        onVoiceChange={setSelectedVoice}
+                                        autoPlay={autoPlay}
+                                        onAutoPlayChange={setAutoPlay}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-foreground/60 px-1">Intelligence Mode</div>
+                                    <div className="grid grid-cols-3 gap-1 p-1 bg-foreground/5 rounded-2xl border border-border/50">
+                                        {(['strict', 'explainer', 'summary'] as const).map((mode) => (
+                                            <button
+                                                key={mode}
+                                                onClick={() => setIntelligenceMode(mode)}
+                                                className={cn(
+                                                    "px-2 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all",
+                                                    intelligenceMode === mode ? "bg-foreground text-background shadow-lg" : "text-muted-foreground hover:text-foreground"
+                                                )}
+                                            >
+                                                {mode}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <VoiceRecorder
+                        onTranscript={(text) => {
+                            setIsAutoListening(false)
+                            handleSend(undefined, text)
+                        }}
+                        isActive={isAutoListening}
+                        onRecordingChange={(isRecording) => {
+                            if (!isRecording) setIsAutoListening(false)
+                        }}
+                    />
                 </div>
             </div>
 
@@ -586,21 +648,6 @@ export default function DocChatbot() {
 
                     {showRecommendations && !input && (
                         <div className="mb-6 flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
-                            {/* Intelligence Mode Toggles */}
-                            <div className="flex gap-1 p-1 bg-foreground/5 rounded-full border border-border/50 mr-2">
-                                {(['strict', 'explainer', 'summary'] as const).map((mode) => (
-                                    <button
-                                        key={mode}
-                                        onClick={() => setIntelligenceMode(mode)}
-                                        className={cn(
-                                            "px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all",
-                                            intelligenceMode === mode ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-                                        )}
-                                    >
-                                        {mode}
-                                    </button>
-                                ))}
-                            </div>
                             {t.chatbot.recommendations.map((rec: string, i: number) => (
                                 <button
                                     key={i}
