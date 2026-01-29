@@ -25,7 +25,7 @@ async function validateAIModels() {
     let allSet = true;
 
     for (const [key, info] of Object.entries(keys)) {
-        const value = process.env[key];
+        const value = process.env[key]?.trim();
         if (value) {
             const isPlaceholder = value.includes('your-') || value.includes('YOUR_');
             const hasPrefix = info.prefix ? value.startsWith(info.prefix) : true;

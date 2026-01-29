@@ -6,10 +6,12 @@ if (typeof window !== "undefined") {
 
 console.log("OpenAI key exists:", !!process.env.OPENAI_API_KEY);
 
-if (!process.env.OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY not found in environment");
+const key = process.env.OPENAI_API_KEY?.trim();
+
+if (!key) {
+    throw new Error("OpenAI API key missing.");
 }
 
 export const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: key,
 });

@@ -39,10 +39,10 @@ export function validateProviderKey(provider: AIProvider): void {
     };
 
     const config = keyMap[provider];
-    const key = process.env[config.env];
+    const key = process.env[config.env]?.trim();
 
     if (!key) {
-        throw new Error(`${config.name} API key is missing. Please configure ${config.env} in your environment variables.`);
+        throw new Error(`${config.name} API key missing.`);
     }
 
     if (key.includes("your-") || key.includes("YOUR_") || key.length < 15) {
