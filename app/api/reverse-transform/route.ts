@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server"
+import { NextRequest } from "next/server"
 import { convertPdfToFormat } from "@/lib/parsing/convert-from-pdf"
 import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
 import JSZip from "jszip"
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
     }
 
     // AI Logic for individual file transformation
-    let finalModel;
+    let finalModel: any;
     try {
       finalModel = getModelInstance(aiModel);
     } catch (error: any) {
@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
       return new Response(single.bytes as any, {
         headers: {
           "Content-Type": single.mimeType,
-          "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"`,
+          "Content-Disposition": `attachment; filename="${encodeRFC5987(single.name)}"; filename*=UTF-8''${encodeRFC5987(single.name)}`,
         },
       })
     }
@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
     return new Response(zipped as any, {
       headers: {
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${encodeRFC5987("converted-data.zip")}"`,
+        "Content-Disposition": `attachment; filename="${encodeRFC5987("converted-data.zip")}"; filename*=UTF-8''${encodeRFC5987("converted-data.zip")}`,
       },
     })
   } catch (err: any) {
@@ -222,5 +222,5 @@ export async function POST(req: NextRequest) {
 }
 
 function encodeRFC5987(s: string) {
-  return s.replace(/[^a-zA-Z0-9!#$&+.^_`|~-]/g, (c) => encodeURIComponent(c))
+  return encodeURIComponent(s).replace(/['()]/g, escape).replace(/\*/g, "%2A")
 }
