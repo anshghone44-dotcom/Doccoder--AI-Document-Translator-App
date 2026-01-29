@@ -45,6 +45,7 @@ async function processInChunks(text: string, chunkSize: number, processFn: (chun
 }
 
 export const maxDuration = 60
+export const runtime = "nodejs"
 
 const LANGUAGE_MAP: Record<string, string> = {
   bn: "Bengali",

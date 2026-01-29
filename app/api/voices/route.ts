@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { isLLMReady } from "@/lib/ai/models"
 
+export const runtime = "nodejs"
+
 export async function GET() {
     try {
         if (!isLLMReady(true)) {

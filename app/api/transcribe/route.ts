@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { isLLMReady } from "@/lib/ai/models"
 import { speechToText } from "@/lib/voice/stt"
 
+export const runtime = "nodejs"
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()

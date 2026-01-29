@@ -3,6 +3,8 @@ import { IngestionService } from "@/lib/parsing/ingestion-service";
 import { isLLMReady } from "@/lib/ai/models";
 import { Logger } from "@/lib/logger";
 
+export const runtime = "nodejs"
+
 export async function POST(req: NextRequest) {
     const requestId = Math.random().toString(36).substring(7);
 

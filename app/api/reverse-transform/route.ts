@@ -7,6 +7,7 @@ import { getModelInstance, isLLMReady } from "@/lib/ai/models"
 import { Logger } from "@/lib/logger"
 
 export const maxDuration = 60
+export const runtime = "nodejs"
 
 const LANGUAGE_MAP: Record<string, string> = {
   bn: "Bengali",

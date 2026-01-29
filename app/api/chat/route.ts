@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateGroundedResponse } from "@/lib/ai/reasoning";
 import { Logger } from "@/lib/logger";
 
+export const runtime = "nodejs"
+
 export async function POST(req: NextRequest) {
     const requestId = Math.random().toString(36).substring(7);
 
