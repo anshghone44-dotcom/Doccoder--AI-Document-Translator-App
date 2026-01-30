@@ -69,6 +69,13 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover/link:w-full" />
                             </Link>
                         ))}
+                        <Link
+                            href="/dashboard"
+                            className="relative text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group/link"
+                        >
+                            Dashboard
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover/link:w-full" />
+                        </Link>
                     </nav>
                 </div>
 
@@ -85,15 +92,13 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                     </Link>
 
 
-                    <Link href="/signup">
+                    <Link href="/dashboard">
                         <Button
                             size="sm"
-                            className="hidden md:inline-flex items-center gap-2 font-bold px-6 py-2 rounded-xl transition-all duration-500 bg-primary text-primary-foreground hover:bg-white hover:text-black hover:scale-105 active:scale-95 group"
-                            onMouseEnter={() => setHoveredButton("signup")}
-                            onMouseLeave={() => setHoveredButton(null)}
+                            className="hidden md:inline-flex items-center gap-2 font-bold px-6 py-4 rounded-xl transition-all duration-500 bg-foreground text-background hover:bg-foreground/90 hover:scale-105 active:scale-95 group shadow-lg"
                         >
-                            {t.nav.signUp}
-                            <Star className={cn("h-4 w-4 transition-all duration-500 group-hover:rotate-[144deg]", hoveredButton === "signup" ? "fill-current" : "opacity-0")} />
+                            Open App
+                            <Zap className="h-4 w-4 fill-current transition-all duration-500 group-hover:scale-110" />
                         </Button>
                     </Link>
                     <ThemeToggle />

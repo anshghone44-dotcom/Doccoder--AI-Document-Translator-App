@@ -21,6 +21,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { useSearchParams } from "next/navigation"
+
 type Message = {
     role: "user" | "assistant"
     content: string
@@ -34,6 +36,8 @@ type Message = {
 
 export default function DocChatbot() {
     const { t, language, setLanguage } = useTranslation()
+    const searchParams = useSearchParams()
+    const docId = searchParams.get("docId")
     const [messages, setMessages] = useState<Message[]>([])
 
     // Update initial message when language changes and only welcome message exists
@@ -91,7 +95,7 @@ export default function DocChatbot() {
         }
     }, [messages])
 
-    // Check AI Readiness on mount
+    // Check AI Readiness and load doc if docId exists
     useEffect(() => {
         const checkReadiness = async () => {
             try {
@@ -103,7 +107,38 @@ export default function DocChatbot() {
             }
         }
         checkReadiness()
-    }, [])
+
+        const loadDoc = async () => {
+            if (!docId) return
+
+            setDocState("UPLOADING")
+            try {
+                // In a real flow, we'd fetch the document bytes from storage by ID 
+                // and then call /api/ingest. For this implementation, we use a 
+                // specialized endpoint or reuse ingest with a path.
+                const res = await fetch(`/api/documents/ingest?id=${docId}`)
+                if (!res.ok) throw new Error("Document analysis failed.")
+
+                const data = await res.json()
+                setActiveDocumentId(data.documentId)
+                setActiveSourceName(data.filename)
+                setActiveContext(data.content)
+                setDocState("READY")
+
+                setMessages(prev => [...prev, {
+                    role: "assistant",
+                    content: `I've successfully synchronized with "**${data.filename}**". You can now ask questions about its content.`
+                }])
+            } catch (err: any) {
+                setDocState("FAILED")
+                setMessages(prev => [...prev, {
+                    role: "assistant",
+                    content: `Synchronization error: ${err.message}`
+                }])
+            }
+        }
+        loadDoc()
+    }, [docId])
 
     const onFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
+import { createClient } from "@/lib/supabase/client"
 import {
     Upload,
     FileText,
@@ -77,6 +78,16 @@ export function UploadZone() {
     const [isProcessing, setIsProcessing] = useState(false)
     const [processError, setProcessError] = useState<string | null>(null)
     const [processSuccess, setProcessSuccess] = useState(false)
+    const [user, setUser] = useState<any>(null)
+    const supabase = createClient()
+
+    useEffect(() => {
+        async function getUser() {
+            const { data: { user } } = await supabase.auth.getUser()
+            setUser(user)
+        }
+        getUser()
+    }, [supabase])
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault()
@@ -129,6 +140,16 @@ export function UploadZone() {
             formData.append("targetFormat", targetFormat)
             formData.append("prompt", `Translate this ${selectedFile.name} into ${targetLang} and output as ${targetFormat}`)
             formData.append("aiModel", "openai/gpt-4-mini") // Default for high precision
+
+            // If user is logged in, also save to dashboard
+            if (user) {
+                const saveFormData = new FormData()
+                saveFormData.append("file", selectedFile)
+                fetch("/api/documents", {
+                    method: "POST",
+                    body: saveFormData,
+                }).catch(err => console.error("Failed to save to dashboard:", err))
+            }
 
             const response = await fetch("/api/transform", {
                 method: "POST",
