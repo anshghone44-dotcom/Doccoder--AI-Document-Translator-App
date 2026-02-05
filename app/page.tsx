@@ -213,7 +213,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 py-12">
           <div className="flex flex-col items-center text-center space-y-6">
             <div className="space-y-4">
-              <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
+              <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "var(--font-open-sans)" }}>
                 Doccoder
               </h3>
               <p className="text-sm text-muted-foreground max-w-md">

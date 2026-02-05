@@ -14,7 +14,7 @@ export default function AuthErrorPage() {
             <div className="w-full max-w-md relative z-10">
                 <div className="mb-8 text-center">
                     <Link href="/">
-                        <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-bodoni)" }}>
+                        <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-open-sans)" }}>
                             Doccoder
                         </h1>
                     </Link>

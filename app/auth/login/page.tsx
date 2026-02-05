@@ -67,7 +67,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm relative z-10">
         <div className="mb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
           <Link href="/">
-            <h1 className="text-4xl font-black tracking-tighter hover:text-primary transition-colors duration-500" style={{ fontFamily: "var(--font-bodoni)" }}>
+            <h1 className="text-4xl font-black tracking-tighter hover:text-primary transition-colors duration-500" style={{ fontFamily: "var(--font-open-sans)" }}>
               Doccoder
             </h1>
           </Link>

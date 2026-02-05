@@ -53,7 +53,7 @@ export default function Header({ showBackButton = false }: HeaderProps) {
                     <Link href="/" className="flex items-center gap-2 group">
                         <h1
                             className="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500 group-hover:scale-105"
-                            style={{ fontFamily: "var(--font-bodoni)" }}
+                            style={{ fontFamily: "var(--font-open-sans)" }}
                         >
                             Doccoder
                         </h1>

@@ -136,7 +136,7 @@ export default function SignUpPage() {
             {/* Header */}
             <div className="text-center space-y-2">
               <Link href="/" className="inline-block">
-                <h2 className="text-3xl font-black tracking-tight text-foreground hover:text-primary transition-colors" style={{ fontFamily: "var(--font-bodoni)" }}>
+                <h2 className="text-3xl font-black tracking-tight text-foreground hover:text-primary transition-colors" style={{ fontFamily: "var(--font-open-sans)" }}>
                   Doccoder
                 </h2>
               </Link>

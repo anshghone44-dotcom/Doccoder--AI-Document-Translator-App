@@ -329,7 +329,7 @@ export default function ReverseTransformChat() {
                 <div className="px-12 py-6 rounded-[3rem] bg-card/80 backdrop-blur-xl border border-border/50 shadow-2xl flex items-center justify-center">
                   <h1
                     className="text-5xl md:text-6xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
-                    style={{ fontFamily: "var(--font-bodoni)" }}
+                    style={{ fontFamily: "var(--font-open-sans)" }}
                   >
                     Doccoder
                   </h1>

@@ -1,16 +1,23 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Manrope, Playfair_Display, JetBrains_Mono } from "next/font/google"
+import { Inter, Open_Sans, Playfair_Display, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Suspense } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-inter",
   display: "swap",
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+})
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800"],
 })
 
 const playfairDisplay = Playfair_Display({
@@ -42,7 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans ${manrope.variable} ${playfairDisplay.variable} ${jetbrainsMono.variable}`}>
+      <body
+        className={`font-sans ${inter.variable} ${openSans.variable} ${playfairDisplay.variable} ${jetbrainsMono.variable}`}
+      >
         <LanguageProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Suspense>
