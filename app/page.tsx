@@ -6,8 +6,6 @@ import { Zap, FileCheck, Lock, Gauge, Star, ChevronLeft, ChevronRight } from "lu
 import { useTranslation } from "@/components/language-context"
 import { useRef } from "react"
 import Header from "@/components/header"
-import DocChatbot from "@/components/doc-chatbot"
-
 import TranslationSection from "@/components/translation-section"
 
 export default function Home() {
@@ -124,25 +122,6 @@ export default function Home() {
                 <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Intelligence Section */}
-      <section id="chat" className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-foreground/[0.02]" />
-        <div className="mx-auto max-w-7xl px-6 relative">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-foreground/90">
-              {t.hero.title.split(" ").slice(-2).join(" ")} — Grounded
-            </h2>
-            <p className="text-xl text-foreground/60 max-w-2xl mx-auto">
-              Upload documents and chat with our grounded reasoning engine.
-            </p>
-          </div>
-
-          <div className="max-w-5xl mx-auto bg-background/50 backdrop-blur-xl rounded-[2.5rem] border border-foreground/5 shadow-2xl overflow-hidden">
-            <DocChatbot />
           </div>
         </div>
       </section>

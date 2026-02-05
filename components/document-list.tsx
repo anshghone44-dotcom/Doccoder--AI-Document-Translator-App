@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { FileText, MoreVertical, Trash2, Cpu, Eye, Download, Search, Filter } from "lucide-react"
+import { FileText, MoreVertical, Trash2, Eye, Download, Search, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -12,10 +12,8 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
 
 export function DocumentList() {
-    const router = useRouter()
     const [documents, setDocuments] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
@@ -111,15 +109,6 @@ export function DocumentList() {
                                 <Button size="sm" variant="ghost" className="h-10 rounded-xl gap-2 font-bold text-xs uppercase tracking-wider hover:bg-primary/5 hover:text-primary">
                                     <Eye className="w-4 h-4" />
                                     Preview
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-10 rounded-xl gap-2 font-bold text-xs uppercase tracking-wider hover:bg-emerald-500/5 hover:text-emerald-500"
-                                    onClick={() => router.push(`/chat?docId=${doc.id}`)}
-                                >
-                                    <Cpu className="w-4 h-4" />
-                                    AI Process
                                 </Button>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
