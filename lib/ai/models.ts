@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { xai } from "@ai-sdk/xai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { Logger } from "@/lib/logger";
 
 /**
@@ -8,7 +9,7 @@ import { Logger } from "@/lib/logger";
  * Centralizes model mapping, provider selection, and API key validation.
  */
 
-export type AIProvider = "openai" | "anthropic" | "xai" | "elevenlabs";
+export type AIProvider = "openai" | "anthropic" | "xai" | "google" | "elevenlabs";
 
 export interface ModelConfig {
     provider: AIProvider;
@@ -21,7 +22,9 @@ const MODEL_MAPPING: Record<string, ModelConfig> = {
     "anthropic/claude-4.1": { provider: "anthropic", actualModel: "claude-3-5-sonnet-latest" },
     "openai/gpt-4-mini": { provider: "openai", actualModel: "gpt-4o-mini" },
     "xai/grok-3": { provider: "openai", actualModel: "gpt-4o" },
-    "anthropic/claude-3.1": { provider: "anthropic", actualModel: "claude-3-5-haiku-20241022" }
+    "anthropic/claude-3.1": { provider: "anthropic", actualModel: "claude-3-5-haiku-20241022" },
+    "google/gemini-pro": { provider: "google", actualModel: "gemini-pro-latest" },
+    "google/gemini-flash": { provider: "google", actualModel: "gemini-flash-latest" }
 };
 
 const DEFAULT_MODEL: ModelConfig = { provider: "openai", actualModel: "gpt-4o-mini" };
@@ -35,6 +38,7 @@ export function validateProviderKey(provider: AIProvider): void {
         openai: { env: "OPENAI_API_KEY", name: "OpenAI" },
         anthropic: { env: "ANTHROPIC_API_KEY", name: "Anthropic" },
         xai: { env: "XAI_API_KEY", name: "xAI (Grok)" },
+        google: { env: "GOOGLE_GENERATIVE_AI_API_KEY", name: "Google Gemini" },
         elevenlabs: { env: "ELEVENLABS_API_KEY", name: "ElevenLabs" }
     };
 
@@ -81,6 +85,12 @@ export function getModelInstance(requestedModel: string) {
                 return anthropic(config.actualModel);
             case "xai":
                 return xai(config.actualModel);
+            case "google": {
+                const google = createGoogleGenerativeAI({
+                    apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
+                });
+                return google(config.actualModel);
+            }
             case "openai":
             default:
                 return openai(config.actualModel);
