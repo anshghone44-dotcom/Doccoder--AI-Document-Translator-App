@@ -8,7 +8,7 @@ import ModelSelector, { type AIModel } from "@/components/model-selector"
 import { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Paperclip, Send, X, Volume2, Loader2, Bot, Shield, Sparkles, Languages, Zap, FileText, Download } from "lucide-react"
+import { Paperclip, Send, X, Volume2, Loader2, Bot, Shield, Sparkles, Languages, Zap, FileText, Download, Mic } from "lucide-react"
 import VoiceSettings from "@/components/voice-settings"
 import { useCallback } from "react"
 import { useTranslation } from "@/components/language-context"
@@ -328,21 +328,32 @@ export default function TransformChat() {
             <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-1000">
               <div className="relative group/logo transition-transform duration-500 hover:scale-110">
                 <div className="px-12 py-6 rounded-[3rem] bg-card/80 backdrop-blur-xl border border-border/50 shadow-2xl flex items-center justify-center">
+                  <Mic className="h-12 w-12 text-primary animate-pulse mb-2" />
                   <h1
-                    className="text-5xl md:text-6xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500"
+                    className="text-5xl md:text-6xl font-black tracking-tighter text-foreground group-hover/logo:text-primary transition-colors duration-500 ml-4"
                     style={{ fontFamily: "var(--font-bodoni)" }}
                   >
                     Doccoder
                   </h1>
                 </div>
               </div>
-              <div className="space-y-4 max-w-2xl">
+              <div className="space-y-4 max-w-2xl px-6">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-                  {language === "en" ? "How can i help you today?" : t.transformer.hero.title}
+                  {language === "en" ? "Ready to Translate with Voice?" : t.transformer.hero.title}
                 </h1>
                 <p className="text-muted-foreground text-lg font-medium leading-relaxed">
-                  {t.transformer.hero.subtitle}
+                  {language === "en"
+                    ? "Click the microphone to speak, or drag a document here to start. I can translate your voice and files instantly."
+                    : t.transformer.hero.subtitle}
                 </p>
+                <div className="pt-4 flex justify-center gap-4">
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-widest">
+                    <Sparkles className="h-3 w-3" /> Voice mode enabled
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/5 border border-border/50 text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                    <Paperclip className="h-3 w-3" /> Document support
+                  </div>
+                </div>
               </div>
             </div>
           )}

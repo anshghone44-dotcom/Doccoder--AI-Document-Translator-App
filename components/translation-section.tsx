@@ -1,8 +1,8 @@
 "use client"
 
-import { UploadZone } from "@/components/upload-zone"
+import TransformChat from "@/components/transform-chat"
 import { useTranslation } from "@/components/language-context"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Mic } from "lucide-react"
 
 export default function TranslationSection() {
     const { t } = useTranslation()
@@ -13,19 +13,19 @@ export default function TranslationSection() {
             <div className="mx-auto max-w-7xl px-6 relative">
                 <div className="text-center mb-16 space-y-4">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-xs font-semibold tracking-wider uppercase text-primary/70 mb-4">
-                        <Sparkles className="h-3 w-3 fill-current" />
-                        Advance Translation
+                        <Mic className="h-3 w-3 fill-current" />
+                        AI Voice Translator
                     </div>
                     <h2 className="text-3xl md:text-5xl font-black tracking-tight text-foreground/90">
-                        {t.formats.title}
+                        Ask AI to Translate
                     </h2>
                     <p className="text-xl text-foreground/60 max-w-2xl mx-auto">
-                        Upload your document and choose any target format for instant, high-precision translation.
+                        Speak or upload your document. Our AI handles the rest with neural precision.
                     </p>
                 </div>
 
                 <div className="max-w-5xl mx-auto">
-                    <UploadZone />
+                    <TransformChat />
                 </div>
             </div>
         </section>

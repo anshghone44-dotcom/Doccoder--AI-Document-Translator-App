@@ -3,7 +3,7 @@
 import Header from "@/components/header"
 import { useTranslation } from "@/components/language-context"
 import { Sparkles } from "lucide-react"
-import { UploadZone } from "@/components/upload-zone"
+import TransformChat from "@/components/transform-chat"
 
 export default function TranslatePage() {
     const { t } = useTranslation()
@@ -25,12 +25,12 @@ export default function TranslatePage() {
                             Translate with <span className="text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/40">AI Precision</span>
                         </h1>
                         <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-                            Enter your text or upload content to get instant, accurate translations in any language. Powered by advanced Large Language Models.
+                            Enter your text, upload content, or use your voice to get instant, accurate translations in any language.
                         </p>
                     </div>
 
                     <div className="animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
-                        <UploadZone />
+                        <TransformChat />
                     </div>
                 </div>
 
