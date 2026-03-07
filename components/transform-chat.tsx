@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import TemplatePicker, { type TemplateSelection } from "@/components/template-picker"
 import FileEditor from "@/components/file-editor"
 import VoiceRecorder from "@/components/voice-recorder"
@@ -28,7 +28,7 @@ export default function TransformChat() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null)
-  const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
+  const [selectedModel, setSelectedModel] = useState<AIModel>("google/gemini-1.5-pro")
   const [template, setTemplate] = useState<TemplateSelection>({
     id: "minimal",
     orientation: "portrait",

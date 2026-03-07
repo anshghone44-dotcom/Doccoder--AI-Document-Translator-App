@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import FileEditor from "@/components/file-editor"
 import VoiceRecorder from "@/components/voice-recorder"
 import ModelSelector, { type AIModel } from "@/components/model-selector"
@@ -29,7 +29,7 @@ export default function ReverseTransformChat() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null)
-  const [selectedModel, setSelectedModel] = useState<AIModel>("openai/gpt-4-mini")
+  const [selectedModel, setSelectedModel] = useState<AIModel>("google/gemini-1.5-pro")
   const [targetFormat, setTargetFormat] = useState<
     "txt" | "docx" | "images" | "csv" | "xlsx" | "jpg" | "png" | "pptx" | "json" | "xml" | "md" | "rtf"
   >("txt")

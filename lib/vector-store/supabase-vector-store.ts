@@ -15,7 +15,7 @@ export const SupabaseVectorStore = {
      * Saves a set of chunks with their embeddings to the database.
      */
     async saveChunks(documentId: string, chunks: DocumentChunk[]) {
-        const supabase = createClient();
+        const supabase = await createClient();
 
         Logger.info("Saving chunks to vector store", {
             documentId,
@@ -51,7 +51,7 @@ export const SupabaseVectorStore = {
      * Performs a similarity search for a given query.
      */
     async similaritySearch(query: string, limit: number = 5, matchThreshold: number = 0.5): Promise<SearchResult[]> {
-        const supabase = createClient();
+        const supabase = await createClient();
 
         Logger.info("Performing similarity search", { query, limit });
 
