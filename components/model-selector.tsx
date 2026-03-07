@@ -10,6 +10,8 @@ export type AIModel =
   | "anthropic/claude-4.1"
   | "openai/gpt-4-mini"
   | "xai/grok-3"
+  | "google/gemini-1.5-pro"
+  | "google/gemini-1.5-flash"
   | "anthropic/claude-3.1"
 
 interface ModelSelectorProps {
@@ -25,6 +27,8 @@ export default function ModelSelector({ value, onChange, className }: ModelSelec
     "anthropic/claude-4.1": "Claude 4.1",
     "openai/gpt-4-mini": "GPT-4 Mini",
     "xai/grok-3": "Grok-3",
+    "google/gemini-1.5-pro": "Gemini 1.5 Pro",
+    "google/gemini-1.5-flash": "Gemini 1.5 Flash",
     "anthropic/claude-3.1": "Claude 3.1",
   }
 
@@ -34,6 +38,8 @@ export default function ModelSelector({ value, onChange, className }: ModelSelec
     "anthropic/claude-4.1": "Anthropic",
     "openai/gpt-4-mini": "OpenAI",
     "xai/grok-3": "xAI",
+    "google/gemini-1.5-pro": "Google",
+    "google/gemini-1.5-flash": "Google",
     "anthropic/claude-3.1": "Anthropic",
   }
 

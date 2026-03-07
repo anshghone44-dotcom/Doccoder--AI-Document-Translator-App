@@ -23,8 +23,10 @@ const MODEL_MAPPING: Record<string, ModelConfig> = {
     "openai/gpt-4-mini": { provider: "openai", actualModel: "gpt-4o-mini" },
     "xai/grok-3": { provider: "openai", actualModel: "gpt-4o" },
     "anthropic/claude-3.1": { provider: "anthropic", actualModel: "claude-3-5-haiku-20241022" },
-    "google/gemini-pro": { provider: "google", actualModel: "gemini-pro-latest" },
-    "google/gemini-flash": { provider: "google", actualModel: "gemini-flash-latest" }
+    "google/gemini-pro": { provider: "google", actualModel: "gemini-1.5-pro-latest" },
+    "google/gemini-flash": { provider: "google", actualModel: "gemini-1.5-flash-latest" },
+    "google/gemini-1.5-pro": { provider: "google", actualModel: "gemini-1.5-pro-latest" },
+    "google/gemini-1.5-flash": { provider: "google", actualModel: "gemini-1.5-flash-latest" }
 };
 
 const DEFAULT_MODEL: ModelConfig = { provider: "openai", actualModel: "gpt-4o-mini" };
