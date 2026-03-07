@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { type NextRequest, NextResponse } from "next/server"
 import { isLLMReady } from "@/lib/ai/models"
 import { speechToText } from "@/lib/voice/stt"

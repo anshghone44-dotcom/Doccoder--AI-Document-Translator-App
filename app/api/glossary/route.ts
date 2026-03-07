@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getGlossaryEntries, addGlossaryEntry, searchGlossary } from "@/lib/retrieval/glossary-manager"
 import { createClient } from "@/lib/supabase/server"
 import { type NextRequest, NextResponse } from "next/server"

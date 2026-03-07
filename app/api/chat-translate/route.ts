@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { generateText } from "ai"
 import { getModelInstance, isLLMReady } from "@/lib/ai/models"
 import { type NextRequest, NextResponse } from "next/server"

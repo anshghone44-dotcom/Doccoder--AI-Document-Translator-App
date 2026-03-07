@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { enhanceTranslation, type TranslationTone } from "@/lib/ai/ai-translation-features"
 import { type NextRequest, NextResponse } from "next/server"
 

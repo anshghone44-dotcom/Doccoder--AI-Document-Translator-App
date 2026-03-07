@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest } from "next/server"
 import JSZip from "jszip"
 import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
@@ -44,6 +45,7 @@ async function processInChunks(text: string, chunkSize: number, processFn: (chun
   const results = await Promise.all(chunks.map(chunk => processFn(chunk)))
   return results.join("\n")
 }
+
 
 export const maxDuration = 60
 export const runtime = "nodejs"

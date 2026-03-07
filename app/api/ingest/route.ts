@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { IngestionService } from "@/lib/parsing/ingestion-service";
 import { isLLMReady } from "@/lib/ai/models";

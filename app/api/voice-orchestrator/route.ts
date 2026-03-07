@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { speechToText } from "@/lib/voice/stt";
 import { textToSpeech } from "@/lib/voice/tts";
 import { buildGuardedPrompt } from "@/lib/llm/guard";
