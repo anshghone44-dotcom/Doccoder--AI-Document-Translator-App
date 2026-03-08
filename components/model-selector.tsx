@@ -6,7 +6,14 @@ import { Sparkles, Brain, Activity } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export type AIModel =
+  | "openai/gpt-5"
+  | "xai/grok-4"
+  | "anthropic/claude-4.1"
+  | "openai/gpt-4-mini"
+  | "xai/grok-3"
+  | "anthropic/claude-3.1"
   | "google/gemini-1.5-pro"
+  | "google/gemini-1.5-flash"
 
 interface ModelSelectorProps {
   value: AIModel
@@ -16,11 +23,25 @@ interface ModelSelectorProps {
 
 export default function ModelSelector({ value, onChange, className }: ModelSelectorProps) {
   const modelLabels: Record<AIModel, string> = {
+    "openai/gpt-5": "GPT-5",
+    "xai/grok-4": "Grok-4",
+    "anthropic/claude-4.1": "Claude 4.1",
+    "openai/gpt-4-mini": "GPT-4 Mini",
+    "xai/grok-3": "Grok-3",
+    "anthropic/claude-3.1": "Claude 3.1",
     "google/gemini-1.5-pro": "Gemini 1.5 Pro",
+    "google/gemini-1.5-flash": "Gemini 1.5 Flash",
   }
 
   const modelProviders: Record<AIModel, string> = {
+    "openai/gpt-5": "OpenAI",
+    "xai/grok-4": "xAI",
+    "anthropic/claude-4.1": "Anthropic",
+    "openai/gpt-4-mini": "OpenAI",
+    "xai/grok-3": "xAI",
+    "anthropic/claude-3.1": "Anthropic",
     "google/gemini-1.5-pro": "Google",
+    "google/gemini-1.5-flash": "Google",
   }
 
   return (
