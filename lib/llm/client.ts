@@ -6,12 +6,17 @@ if (typeof window !== "undefined") {
 
 console.log("OpenAI key exists:", !!process.env.OPENAI_API_KEY);
 
-const key = process.env.OPENAI_API_KEY?.trim();
+const getApiKey = () => process.env.OPENAI_API_KEY?.trim();
 
-if (!key) {
-    throw new Error("OpenAI API key missing.");
-}
+export const openai = new Proxy({} as OpenAI, {
+    get(target, prop, receiver) {
+        const key = getApiKey();
+        if (!key) {
+            throw new Error("OpenAI API key missing. Please check your environment variables.");
+        }
 
-export const openai = new OpenAI({
-    apiKey: key,
+        // Initialize real client on first access
+        const client = new OpenAI({ apiKey: key });
+        return Reflect.get(client, prop, receiver);
+    }
 });

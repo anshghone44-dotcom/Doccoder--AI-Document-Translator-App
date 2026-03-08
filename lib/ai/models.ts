@@ -29,7 +29,16 @@ const MODEL_MAPPING: Record<string, ModelConfig> = {
     "google/gemini-1.5-flash": { provider: "google", actualModel: "gemini-1.5-flash-latest" }
 };
 
-const DEFAULT_MODEL: ModelConfig = { provider: "openai", actualModel: "gpt-4o-mini" };
+/**
+ * Dynamically selects the best available default model based on configured API keys.
+ */
+export function getDefaultModel(): ModelConfig {
+    if (process.env.OPENAI_API_KEY) return { provider: "openai", actualModel: "gpt-4o-mini" };
+    if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) return { provider: "google", actualModel: "gemini-1.5-flash-latest" };
+    if (process.env.ANTHROPIC_API_KEY) return { provider: "anthropic", actualModel: "claude-3-5-haiku-20241022" };
+
+    return { provider: "openai", actualModel: "gpt-4o-mini" }; // Fallback to OpenAI (will throw later if key missing)
+}
 
 /**
  * Validates the presence and format of API keys for the requested provider.
@@ -58,18 +67,19 @@ export function validateProviderKey(provider: AIProvider): void {
 
 /**
  * Checks if the primary AI services are ready for operation.
+ * Now returns true if AT LEAST ONE primary provider (OpenAI or Google) is configured.
  */
 export function isLLMReady(checkVoice = false): boolean {
-    try {
-        validateProviderKey("openai");
-        if (checkVoice) validateProviderKey("elevenlabs");
+    const hasOpenAI = !!process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes("your-");
+    const hasGoogle = !!process.env.GOOGLE_GENERATIVE_AI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY.includes("AIzaSy"); // check for placeholder
+    const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
-        console.log("LLM READY: PASS");
-        return true;
-    } catch (err: any) {
-        console.error("LLM READY: FAIL →", err.message);
-        return false;
+    if (checkVoice) {
+        const hasVoice = !!process.env.ELEVENLABS_API_KEY;
+        return (hasOpenAI || hasGoogle || hasAnthropic) && hasVoice;
     }
+
+    return hasOpenAI || hasGoogle || hasAnthropic;
 }
 
 /**
@@ -77,7 +87,7 @@ export function isLLMReady(checkVoice = false): boolean {
  * Handles mapping, provider selection, and key validation.
  */
 export function getModelInstance(requestedModel: string) {
-    const config = MODEL_MAPPING[requestedModel] || DEFAULT_MODEL;
+    const config = MODEL_MAPPING[requestedModel] || getDefaultModel();
 
     try {
         validateProviderKey(config.provider);

@@ -10,6 +10,7 @@ export async function GET() {
         JSON.stringify({
             status: "ok",
             openaiKeyPresent: !!process.env.OPENAI_API_KEY,
+            vercelTokenPresent: !!process.env.VERCEL_TOKEN,
             environment: process.env.VERCEL_ENV || "local"
         }),
         {

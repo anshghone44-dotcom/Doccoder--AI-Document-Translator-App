@@ -1,4 +1,5 @@
-import { openai } from "./client";
+import { generateText } from "ai";
+import { getModelInstance } from "@/lib/ai/models";
 
 export interface LLMMessage {
     role: "system" | "user" | "assistant";
@@ -9,6 +10,7 @@ export interface LLMOptions {
     model?: string;
     temperature?: number;
     max_tokens?: number;
+    system?: string;
 }
 
 /**
@@ -20,20 +22,24 @@ export async function runLLM(
     options: LLMOptions = {}
 ): Promise<string> {
     const {
-        model = "gpt-4o",
+        model = "openai/gpt-4-mini",
         temperature = 0,
-        max_tokens = 4096
+        max_tokens = 4096,
+        system
     } = options;
 
     try {
-        const response = await openai.chat.completions.create({
-            model,
-            messages,
+        const modelInstance = getModelInstance(model);
+        const lastMessage = messages[messages.length - 1]?.content || "";
+
+        const { text } = await generateText({
+            model: modelInstance,
+            system: system || messages.find(m => m.role === "system")?.content,
+            prompt: lastMessage,
             temperature,
-            max_tokens,
         });
 
-        return response.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
+        return text || "I'm sorry, I couldn't generate a response.";
     } catch (error: any) {
         console.error(`[LLM Execution Error] [Model: ${model}]:`, error);
 

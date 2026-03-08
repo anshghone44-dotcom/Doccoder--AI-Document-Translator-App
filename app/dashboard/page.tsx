@@ -8,6 +8,7 @@ import { FileUploadDialog } from "@/components/file-upload-dialog"
 import { Button } from "@/components/ui/button"
 import { Plus, LayoutDashboard, FileText, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
+import { VercelProjectList } from "@/components/vercel-project-list"
 
 export default function DashboardPage() {
     const [user, setUser] = useState<any>(null)
@@ -100,6 +101,14 @@ export default function DashboardPage() {
 
                     <div className="bg-card/40 backdrop-blur-xl border border-foreground/10 rounded-[2.5rem] shadow-2xl p-8">
                         <DocumentList />
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="space-y-1">
+                            <h2 className="text-3xl font-black tracking-tight">Vercel Projects</h2>
+                            <p className="text-muted-foreground font-medium">Your deployments and status.</p>
+                        </div>
+                        <VercelProjectList />
                     </div>
                 </div>
             </div>

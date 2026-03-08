@@ -83,7 +83,7 @@ export default function SupabaseHealthCheck() {
         try {
           const { error } = await supabase.from(table).select('*').limit(1)
           if (!error) successCount++
-        } catch {}
+        } catch { }
       }
 
       if (successCount === tables.length) {
@@ -123,6 +123,34 @@ export default function SupabaseHealthCheck() {
       updateResult('auth', {
         status: 'error',
         message: 'Auth check failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      })
+    }
+
+    // 5. Vercel Integration
+    updateResult('vercel', { status: 'checking', message: 'Checking Vercel integration...' })
+
+    try {
+      const response = await fetch('/api/projects')
+      const data = await response.json()
+
+      if (response.ok) {
+        updateResult('vercel', {
+          status: 'success',
+          message: 'Vercel API connected',
+          details: `Found ${Array.isArray(data) ? data.length : 0} projects.`
+        })
+      } else {
+        updateResult('vercel', {
+          status: 'error',
+          message: 'Vercel API error',
+          details: data.error || 'Failed to connect to Vercel API'
+        })
+      }
+    } catch (error) {
+      updateResult('vercel', {
+        status: 'error',
+        message: 'Vercel check failed',
         details: error instanceof Error ? error.message : 'Unknown error'
       })
     }

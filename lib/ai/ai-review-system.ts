@@ -1,5 +1,5 @@
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { getModelInstance } from "@/lib/ai/models"
 
 export interface GrammarError {
   type: "grammar" | "spelling" | "punctuation" | "style"
@@ -32,7 +32,7 @@ export async function detectGrammarErrors(text: string, language: string): Promi
   try {
     console.log("Sending grammar check text to model for language:", language)
     const { text: response } = await generateText({
-      model: openai("gpt-4o-mini"),
+      model: getModelInstance("openai/gpt-4-mini"),
       prompt: `Review the following ${language} text for grammar, spelling, punctuation, and style errors.
       For each error found, provide:
       1. Error type (grammar/spelling/punctuation/style)
@@ -78,7 +78,7 @@ export async function checkCompliance(
   try {
     console.log("Sending compliance check text to model for language:", targetLanguage)
     const { text: response } = await generateText({
-      model: openai("gpt-4o-mini"),
+      model: getModelInstance("openai/gpt-4-mini"),
       prompt: `Review the following text for cultural sensitivity, legal compliance, and potential issues in ${targetLanguage}${targetCulture ? ` (${targetCulture} context)` : ""}.
       
       Check for:
