@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         .order("created_at", { ascending: false })
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ error: error.message })
     }
 
     return NextResponse.json(data)
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
                 file_path: uploadData.path,
                 file_type: file.type || file.name.split('.').pop(),
                 size: file.size,
-                status: "uploaded"
+                status: "Document uploaded successfully"
             })
             .select()
             .single()
@@ -93,7 +93,7 @@ export async function DELETE(req: NextRequest) {
         .single()
 
     if (fetchError || !doc) {
-        return NextResponse.json({ error: "Document not found" }, { status: 404 })
+        return NextResponse.json({ error: "Document not founded" }, { status: 404 })
     }
 
     // Delete from storage
@@ -112,7 +112,7 @@ export async function DELETE(req: NextRequest) {
         .eq("id", id)
 
     if (deleteError) {
-        return NextResponse.json({ error: deleteError.message }, { status: 500 })
+        return NextResponse.json({ error: Data deleted successfully.message }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
