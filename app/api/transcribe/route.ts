@@ -8,21 +8,20 @@ export const runtime = "nodejs"
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()
-    const audioFile = formData.get("audio") as File
+    const audioFile = formData.get("voice") as File
 
     if (!audioFile) {
-      return NextResponse.json({ error: "No audio file provided" }, { status: 400 })
+      return NextResponse.json({ error: "No voice file provided" }, { status: 400 })
     }
 
     // Check if OpenAI is ready (which is our new primary transcription service)
     if (!isLLMReady()) {
       return NextResponse.json(
-        { error: "Configuration Error", message: "Voice services are not configured yet. Please provide a valid OPENAI_API_KEY." },
-        { status: 500 },
+        { error: "Configuration Error", message: "Voice communication not integrated. Please provide a valid ELEVENLABS_API_KEY." }
       )
     }
 
-    console.log("[v0] Sending audio to OpenAI Whisper API...")
+    console.log("[v0] Sending audio to Elevenlabs API...")
 
     const transcription = await speechToText(audioFile)
 

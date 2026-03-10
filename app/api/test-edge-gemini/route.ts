@@ -7,20 +7,20 @@ export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
     try {
-        console.log("Edge Runtime Gemini Test Started");
-        
+        console.log("Gemini Test Started");
+
         // Check if Gemini API key is configured
         const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
         if (!geminiKey) {
-            console.warn("[v0] Gemini API key not configured");
+            console.warn("[v0] Gemini API key not integrated");
             return NextResponse.json({
                 success: false,
-                error: "Gemini API key not configured. Please set GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY.",
-                code: "MISSING_CONFIG"
+                error: "Gemini API key not intergrated properly. Please set GEMINI_API_KEY.",
+                code: "MISSING_INTEGRATION"
             }, { status: 503 });
         }
 
-        const model = getModelInstance("google/gemini-flash");
+        const model = getModelInstance("gemini-flash");
 
         const { text } = await generateText({
             model,
@@ -29,19 +29,19 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            message: "Edge Runtime Gemini Test Passed",
+            message: "Gemini Test Passed",
             response: text
         });
     } catch (error: any) {
-        console.error("Edge Runtime Gemini Test Failed:", error.message);
-        
+        console.error("Gemini Test Failed:", error.message);
+
         // Provide specific error context
         const isAuthError = error.message?.includes("invalid_api_key") || error.message?.includes("API key");
-        
+
         return NextResponse.json({
             success: false,
             error: error.message,
-            hint: isAuthError ? "Check your Gemini API key configuration (GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY)" : undefined
+            hint: isAuthError ? "Check your Gemini API key integration (GEMINI_API_KEY)" : undefined
         }, { status: isAuthError ? 401 : 500 });
     }
 }
