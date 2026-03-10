@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     const form = await req.formData()
     const prompt = (form.get("prompt") || "").toString()
     const rawFormat = (form.get("targetFormat") || "txt").toString()
-    const aiModel = (form.get("aiModel") || "openai/gpt-4-mini").toString()
+    const aiModel = (form.get("aiModel") || "gemini-1.5 pro/flash").toString()
     const targetLanguage = (form.get("targetLanguage") || "en").toString()
     const languageFull = LANGUAGE_MAP[targetLanguage] || targetLanguage || "English"
 
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     }
 
     // SAFE WORKFLOW - Step 1: Validate Backend Capabilities
-    const SUPPORTED_FORMATS = ["docx", "txt", "images", "csv", "xlsx", "pptx", "json", "xml", "md", "rtf"]
+    const SUPPORTED_FORMATS = ["docx", "txt", "images", "csv", "xlsx", "pptx", "json", "xml", "md", "rtf", "jpg", "png", "pdf"]
     const targetFormat = rawFormat as any
 
     if (!SUPPORTED_FORMATS.includes(targetFormat)) {
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       return new Response(JSON.stringify({
         error: "Limitation detected",
         message: `System capability restricted: Decomposition to '${targetFormat}' is not currently available in this environment.`,
-        code: "UNSUPPORTED_FORMAT"
+        code: "UNDETECTABLE_FORMAT"
       }), { status: 400, headers: { "Content-Type": "application/json" } })
     }
 
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
           Logger.info("Applying AI transformation directive", { requestId, prompt })
           const { text: transformed } = await generateText({
             model: finalModel,
-            prompt: `You are the Doccoder AI Assistant. Execute a technical transformation on the following extracted document text.
+            prompt: `You are the Doccoder AI Application. Execute a technical transformation on the following extracted document text.
                  
                  STRICT GROUNDING: Use ONLY the provided text. Do NOT add outside knowledge.
                  
