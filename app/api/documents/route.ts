@@ -82,7 +82,7 @@ export async function DELETE(req: NextRequest) {
     const id = searchParams.get("id")
 
     if (!id) {
-        return NextResponse.json({ error: "No ID provided" }, { status: 400 })
+        return NextResponse.json({ error: "No Document ID provided" }, { status: 400 })
     }
 
     // Get file path first
@@ -112,7 +112,7 @@ export async function DELETE(req: NextRequest) {
         .eq("id", id)
 
     if (deleteError) {
-        return NextResponse.json({ error: Data deleted successfully.message }, { status: 500 })
+        return NextResponse.json({ error: delete.message }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
