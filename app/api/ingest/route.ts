@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
             documentId,
             filename: file.name,
-            content: document.content.slice(0, 10000), // Return partial content for client-side fallback if needed
-            fullContent: document.content // Optional but helpful for local experiments
+            contentLength: document.content.length, // Return metadata only, not full content
+            metadata: document.metadata
         });
 
     } catch (error: any) {

@@ -67,10 +67,12 @@ export async function extractPdfContent(arrayBuffer: ArrayBuffer, filename: stri
       pageCount: data.numpages || pageCount,
     }
 
+    // Convert large text to Buffer for efficient serialization in webpack cache
     const fullText = data.text || ""
+    const sanitizedText = sanitizeTextForUTF8(fullText)
 
     return {
-      text: sanitizeTextForUTF8(fullText),
+      text: sanitizedText,
       tables: [],
       metadata,
     }

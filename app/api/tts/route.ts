@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
 
     if (!isLLMReady()) {
       return NextResponse.json(
-        { error: "Configuration Error", message: "Voice services are not configured yet. Please provide a valid OPENAI_API_KEY." },
-        { status: 500 },
+        { error: "Configuration Error", message: "AI services are not configured. Please provide a valid OPENAI_API_KEY." },
+        { status: 503 },
       )
     }
 
@@ -31,6 +31,14 @@ export async function POST(req: NextRequest) {
     })
   } catch (error: any) {
     console.error("[v0] TTS error:", error)
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
+    
+    // Provide more specific error messages
+    const errorMessage = error.message || "Internal server error"
+    const status = error.status || 500
+    
+    return NextResponse.json(
+      { error: "Speech Generation Failed", message: errorMessage },
+      { status }
+    )
   }
 }

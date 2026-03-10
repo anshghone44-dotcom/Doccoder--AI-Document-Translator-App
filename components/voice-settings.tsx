@@ -46,12 +46,23 @@ export default function VoiceSettings({
             setIsLoading(true)
             try {
                 const res = await fetch("/api/voices")
+                if (!res.ok) {
+                    console.warn(`[v0] Failed to fetch voices: ${res.status}`)
+                    // Silently fail - voice features are optional
+                    setVoices([])
+                    return
+                }
                 const data = await res.json()
                 if (data.voices) {
                     setVoices(data.voices)
+                } else if (data.error) {
+                    console.warn(`[v0] Voice API error: ${data.error}`)
+                    setVoices([])
                 }
             } catch (err) {
-                console.error("Failed to fetch voices:", err)
+                console.warn("[v0] Failed to fetch voices:", err)
+                // Don't throw - voice settings are optional
+                setVoices([])
             } finally {
                 setIsLoading(false)
             }
@@ -94,12 +105,16 @@ export default function VoiceSettings({
                                             <div className="p-4 flex items-center justify-center">
                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                             </div>
-                                        ) : (
+                                        ) : voices.length > 0 ? (
                                             voices.map((voice) => (
                                                 <SelectItem key={voice.id} value={voice.id} className="focus:bg-primary/10">
                                                     {voice.name}
                                                 </SelectItem>
                                             ))
+                                        ) : (
+                                            <div className="p-4 text-center text-sm text-muted-foreground">
+                                                Voice service unavailable
+                                            </div>
                                         )}
                                     </SelectContent>
                                 </Select>

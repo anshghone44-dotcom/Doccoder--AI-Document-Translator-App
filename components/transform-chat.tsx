@@ -201,8 +201,16 @@ export default function TransformChat() {
           }),
         })
 
-        if (!chatRes.ok) throw new Error("Chat request failed")
+        if (!chatRes.ok) {
+          const errData = await chatRes.json().catch(() => ({}))
+          const errorMsg = errData?.message || errData?.error || "Chat request failed"
+          throw new Error(`[${chatRes.status}] ${errorMsg}`)
+        }
         const data = await chatRes.json()
+        
+        if (!data.content) {
+          throw new Error("Invalid response from server: missing content")
+        }
 
         setMessages((prev) => [
           ...prev,
