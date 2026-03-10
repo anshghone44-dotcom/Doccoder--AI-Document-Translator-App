@@ -42,6 +42,15 @@ export async function POST(request: NextRequest) {
     try {
         const { messages, targetLanguage, tone, model, useGlossary } = await request.json()
 
+        console.log("[v0] Chat request received:", {
+            requestId,
+            model,
+            targetLanguage,
+            messageCount: messages?.length,
+            tone,
+            useGlossary
+        })
+
         Logger.info("Chat translate request started", {
             requestId,
             model,
@@ -69,7 +78,14 @@ export async function POST(request: NextRequest) {
         // 2. Production-Safe Model Initialization
         let finalModel;
         try {
+            // Validate model parameter
+            if (!model || typeof model !== 'string') {
+                Logger.warn("Invalid model parameter", { requestId, model, type: typeof model })
+                throw new Error(`Invalid model parameter: expected string, got ${typeof model}`);
+            }
+            
             finalModel = getModelInstance(model);
+            Logger.info("Model initialized successfully", { requestId, model })
         } catch (error: any) {
             Logger.error("Failed to initialize model for chat", error, { requestId, requestedModel: model })
             return NextResponse.json({
@@ -112,22 +128,53 @@ export async function POST(request: NextRequest) {
         
         SYSTEM STATUS: All linguistic and transformation modules are synchronized in ${targetLanguageFull}.`
 
-        Logger.info("Requesting chat translation", { requestId })
-        const response = await generateText({
-            model: finalModel,
-            system: systemPrompt,
-            prompt: lastUserMessage,
-            temperature: 0.7,
+        console.log("[v0] Preparing to generate text with model:", { 
+            requestId, 
+            messageLength: lastUserMessage.length,
+            targetLanguage: targetLanguageFull
         })
+        
+        Logger.info("Requesting chat translation", { requestId, messageLength: lastUserMessage.length })
+        
+        try {
+            console.log("[v0] Calling generateText...")
+            const response = await generateText({
+                model: finalModel,
+                system: systemPrompt,
+                prompt: lastUserMessage,
+                temperature: 0.7,
+            })
 
-        Logger.info("Chat translation successful", {
-            requestId,
-            durationMs: Date.now() - startTime
-        })
+            console.log("[v0] generateText succeeded")
+            Logger.info("Chat translation successful", {
+                requestId,
+                durationMs: Date.now() - startTime,
+                responseLength: response.text.length
+            })
 
-        return NextResponse.json({ role: "assistant", content: response.text })
+            return NextResponse.json({ role: "assistant", content: response.text })
+        } catch (generateError: any) {
+            console.log("[v0] generateText failed with error:", {
+                message: generateError.message,
+                status: generateError.status,
+                code: generateError.code,
+                type: generateError.constructor.name
+            })
+            Logger.error("generateText failed", generateError, { 
+                requestId, 
+                errorMessage: generateError.message,
+                errorStatus: generateError.status,
+                errorCode: generateError.code
+            })
+            throw generateError;
+        }
     } catch (error: any) {
-        Logger.error("Chat translation failed", error, { requestId })
+        Logger.error("Chat translation failed", error, { 
+            requestId,
+            errorMessage: error.message,
+            errorStatus: error.status,
+            errorStack: error.stack?.split('\n')[0]
+        })
         
         // Provide more specific error messages for debugging
         let errorMessage = "Failed to generate translation"
@@ -142,12 +189,15 @@ export async function POST(request: NextRequest) {
         } else if (error.message?.includes("timeout")) {
             errorMessage = "Request timeout: Please try again"
             statusCode = 504
+        } else if (error.status) {
+            statusCode = error.status;
         }
         
         return NextResponse.json({ 
             error: "Translation Failed", 
             message: errorMessage,
-            code: "CHAT_ERROR"
+            code: "CHAT_ERROR",
+            details: error.message
         }, { status: statusCode })
     }
 }

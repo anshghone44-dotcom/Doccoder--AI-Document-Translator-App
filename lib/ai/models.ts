@@ -96,6 +96,12 @@ export function isLLMReady(checkVoice = false): boolean {
  * Handles mapping, provider selection, and key validation.
  */
 export function getModelInstance(requestedModel: string) {
+    // Check if model exists in mapping
+    if (!MODEL_MAPPING[requestedModel]) {
+        // Log warning but don't fail - use default
+        Logger.warn("Model not found in mapping, using default", { requestedModel, availableModels: Object.keys(MODEL_MAPPING) });
+    }
+    
     const config = MODEL_MAPPING[requestedModel] || getDefaultModel();
 
     try {
@@ -126,7 +132,7 @@ export function getModelInstance(requestedModel: string) {
                 return openai(config.actualModel);
         }
     } catch (error: any) {
-        Logger.error("Model initialization failed", error, { requestedModel, provider: config.provider });
+        Logger.error("Model initialization failed", error, { requestedModel, mappedModel: config.actualModel, provider: config.provider });
         throw error;
     }
 }
