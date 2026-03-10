@@ -30,6 +30,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ text: transcription || "" })
   } catch (error: any) {
     console.error("[v0] Transcription error:", error)
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: error.message || "Internal server error" })
   }
 }

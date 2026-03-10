@@ -8,12 +8,12 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const formData = await req.formData();
-        const audio = formData.get("audio") as File;
+        const audio = formData.get("voice") as File;
         const documentContext = formData.get("context") as string;
 
         // 0️⃣ Validation
         if (!audio) {
-            return NextResponse.json({ error: "Missing audio data" }, { status: 400 });
+            return NextResponse.json({ error: "Missing voice data" }, { status: 400 });
         }
 
         // 1️⃣ Voice → Text
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         } catch (err) {
             console.error("[Voice Orchestrator] STT Error:", err);
             // Fail safely with voice feedback
-            const errorAudio = await textToSpeech("I'm sorry, I couldn't understand the audio. Please try speaking clearer.");
+            const errorAudio = await textToSpeech("I'm sorry, I couldn't understand the voice. Please try speaking clearer.");
             return new Response(errorAudio, { headers: { "Content-Type": "audio/mpeg" } });
         }
 

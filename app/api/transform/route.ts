@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 import { NextRequest } from "next/server"
 import JSZip from "jszip"
 import { extractPdfContent, formatExtractedContent } from "@/lib/parsing/pdf-ocr-processor"
-import { convertAnyToPdf } from "@/lib/parsing/convert-to-pdf"
 import { generateText } from "ai"
 import { getModelInstance, isLLMReady } from "@/lib/ai/models"
 import mammoth from "mammoth"
