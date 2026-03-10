@@ -33,8 +33,10 @@ const MODEL_MAPPING: Record<string, ModelConfig> = {
  * Dynamically selects the best available default model based on configured API keys.
  */
 export function getDefaultModel(): ModelConfig {
+    const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+    
     if (process.env.OPENAI_API_KEY) return { provider: "openai", actualModel: "gpt-4o-mini" };
-    if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) return { provider: "google", actualModel: "gemini-1.5-flash-latest" };
+    if (geminiKey) return { provider: "google", actualModel: "gemini-1.5-flash-latest" };
     if (process.env.ANTHROPIC_API_KEY) return { provider: "anthropic", actualModel: "claude-3-5-haiku-20241022" };
 
     return { provider: "openai", actualModel: "gpt-4o-mini" }; // Fallback to OpenAI (will throw later if key missing)
@@ -45,19 +47,25 @@ export function getDefaultModel(): ModelConfig {
  * @throws Error if key is missing or invalid.
  */
 export function validateProviderKey(provider: AIProvider): void {
-    const keyMap: Record<AIProvider, { env: string; name: string }> = {
-        openai: { env: "OPENAI_API_KEY", name: "OpenAI" },
-        anthropic: { env: "ANTHROPIC_API_KEY", name: "Anthropic" },
-        xai: { env: "XAI_API_KEY", name: "xAI (Grok)" },
-        google: { env: "GOOGLE_GENERATIVE_AI_API_KEY", name: "Google Gemini" },
-        elevenlabs: { env: "ELEVENLABS_API_KEY", name: "ElevenLabs" }
+    const keyMap: Record<AIProvider, { envs: string[]; name: string }> = {
+        openai: { envs: ["OPENAI_API_KEY"], name: "OpenAI" },
+        anthropic: { envs: ["ANTHROPIC_API_KEY"], name: "Anthropic" },
+        xai: { envs: ["XAI_API_KEY"], name: "xAI (Grok)" },
+        google: { envs: ["GOOGLE_GENERATIVE_AI_API_KEY", "GEMINI_API_KEY"], name: "Google Gemini" },
+        elevenlabs: { envs: ["ELEVENLABS_API_KEY"], name: "ElevenLabs" }
     };
 
     const config = keyMap[provider];
-    const key = process.env[config.env]?.trim();
+    let key: string | undefined;
+    
+    // Try each environment variable in order
+    for (const env of config.envs) {
+        key = process.env[env]?.trim();
+        if (key) break;
+    }
 
     if (!key) {
-        throw new Error(`${config.name} API key missing.`);
+        throw new Error(`${config.name} API key missing. Please set ${config.envs.join(" or ")}.`);
     }
 
     if (key.includes("your-") || key.includes("YOUR_") || key.length < 15) {
@@ -71,7 +79,8 @@ export function validateProviderKey(provider: AIProvider): void {
  */
 export function isLLMReady(checkVoice = false): boolean {
     const hasOpenAI = !!process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes("your-");
-    const hasGoogle = !!process.env.GOOGLE_GENERATIVE_AI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY.includes("AIzaSy"); // check for placeholder
+    const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+    const hasGoogle = !!geminiKey && !geminiKey.includes("your-"); // Check for placeholder, not "AIzaSy" which is legitimate
     const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
     if (checkVoice) {
@@ -98,8 +107,12 @@ export function getModelInstance(requestedModel: string) {
             case "xai":
                 return xai(config.actualModel);
             case "google": {
+                const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+                if (!apiKey) {
+                    throw new Error("Google Gemini API key not found. Please set GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY.");
+                }
                 const google = createGoogleGenerativeAI({
-                    apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
+                    apiKey
                 });
                 return google(config.actualModel);
             }

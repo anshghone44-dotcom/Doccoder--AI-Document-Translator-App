@@ -443,8 +443,8 @@ Title:`,
         Logger.error("Pipeline breakdown", err, { requestId, filename: f.name })
 
         let customMessage = err?.message || "Internal operation interrupted."
-        if (customMessage.includes("Incorrect API key") || customMessage.includes("invalid_api_key")) {
-          customMessage = "Authentication failed: The provided API key is invalid. Please ensure your environment variables (OPENAI_API_KEY) are correctly configured with a valid key."
+        if (customMessage.includes("Incorrect API key") || customMessage.includes("invalid_api_key") || customMessage.includes("API key missing")) {
+          customMessage = "Authentication failed: Please ensure your API keys are correctly configured in environment variables. Check OPENAI_API_KEY, GOOGLE_GENERATIVE_AI_API_KEY (or GEMINI_API_KEY), or ANTHROPIC_API_KEY."
         }
 
         return new Response(JSON.stringify({
