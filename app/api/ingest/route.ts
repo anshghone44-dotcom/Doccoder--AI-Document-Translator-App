@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         if (!isLLMReady()) {
             return NextResponse.json({
                 error: "Configuration Error",
-                message: "Document intelligence is not configured yet. Please provide a valid AI service key."
+                message: "Document processing not happening."
             }, { status: 500 });
         }
         const formData = await req.formData();
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         Logger.error("Ingest API: Fatal exception", error, { requestId });
         return NextResponse.json({
             error: "Ingestion Fault",
-            message: `The document intelligence engine failed to process the file: ${error.message}`
+            message: `The document intelligence engine failed to fetch/process the file: ${error.message}`
         }, { status: 500 });
     }
 }
