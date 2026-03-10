@@ -18,10 +18,10 @@ export interface ModelConfig {
 
 const MODEL_MAPPING: Record<string, ModelConfig> = {
     "openai/gpt-5": { provider: "openai", actualModel: "gpt-4o" },
-    "xai/grok-4": { provider: "openai", actualModel: "gpt-4o" },
+    "xai/grok-4": { provider: "xai", actualModel: "grok-3" },
     "anthropic/claude-4.1": { provider: "anthropic", actualModel: "claude-3-5-sonnet-latest" },
     "openai/gpt-4-mini": { provider: "openai", actualModel: "gpt-4o-mini" },
-    "xai/grok-3": { provider: "openai", actualModel: "gpt-4o" },
+    "xai/grok-3": { provider: "xai", actualModel: "grok-3" },
     "anthropic/claude-3.1": { provider: "anthropic", actualModel: "claude-3-5-haiku-20241022" },
     "google/gemini-pro": { provider: "google", actualModel: "gemini-1.5-pro-latest" },
     "google/gemini-flash": { provider: "google", actualModel: "gemini-1.5-flash-latest" },
@@ -104,8 +104,13 @@ export function getModelInstance(requestedModel: string) {
         switch (config.provider) {
             case "anthropic":
                 return anthropic(config.actualModel);
-            case "xai":
+            case "xai": {
+                const apiKey = process.env.XAI_API_KEY;
+                if (!apiKey) {
+                    throw new Error("xAI API key not found. Please set XAI_API_KEY.");
+                }
                 return xai(config.actualModel);
+            }
             case "google": {
                 const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
                 if (!apiKey) {
