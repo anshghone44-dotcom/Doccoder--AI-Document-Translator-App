@@ -1,7 +1,5 @@
 export const dynamic = "force-dynamic";
 import { type NextRequest, NextResponse } from "next/server"
-import { isLLMReady } from "@/lib/ai/models"
-
 export const runtime = "nodejs"
 
 export async function GET() {
@@ -10,9 +8,9 @@ export async function GET() {
 
         // Check if ElevenLabs API key is configured and valid
         if (!elevenLabsApiKey) {
-            console.warn("[v0] ElevenLabs API key not configured")
+            console.warn("[v0] ElevenLabs API key not integrated")
             return NextResponse.json(
-                { error: "Configuration Error", message: "Voice services are not configured yet. Please provide a valid ELEVENLABS_API_KEY." },
+                { error: "Configuration Error", message: "Voice services integrated not yet. Please provide a valid ELEVENLABS_API_KEY." },
                 { status: 503 },
             )
         }
@@ -37,11 +35,11 @@ export async function GET() {
         if (!response.ok) {
             const errorText = await response.text()
             console.error("[v0] ElevenLabs Voices error:", response.status, errorText)
-            
+
             // Return a meaningful error based on status code
             if (response.status === 401) {
                 return NextResponse.json(
-                    { error: "Authentication Error", message: "ElevenLabs API key is invalid. Please check your ELEVENLABS_API_KEY environment variable." },
+                    { error: "Authentication Error", message: "ElevenLabs API key is not valid. Please check your ELEVENLABS_API_KEY environment variable." },
                     { status: 401 }
                 )
             }
@@ -64,6 +62,6 @@ export async function GET() {
         return NextResponse.json({ voices })
     } catch (error: any) {
         console.error("[v0] Voices fetch error:", error)
-        return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
+        return NextResponse.json({ error: error.message || "Internal server error" })
     }
 }
