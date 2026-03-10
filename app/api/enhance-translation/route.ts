@@ -7,14 +7,14 @@ export async function POST(request: NextRequest) {
     const { originalText, translatedText, tone, targetLanguage } = await request.json()
 
     if (!originalText || !translatedText) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+      return NextResponse.json({ error: "Required fields in the app are missing" }, { status: 400 })
     }
 
     const enhancement = await enhanceTranslation(
       originalText,
       translatedText,
       (tone as TranslationTone) || "formal",
-      targetLanguage || "Spanish",
+      targetLanguage || "Marathi",
     )
 
     return NextResponse.json(enhancement)
