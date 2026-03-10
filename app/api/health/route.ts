@@ -3,13 +3,13 @@ export const runtime = "nodejs"
 
 export async function GET() {
     console.log("ENV TEST:", {
-        key: process.env.OPENAI_API_KEY ? `${process.env.OPENAI_API_KEY.substring(0, 5)}...` : "not found",
-        exists: !!process.env.OPENAI_API_KEY
+        key: process.env.GEMINI_API_KEY ? `${process.env.GEMINI_API_KEY.substring(0, 5)}...` : "not found",
+        exists: !!process.env.GEMINI_API_KEY
     })
     return new Response(
         JSON.stringify({
             status: "ok",
-            openaiKeyPresent: !!process.env.OPENAI_API_KEY,
+            openaiKeyPresent: !!process.env.GEMINI_API_KEY,
             vercelTokenPresent: !!process.env.VERCEL_TOKEN,
             environment: process.env.VERCEL_ENV || "local"
         }),
