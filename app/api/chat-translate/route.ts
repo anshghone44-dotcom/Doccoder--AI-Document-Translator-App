@@ -71,9 +71,9 @@ export async function POST(request: NextRequest) {
         if (!isLLMReady()) {
             Logger.error("LLM service not ready", new Error("Missing API key configuration"), { requestId })
             return NextResponse.json({
-                error: "Configuration Error",
-                message: "Document intelligence is not configured yet. Please provide a valid API key (OPENAI_API_KEY, GOOGLE_GENERATIVE_AI_API_KEY/GEMINI_API_KEY, or ANTHROPIC_API_KEY) in the system environment."
-            }, { status: 503 });
+                error: "Document Analysis Error",
+                message: "Document intelligence is not configured yet. Please provide a valid API key (OPENAI_API_KEY, GOOGLE_GENERATIVE_AI_API_KEY/GEMINI_API_KEY) in the system environment."
+            });
         }
 
         // 2. Production-Safe Model Initialization
