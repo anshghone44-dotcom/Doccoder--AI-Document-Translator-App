@@ -21,6 +21,7 @@ const LANGUAGE_MAP: Record<string, string> = {
     el: "Greek",
     gu: "Gujarati",
     hi: "Hindi",
+    ma: "Marathi"
     it: "Italian",
     ja: "Japanese",
     ko: "Korean",
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
                 Logger.warn("Invalid model parameter", { requestId, model, type: typeof model })
                 throw new Error(`Invalid model parameter: expected string, got ${typeof model}`);
             }
-            
+
             finalModel = getModelInstance(model);
             Logger.info("Model initialized successfully", { requestId, model })
         } catch (error: any) {
@@ -128,14 +129,14 @@ export async function POST(request: NextRequest) {
         
         SYSTEM STATUS: All linguistic and transformation modules are synchronized in ${targetLanguageFull}.`
 
-        console.log("[v0] Preparing to generate text with model:", { 
-            requestId, 
+        console.log("[v0] Preparing to generate text with model:", {
+            requestId,
             messageLength: lastUserMessage.length,
             targetLanguage: targetLanguageFull
         })
-        
+
         Logger.info("Requesting chat translation", { requestId, messageLength: lastUserMessage.length })
-        
+
         try {
             console.log("[v0] Calling generateText...")
             const response = await generateText({
@@ -160,8 +161,8 @@ export async function POST(request: NextRequest) {
                 code: generateError.code,
                 type: generateError.constructor.name
             })
-            Logger.error("generateText failed", generateError, { 
-                requestId, 
+            Logger.error("generateText failed", generateError, {
+                requestId,
                 errorMessage: generateError.message,
                 errorStatus: generateError.status,
                 errorCode: generateError.code
@@ -169,17 +170,17 @@ export async function POST(request: NextRequest) {
             throw generateError;
         }
     } catch (error: any) {
-        Logger.error("Chat translation failed", error, { 
+        Logger.error("Chat translation failed", error, {
             requestId,
             errorMessage: error.message,
             errorStatus: error.status,
             errorStack: error.stack?.split('\n')[0]
         })
-        
+
         // Provide more specific error messages for debugging
         let errorMessage = "Failed to generate translation"
         let statusCode = 500
-        
+
         if (error.message?.includes("API key") || error.message?.includes("Incorrect API key")) {
             errorMessage = "Authentication failed: Please check your API key configuration"
             statusCode = 401
@@ -192,9 +193,9 @@ export async function POST(request: NextRequest) {
         } else if (error.status) {
             statusCode = error.status;
         }
-        
-        return NextResponse.json({ 
-            error: "Translation Failed", 
+
+        return NextResponse.json({
+            error: "Translation Failed",
             message: errorMessage,
             code: "CHAT_ERROR",
             details: error.message
