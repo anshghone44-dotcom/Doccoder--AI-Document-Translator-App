@@ -59,10 +59,11 @@ export async function POST(request: NextRequest) {
 
         // 1. Production-Safe Readiness Check
         if (!isLLMReady()) {
+            Logger.error("LLM service not ready", new Error("Missing API key configuration"), { requestId })
             return NextResponse.json({
-                role: "assistant",
-                content: "Document intelligence is not configured yet. Please provide a valid API key in the system environment."
-            });
+                error: "Configuration Error",
+                message: "Document intelligence is not configured yet. Please provide a valid API key (OPENAI_API_KEY, GOOGLE_GENERATIVE_AI_API_KEY/GEMINI_API_KEY, or ANTHROPIC_API_KEY) in the system environment."
+            }, { status: 503 });
         }
 
         // 2. Production-Safe Model Initialization
@@ -127,8 +128,28 @@ export async function POST(request: NextRequest) {
         })
 
         return NextResponse.json({ role: "assistant", content: response.text })
-    } catch (error) {
+    } catch (error: any) {
         Logger.error("Chat translation failed", error, { requestId })
-        return NextResponse.json({ error: "Failed to generate translation" }, { status: 500 })
+        
+        // Provide more specific error messages for debugging
+        let errorMessage = "Failed to generate translation"
+        let statusCode = 500
+        
+        if (error.message?.includes("API key") || error.message?.includes("Incorrect API key")) {
+            errorMessage = "Authentication failed: Please check your API key configuration"
+            statusCode = 401
+        } else if (error.message?.includes("rate limit")) {
+            errorMessage = "Rate limit exceeded: Please try again in a moment"
+            statusCode = 429
+        } else if (error.message?.includes("timeout")) {
+            errorMessage = "Request timeout: Please try again"
+            statusCode = 504
+        }
+        
+        return NextResponse.json({ 
+            error: "Translation Failed", 
+            message: errorMessage,
+            code: "CHAT_ERROR"
+        }, { status: statusCode })
     }
 }
