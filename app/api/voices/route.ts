@@ -10,7 +10,6 @@ export async function GET() {
 
         // Check if ElevenLabs API key is configured and valid
         if (!elevenLabsApiKey) {
-            console.warn("[v0] ElevenLabs API key not configured")
             return NextResponse.json(
                 { error: "Configuration Error", message: "Voice services are not configured yet. Please provide a valid ELEVENLABS_API_KEY." },
                 { status: 503 },
@@ -19,7 +18,6 @@ export async function GET() {
 
         // Check for placeholder/invalid key format
         if (elevenLabsApiKey.includes("your-") || elevenLabsApiKey.includes("YOUR_") || elevenLabsApiKey.length < 10) {
-            console.warn("[v0] ElevenLabs API key appears to be a placeholder")
             return NextResponse.json(
                 { error: "Configuration Error", message: "ElevenLabs API key appears to be invalid or a placeholder. Please provide a valid key." },
                 { status: 503 },
