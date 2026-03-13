@@ -10,7 +10,7 @@ import * as XLSX from "xlsx"
 import { build_excel, build_docx } from "@/lib/parsing/document-generators"
 import type { PipelineOutput } from "@/lib/parsing/document-generators"
 import { build_pdf, stripExt } from "@/lib/parsing/convert-to-pdf"
-import { DOCUMENT_TRANSLATION_SYSTEM_PROMPT } from "@/lib/ai/prompts"
+import { getDocumentTranslationSystemPrompt } from "@/lib/ai/prompts"
 
 // Structured Logger Utility
 const Logger = {
@@ -233,8 +233,9 @@ export async function POST(req: NextRequest) {
       }), { status: 400, headers: { "Content-Type": "application/json" } })
     }
 
+    const baseTranslationPrompt = await getDocumentTranslationSystemPrompt();
     const SYSTEM_PROTOCOL = `
-${DOCUMENT_TRANSLATION_SYSTEM_PROMPT}
+${baseTranslationPrompt}
 
 PROTOCOL:
 1. TRANSLATION: Translate the source content into the target_language. Maintain absolute technical integrity and context.

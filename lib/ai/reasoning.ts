@@ -70,7 +70,7 @@ export async function generateGroundedResponse(
 
     try {
         const finalModel = getModelInstance(options.model || "openai/gpt-4-mini");
-        const systemPrompt = getGroundedPrompt(options.mode || "strict", options.language || "en");
+        const systemPrompt = await getGroundedPrompt(options.mode || "strict", options.language || "en");
 
         const { text } = await generateText({
             model: finalModel,
